@@ -13,7 +13,6 @@ app.use(express.json());
 async function get_data(urls_a, ip, key) {
     const data_key = key;
     const data_st_id = ip;
-    console.log(urls_a[2])
     const responses = urls_a.map(appid => {
         try {
             let ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid}&key=${data_key}&steamid=${data_st_id}&l=Russian`;
@@ -38,7 +37,20 @@ async function get_data(urls_a, ip, key) {
         });
         const ret_data = filtered.map((data, index) => {
             try {
-                return {appid: filtered[index], gameName: data[0].playerstats.gameName, globalAchievementPercentages: data[1].achievementpercentages.achievements, playerAchievements: data[0].playerstats.achievements, gameSchema: data[2].game}
+                const arr1 = data[1].achievementpercentages.achievements;
+                const arr2 = data[0].playerstats.achievements;
+                const arr3 = data[2].game.availableGameStats.achievements;
+                const mergedArray = arr1.reduce((acc, curr) => {
+                    const matchingObjInArr2 = arr2.find(obj => obj.apiname === curr.name);
+                    delete matchingObjInArr2.apiname;
+                    const matchingObjInArr3 = arr3.find(obj => obj.name === curr.name);
+                    if (matchingObjInArr2 && matchingObjInArr3) {
+                      acc.push({ ...curr, ...matchingObjInArr2, ...matchingObjInArr3 });
+                    }
+                  
+                    return acc;
+                  }, []);
+                return {gameName: data[0].playerstats.gameName, Achievement: mergedArray};
             } catch (error) {
                 console.log(error);
 
@@ -51,9 +63,7 @@ async function get_data(urls_a, ip, key) {
     }
 };
 app.post('/data', async(req, res) => {
-    console.log("begin");
     const array = req.body.appid;
-    console.log(array);
     const {steam_ip, key} = req.query;
     const data = await get_data(JSON.parse(array), steam_ip, key);
     res.send(data);
