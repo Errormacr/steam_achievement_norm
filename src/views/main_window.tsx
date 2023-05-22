@@ -219,7 +219,7 @@ export default function App() {
                     onClick={(event) => {
                     setConstSteamId("");
                     localStorage.setItem('steamId', "");
-                }}>Clear key</button>
+                }}>Clear id</button>
             )}
             {personalName && (
                 <div>
