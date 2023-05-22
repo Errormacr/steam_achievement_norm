@@ -54,7 +54,7 @@ export default function App() {
                         check = true;
                         localStorage.setItem("recent", JSON.stringify(data));
                     }
-                    if (true) {
+                    if (check) {
                         let user_url = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${data_key}&steamids=${data_st_id}`;
                         const data_json = fetch(user_url)
                             .then(response => response.json())
