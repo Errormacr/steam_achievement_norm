@@ -45,11 +45,15 @@ async function get_data(urls_a, ip, key) {
                     delete matchingObjInArr2.apiname;
                     const matchingObjInArr3 = arr3.find(obj => obj.name === curr.name);
                     if (matchingObjInArr2 && matchingObjInArr3) {
-                      acc.push({ ...curr, ...matchingObjInArr2, ...matchingObjInArr3 });
+                        acc.push({
+                            ...curr,
+                            ...matchingObjInArr2,
+                            ...matchingObjInArr3
+                        });
                     }
-                  
+
                     return acc;
-                  }, []);
+                }, []);
                 return {gameName: data[0].playerstats.gameName, Achievement: mergedArray};
             } catch (error) {
                 console.log(error);

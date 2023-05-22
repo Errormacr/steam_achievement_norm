@@ -81,7 +81,7 @@ export default function App() {
                                 ach.then((ach) => {
                                     setAch(ach[0].toString());
                                     setpercent(ach[1].toString());
-                                    const ach_container= ReactDOM.createRoot(document.getElementById("container"));
+                                    const ach_container = ReactDOM.createRoot(document.getElementById("container"));
                                     ach_container.render(<Ach_cont/>)
                                 });
                             }
@@ -90,6 +90,7 @@ export default function App() {
                         setavaUrl(localStorage.getItem('ava'));
                         setpersonalName(localStorage.getItem('name'));
                         const ach = localStorage.getItem('ach');
+                        window.alert(ach);
                         const data = JSON.parse(ach);
                         setgamesCount(data.length);
                         let achiv_ach_count = 0;
@@ -112,11 +113,11 @@ export default function App() {
                         }
                         setpercent((percent / game_with_ach_count).toFixed(2).toString())
                         setAch(achiv_ach_count.toString());
-                        const ach_container= ReactDOM.createRoot(document.getElementById("container"));
+                        const ach_container = ReactDOM.createRoot(document.getElementById("container"));
                         ach_container.render(<Ach_cont/>)
 
                     }
-                   
+
                 });
         }
     }, []);
@@ -126,6 +127,7 @@ export default function App() {
         let all_ach_count = 0;
         let game_with_ach_count = 0;
         localStorage.setItem("ach", JSON.stringify(data));
+        
         for (let ach of data) {
             if (ach.Achievement) {
                 let all_arr = ach.Achievement;
