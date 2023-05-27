@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import Ach_cont from './last_ach_containter';
 import ReactDOM from "react-dom/client";
+import Games from './Games';
 export default function App() {
     const [SteamWebApiKey,
         setSteamWebApiKey] = useState("");
@@ -68,13 +69,13 @@ export default function App() {
                             })
                         let url_games = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${data_key}&steamid=${data_st_id}&format=json&include_appinfo=true&include_played_free_games=true`;
                         let data_g_j;
-                        const data_g_ach_url : string[] = [];
+                        const data_g_ach_url : any[] = [];
                         const data_games_res = fetch(url_games).then((response) => response.json()).then((data) => {
                             data_g_j = data;
                             setgamesCount(data_g_j.response.game_count);
                             if (data_g_j != undefined) {
                                 for (let ach in data_g_j.response.games) {
-                                    data_g_ach_url.push(data_g_j.response.games[ach]['appid']);
+                                    data_g_ach_url.push([data_g_j.response.games[ach]['appid'],data_g_j.response.games[ach]['img_icon_url']]);
                                     // выполнение операций на каждой итерации цикла
                                 }
                                 let ach = calculateAchievementCount(data_g_ach_url);
@@ -87,35 +88,39 @@ export default function App() {
                             }
                         }).catch((error) => console.error(error));
                     } else {
-                        setavaUrl(localStorage.getItem('ava'));
-                        setpersonalName(localStorage.getItem('name'));
-                        const ach = localStorage.getItem('ach');
-                        window.alert(ach);
-                        const data = JSON.parse(ach);
-                        setgamesCount(data.length);
-                        let achiv_ach_count = 0;
-                        let percent = 0;
-                        let game_with_ach_count = 0;
-                        for (let ach of data) {
-                            if (ach.Achievement) {
-                                let ach_arr = ach
-                                    .Achievement
-                                    .filter((ach : any) => (ach as {
-                                        achieved : number
-                                    }).achieved == 1);
-                                let all_ach_arr = ach.Achievement;
-                                if (ach_arr.length > 0) {
-                                    percent += ach_arr.length / all_ach_arr.length * 100;
-                                    game_with_ach_count += 1;
+                        try {
+                            setavaUrl(localStorage.getItem('ava'));
+                            setpersonalName(localStorage.getItem('name'));
+                            const ach = localStorage.getItem('ach');
+                            const data = JSON.parse(ach);
+                            setgamesCount(data.length);
+                            let achiv_ach_count = 0;
+                            let percent = 0;
+                            let game_with_ach_count = 0;
+                            for (let ach of data) {
+                                if (ach.Achievement) {
+                                    let ach_arr = ach
+                                        .Achievement
+                                        .filter((ach : any) => (ach as {
+                                            achieved : number
+                                        }).achieved == 1);
+                                    let all_ach_arr = ach.Achievement;
+                                    if (ach_arr.length > 0) {
+                                        percent += ach_arr.length / all_ach_arr.length * 100;
+                                        game_with_ach_count += 1;
+                                    }
+                                    achiv_ach_count += ach_arr.length;
                                 }
-                                achiv_ach_count += ach_arr.length;
                             }
-                        }
-                        setpercent((percent / game_with_ach_count).toFixed(2).toString())
-                        setAch(achiv_ach_count.toString());
-                        const ach_container = ReactDOM.createRoot(document.getElementById("container"));
-                        ach_container.render(<Ach_cont/>)
+                            setpercent((percent / game_with_ach_count).toFixed(2).toString())
+                            setAch(achiv_ach_count.toString());
+                            const ach_container = ReactDOM.createRoot(document.getElementById("container"));
+                            ach_container.render(<Ach_cont/>)
 
+                        } catch (e) {
+                            console.error(e);
+                            localStorage.setItem("recent", "");
+                        }
                     }
 
                 });
@@ -127,7 +132,7 @@ export default function App() {
         let all_ach_count = 0;
         let game_with_ach_count = 0;
         localStorage.setItem("ach", JSON.stringify(data));
-        
+
         for (let ach of data) {
             if (ach.Achievement) {
                 let all_arr = ach.Achievement;
@@ -235,8 +240,16 @@ export default function App() {
                     <br></br>
                     <label color="#ffffff">Percent {percent}</label>
                     <br></br>
+                    <button
+                        onClick={(event) => {
+                        const root = ReactDOM.createRoot(document.getElementById("root"));
+                        root.render(<Games/>);
+                    }}>Games with ach</button>
+                    <button>All ach</button>
                 </div>
             )}
+            <div id="personal data"></div>
+            <div id="container"></div>
         </div>
     )
 }

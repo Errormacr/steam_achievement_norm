@@ -10,7 +10,8 @@ export default function Ach_cont() {
             const data = JSON.parse(localStorage.getItem('ach'));
             console.log(data);
             const all_ach = data.reduce((acc : any, cur : any) => {
-                const arr = cur.Achievement;
+                let arr = cur.Achievement;
+                arr = arr.map((ach:any) => {return {...ach,gamename: cur.gameName};});
                 acc = acc.concat(arr);
                 return acc;
             }, []);
@@ -27,7 +28,7 @@ export default function Ach_cont() {
                 key={ach.name}
                 src={ach.icon}
                 alt={ach.displayName}
-                title={`${ach
+                title={`${ach.gamename}\n${ach
                 .displayName}\n${ach
                 .description}\n${ach
                 .percent

@@ -15,16 +15,22 @@ async function get_data(urls_a, ip, key) {
     const data_st_id = ip;
     const responses = urls_a.map(appid => {
         try {
-            let ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid}&key=${data_key}&steamid=${data_st_id}&l=Russian`;
-            let perc_url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appid}&format=json`;
-            let ico_url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid}&key=${data_key}&l=Russian`;
+            let ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid[0]}&key=${data_key}&steamid=${data_st_id}&l=Russian`;
+            let perc_url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appid[0]}&format=json`;
+            let ico_url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid[0]}&key=${data_key}&l=Russian`;
             let urls = [ach_url, perc_url, ico_url];
 
             // Add CORS headers to the request
             let headers = new Headers();
             headers.append('Access-Control-Allow-Origin', 'http://localhost:4500');
 
-            return Promise.all(urls.map(url => fetch(url, {headers}).then(response => response.json())));
+            return Promise.all([
+                ...urls.map(url => fetch(url, {headers}).then(response => response.json())), {
+                    'appid': appid[0]
+                }, {
+                    'img': appid[1]
+                }
+            ]);
         } catch (err) {
             console.error(err);
         }
@@ -37,6 +43,7 @@ async function get_data(urls_a, ip, key) {
         });
         const ret_data = filtered.map((data, index) => {
             try {
+                console.log(data);
                 const arr1 = data[1].achievementpercentages.achievements;
                 const arr2 = data[0].playerstats.achievements;
                 const arr3 = data[2].game.availableGameStats.achievements;
@@ -54,7 +61,7 @@ async function get_data(urls_a, ip, key) {
 
                     return acc;
                 }, []);
-                return {gameName: data[0].playerstats.gameName, Achievement: mergedArray};
+                return {appid: data[3], gameName: data[0].playerstats.gameName, Achievement: mergedArray};
             } catch (error) {
                 console.log(error);
 
