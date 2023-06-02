@@ -11,7 +11,12 @@ export default function Ach_cont() {
             console.log(data);
             const all_ach = data.reduce((acc : any, cur : any) => {
                 let arr = cur.Achievement;
-                arr = arr.map((ach:any) => {return {...ach,gamename: cur.gameName};});
+                arr = arr.map((ach : any) => {
+                    return {
+                        ...ach,
+                        gamename: cur.gameName
+                    };
+                });
                 acc = acc.concat(arr);
                 return acc;
             }, []);
@@ -25,10 +30,20 @@ export default function Ach_cont() {
     return (
         <div className="last_ach_container">
             {allAch.map((ach) => (<img
+                className={ach.percent <= 5
+                ? "rare1"
+                : ach.percent <= 20
+                    ? "rare2"
+                    : ach.percent <= 45
+                        ? "rare3"
+                        : ach.percent <= 60
+                            ? "rare4"
+                            : "rare5"}
                 key={ach.name}
                 src={ach.icon}
                 alt={ach.displayName}
-                title={`${ach.gamename}\n${ach
+                title={`${ach
+                .gamename}\n${ach
                 .displayName}\n${ach
                 .description}\n${ach
                 .percent

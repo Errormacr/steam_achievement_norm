@@ -28,7 +28,7 @@ async function get_data(urls_a, ip, key) {
                 ...urls.map(url => fetch(url, {headers}).then(response => response.json())), {
                     'appid': appid[0]
                 }, {
-                    'img': appid[1]
+                    'last_launch_time': appid[1]
                 }
             ]);
         } catch (err) {
@@ -43,7 +43,6 @@ async function get_data(urls_a, ip, key) {
         });
         const ret_data = filtered.map((data, index) => {
             try {
-                console.log(data);
                 const arr1 = data[1].achievementpercentages.achievements;
                 const arr2 = data[0].playerstats.achievements;
                 const arr3 = data[2].game.availableGameStats.achievements;
@@ -61,7 +60,7 @@ async function get_data(urls_a, ip, key) {
 
                     return acc;
                 }, []);
-                return {appid: data[3], gameName: data[0].playerstats.gameName, Achievement: mergedArray};
+                return {appid: data[3].appid, last_launch_time: data[4].last_launch_time, gameName: data[0].playerstats.gameName, Achievement: mergedArray};
             } catch (error) {
                 console.log(error);
 

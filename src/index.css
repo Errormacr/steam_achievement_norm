@@ -1,9 +1,4 @@
-img {
-    display: block;
-    padding-left: 2px;
-    width: auto;
-    height: auto;
-}
+
 .background {
     background-color: #1b2838;
     background-size: cover;
@@ -21,9 +16,10 @@ label {
     color: white;
 }
 .last_ach_container {
-    width: 450px;
-    height: 450px;
-    margin: 0 auto;
+    width: 470px;
+    height: 470px;
+    margin: 6px;
+
     display: flex;
     flex-wrap: wrap;
     position: fixed;
@@ -33,19 +29,25 @@ label {
 }
 
 .last_ach_container img {
-    width: calc(100% / 6.6);
-    height: calc(100% / 6.6);
+    width: calc(100% / 7.5);
+    margin-right: 5px;
+    height: calc(100% / 7.5);
     object-fit: cover;
 }
-.progress-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #ddd;
+.progress {
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.bar {
-    height: 100%;
-    background-color: #4CAF50;
+.progress-bar {
+    height: 16px;
+    border-radius: 4px;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+    transition: 0.4s linear;
+    transition-property: width, background-color;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
 }
 .container {
     display: flex;
@@ -54,4 +56,114 @@ label {
 
 .container p {
     margin-right: 10px;
+}
+.card {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 400px;
+    height: 80px;
+    border-radius: 5px;
+}
+
+.rectangle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 60px;
+    font-size: 24px;
+    backdrop-filter: blur(5px);
+    color: white;
+}
+
+.left {
+    background-color: rgba(0, 0, 255, 0.8);
+    border-radius: 5px;
+    filter: grayscale(50%);
+}
+
+.middle {
+    background-color: rgba(0, 255, 0, 0.8);
+    border-radius: 5px;
+    filter: grayscale(50%);
+}
+
+.right {
+    background-color: rgba(255, 0, 0, 0.8);
+    border-radius: 5px;
+    filter: grayscale(50%);
+}
+select {
+    appearance: none;
+    border: 0;
+    outline: 0;
+    font: inherit;
+    width: 20em;
+    height: 3em;
+    padding: 0 4em 0 1em;
+    background: url("https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg") no-repeat right 0.8em center / 1.4em, linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
+    color: white;
+    border-radius: 0.25em;
+    box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+select option {
+    color: inherit;
+    background-color: #320a28;
+}
+select:focus {
+    outline: none;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+.rare1 {
+    position: relative;
+    animation: anim 1.5s ease-in-out infinite alternate;
+}
+@keyframes anim {
+    from {
+        border: 3px solid #fffb00d5;
+        box-shadow: 0 0 8px #fffb00d5;
+    }
+    to {
+        border: 3px solid #FFA500;
+        box-shadow: 0 0 8px #FFA500;
+    }
+}
+
+.rare2 {
+    border: 3px solid #800080;
+    box-shadow: 0 0 8px #800080;
+}
+.rare3 {
+    border: 3px solid #00BFFF;
+    box-shadow: 0 0 8px #00BFFF;
+}
+.rare4 {
+    border: 3px solid #90EE90;
+    box-shadow: 0 0 8px #90EE90;
+}
+.rare5 {
+    border: 3px solid #006400;
+    box-shadow: 0 0 8px #006400;
+}
+.full {
+    position: relative;
+    box-shadow: 3px solid #FFA500;
+    animation: full_game_anim 1.5s ease-in-out infinite alternate;
+}
+@keyframes full_game_anim {
+    from {
+        border: 2px solid #ffa600c2;
+    }
+    to {
+        border: 2px solid #FFA500;
+    }
+}
+.not_full {
+    box-shadow: 3px solid black;
 }
