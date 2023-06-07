@@ -45,9 +45,21 @@ label {
     height: 16px;
     border-radius: 4px;
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
-    transition: 0.4s linear;
-    transition-property: width, background-color;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.1);
+    transition: width 0.4s linear, background-color 0.4s linear;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.1) inset;
+    animation-name: changeWidth;
+    animation-duration: 3s;
+    animation-timing-function: linear;
+}
+@keyframes changeWidth {
+    from {
+        width: 0;
+        background-color: #f63a0f;
+    }
+    to {
+        width: width;
+        background-color: background-color;
+    }
 }
 .container {
     display: flex;
@@ -57,50 +69,67 @@ label {
 .container p {
     margin-right: 10px;
 }
-.card {
+.card:hover {
+    background-color: #a9a9a9;
+}
+@keyframes bounce {
+    0%,
+    100%,
+    20%,
+    60% {
+        transform: translateY(0);
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-20px);
+        transform: translateY(-20px);
+    }
+
+    80% {
+        transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+}
+.row {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 400px;
-    height: 80px;
-    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset;
+    border: 1px solid black;
+    margin-top: 10px;
+    border-radius: 10px;
+
 }
 
-.rectangle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80px;
-    height: 60px;
-    font-size: 24px;
-    backdrop-filter: blur(5px);
-    color: white;
-}
+.cell {
+    display: inline-block;
+    background-color: whitesmoke;
+    padding: 5px;
+    text-align: center;
 
+}
 .left {
-    background-color: rgba(0, 0, 255, 0.8);
-    border-radius: 5px;
-    filter: grayscale(50%);
-}
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-right: 1px rgb(192, 192, 192) solid;
 
+}
 .middle {
-    background-color: rgba(0, 255, 0, 0.8);
-    border-radius: 5px;
-    filter: grayscale(50%);
+    border-right: 1px rgb(192, 192, 192) solid;
+    border-left: 1px rgb(192, 192, 192) solid;
+}
+.right {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: 1px rgb(192, 192, 192) solid;
 }
 
-.right {
-    background-color: rgba(255, 0, 0, 0.8);
-    border-radius: 5px;
-    filter: grayscale(50%);
-}
 select {
     appearance: none;
     border: 0;
     outline: 0;
     font: inherit;
     width: 20em;
-    height: 3em;
+    height: 1.6em;
     padding: 0 4em 0 1em;
     background: url("https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg") no-repeat right 0.8em center / 1.4em, linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
     color: white;
@@ -122,6 +151,7 @@ select::-ms-expand {
 
 .rare1 {
     position: relative;
+
     animation: anim 1.5s ease-in-out infinite alternate;
 }
 @keyframes anim {
@@ -166,4 +196,19 @@ select::-ms-expand {
 }
 .not_full {
     box-shadow: 3px solid black;
+}
+.gameButton {
+    background-color: gray;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.gameButton:hover {
+    background-color: #a9a9a9;
 }

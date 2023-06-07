@@ -72,10 +72,15 @@ export default function App() {
                         const data_g_ach_url : any[] = [];
                         const data_games_res = fetch(url_games).then((response) => response.json()).then((data) => {
                             data_g_j = data;
+
                             setgamesCount(data_g_j.response.game_count);
                             if (data_g_j != undefined) {
                                 for (let ach in data_g_j.response.games) {
-                                    data_g_ach_url.push([data_g_j.response.games[ach]['appid'],data_g_j.response.games[ach]['rtime_last_played']]);
+                                    data_g_ach_url.push([
+                                        data_g_j.response.games[ach]['appid'],
+                                        data_g_j.response.games[ach]['rtime_last_played'],
+                                        (data_g_j.response.games[ach].playtime_forever / 60).toFixed(1)
+                                    ]);
                                     // выполнение операций на каждой итерации цикла
                                 }
                                 let ach = calculateAchievementCount(data_g_ach_url);
@@ -147,7 +152,12 @@ export default function App() {
                     game_with_ach_count += 1;
 
                 }
-                data_with_percent_etc.push({...ach, percent:(ach_arr.length / all_arr.length) * 100,gained:ach_arr.length,all: all_arr.length});
+                data_with_percent_etc.push({
+                    ...ach,
+                    percent: (ach_arr.length / all_arr.length) * 100,
+                    gained: ach_arr.length,
+                    all: all_arr.length
+                });
                 achiv_ach_count += ach_arr.length;
             }
         }

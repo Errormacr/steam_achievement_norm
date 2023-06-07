@@ -29,6 +29,8 @@ async function get_data(urls_a, ip, key) {
                     'appid': appid[0]
                 }, {
                     'last_launch_time': appid[1]
+                }, {
+                    'playtime': appid[2]
                 }
             ]);
         } catch (err) {
@@ -60,7 +62,7 @@ async function get_data(urls_a, ip, key) {
 
                     return acc;
                 }, []);
-                return {appid: data[3].appid, last_launch_time: data[4].last_launch_time, gameName: data[0].playerstats.gameName, Achievement: mergedArray};
+                return {appid: data[3].appid, last_launch_time: data[4].last_launch_time,playtime: data[5].playtime, gameName: data[0].playerstats.gameName, Achievement: mergedArray};
             } catch (error) {
                 console.log(error);
 
