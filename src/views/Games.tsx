@@ -1,21 +1,22 @@
-import React, {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import ReactDOM from "react-dom/client";
 import App from "./main_window";
-
+import GamePage from "./GamePage";
+let root = ReactDOM.createRoot(document.getElementById("root"));
 function rend_app() {
-    const root = ReactDOM.createRoot(document.getElementById("root"));
+
     root.render(<App/>);
 }
-function UnixTimestampToDate(props : number) {
+export function UnixTimestampToDate(props : number) {
     const date = new Date(props * 1000);
     const year = date.getFullYear();
-    const month = date.getMonth() + 1;
+    const month = date.getMonth() + 1 ;
     const day = date.getDate();
     return `${year}.${month}.${day}`;
 };
 
 function logging(apiid : number) {
-    console.log("appid: " + apiid);
+    root.render(<GamePage appid={apiid}/>);
 };
 function GameCard({game} : any) {
     return (
@@ -230,6 +231,7 @@ export default function Games() {
     };
     useEffect(useCallback(() => {
         try {
+            root = ReactDOM.createRoot(document.getElementById("root"));
             const ach = JSON.parse(localStorage.getItem("ach"));
             ach.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time);
             console.log(ach);

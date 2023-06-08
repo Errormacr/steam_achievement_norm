@@ -43,7 +43,7 @@ export default function App() {
     const update_user_data = useCallback(async() => {
         const data_key = localStorage.getItem('api-key');
         const data_st_id = localStorage.getItem('steamId');
-
+        const ach_container = ReactDOM.createRoot(document.getElementById("container"));
         if (data_key && data_st_id) {
             const recent_game = `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${data_key}&steamid=${data_st_id}&format=json`;
             const before = localStorage.getItem("recent");
@@ -87,7 +87,7 @@ export default function App() {
                                 ach.then((ach) => {
                                     setAch(ach[0].toString());
                                     setpercent(ach[1].toString());
-                                    const ach_container = ReactDOM.createRoot(document.getElementById("container"));
+                                
                                     ach_container.render(<Ach_cont/>)
                                 });
                             }
@@ -119,7 +119,7 @@ export default function App() {
                             }
                             setpercent((percent / game_with_ach_count).toFixed(2).toString())
                             setAch(achiv_ach_count.toString());
-                            const ach_container = ReactDOM.createRoot(document.getElementById("container"));
+                       
                             ach_container.render(<Ach_cont/>)
 
                         } catch (e) {
