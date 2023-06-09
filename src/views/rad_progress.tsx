@@ -9,7 +9,9 @@ const ProgressRad : React.FC < ProgressProps > = ({
     ...rest
 }) => {
     const progressValue = parseInt(progress || '0');
-    const progressSec = parseFloat(progress) * 100 / 1 % 100;
+    const progressSec = parseInt(progress) == 100
+        ? 100
+        : parseFloat(progress) * 100 / 1 % 100;
     const rotation = (progressValue / 100) * 360;
     const rotationSec = (progressSec / 100) * 360;
     const progressStyle : React.CSSProperties & {
@@ -20,12 +22,12 @@ const ProgressRad : React.FC < ProgressProps > = ({
         '--progress-float': `${rotationSec}deg`
     };
     return (
-            <div
-                className="progress_rad"
-                {...rest}
-                data-progress={`${parseFloat(progress).toFixed(2)}%`}
-                style={progressStyle}></div>
-               
+        <div
+            className="progress_rad"
+            {...rest}
+            data-progress={`${parseFloat(progress).toFixed(2)}%`}
+            style={progressStyle}></div>
+
     );
 };
 

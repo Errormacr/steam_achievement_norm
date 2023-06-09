@@ -19,13 +19,9 @@ label {
     width: 470px;
     height: 470px;
     margin: 6px;
-
+    float: right;
     display: flex;
     flex-wrap: wrap;
-    position: fixed;
-    top: 0;
-    right: 0;
-    transform: translate(-100%, 0);
 }
 
 .last_ach_container img {
@@ -372,16 +368,21 @@ table {
   th {
     background-color: #43566f;
     font-weight: bold;
-    text-align: left;
+    text-align: center;
+    color: #c3c2c2;
     padding: 8px;
     border-bottom: 1px solid #ddd;
   }
   
   td {
-    text-align: left;
+    text-align: center;
     background-color: #425772;
     color: #fff;
     padding: 8px;
     border-bottom: 1px solid #ddd;
   }
-  
+  .hiden {
+    width: fit-content;
+    height: fit-content;
+    display: none;
+  }

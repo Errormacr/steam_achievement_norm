@@ -1,7 +1,9 @@
-import React, {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import Ach_cont from './last_ach_containter';
 import ReactDOM from "react-dom/client";
-import Games from './Games';
+import Games, {GameCard} from './Games';
+import ProgressRad from "./rad_progress"
+
 export default function App() {
     const [SteamWebApiKey,
         setSteamWebApiKey] = useState("");
@@ -21,6 +23,8 @@ export default function App() {
         setavaUrl] = useState("")
     const [percent,
         setpercent] = useState("")
+    const [games,
+        setGames] = useState([]);
 
     const get_api = useCallback(async(urls_a : string[]) => {
         try {
@@ -87,7 +91,7 @@ export default function App() {
                                 ach.then((ach) => {
                                     setAch(ach[0].toString());
                                     setpercent(ach[1].toString());
-                                
+
                                     ach_container.render(<Ach_cont/>)
                                 });
                             }
@@ -98,6 +102,7 @@ export default function App() {
                             setpersonalName(localStorage.getItem('name'));
                             const ach = localStorage.getItem('ach');
                             const data = JSON.parse(ach);
+                            setGames(data.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time).slice(0, 3));
                             setgamesCount(data.length);
                             let achiv_ach_count = 0;
                             let percent = 0;
@@ -119,7 +124,7 @@ export default function App() {
                             }
                             setpercent((percent / game_with_ach_count).toFixed(2).toString())
                             setAch(achiv_ach_count.toString());
-                       
+
                             ach_container.render(<Ach_cont/>)
 
                         } catch (e) {
@@ -162,13 +167,29 @@ export default function App() {
             }
         }
         localStorage.setItem("ach", JSON.stringify(data_with_percent_etc));
+        setGames(data_with_percent_etc.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time).slice(0, 3));
         return [
             achiv_ach_count,
             (all_ach_count / game_with_ach_count).toFixed(2),
             game_with_ach_count
         ];
     }, [get_api]);
-
+    function showClears() {
+        const buttons = ["keyChangeButton", "keyClearButton", "steamIdChangeButton", "steamIdclearButton"]
+        const button = document.getElementById("hideButton");
+        button.style.display = "none";
+        const div = document.getElementById("clearsButtons");
+        div.style.display = "block";
+        const checkDiv = document.getElementById("clearDiv");
+        document.addEventListener('click', handleDocumentClick);
+        function handleDocumentClick(event : any) {
+            if (!checkDiv.contains(event.target) && !buttons.includes(event.target.id)) {
+                div.style.display = 'none';
+                button.style.display = "block";
+                document.removeEventListener('click', handleDocumentClick);
+            }
+        };
+    };
     useEffect(useCallback(() => {
         try {
             const data = localStorage.getItem("api-key");
@@ -184,83 +205,116 @@ export default function App() {
         } catch (error) {
             window.alert(error.message);
         }
-        // setConstSteamWebApiKey(""); setConstSteamId("");
     }, []), []);
     return (
-        <div id="header key">
+        <div
+            id="header key"
+            style={{
+            display: "flex",
+            justifyContent: "space-between"
+        }}>
             <div>
-                {ConstSteamWebApiKey == "" && (<input
-                    placeholder="Steam api key"
-                    id="key"
-                    onChange={(event) => {
-                    setSteamWebApiKey(event.target.value);
-                }}/>)}
-                {ConstSteamWebApiKey == "" && (
-                    <button
-                        type="button"
-                        onClick={(event) => {
-                        setConstSteamWebApiKey(SteamWebApiKey);
-                        localStorage.setItem('api-key', SteamWebApiKey);
-                        update_user_data();
-                    }}>Change key</button>
-                )}
+                <div
+                    id="clearDiv"
+                    style={{
+                    width: 'fit-content',
+                    height: 'fit-content'
+                }}>
+                    <button id="hideButton" className="ButtonToHide" onClick={showClears}>Buttons
+                    </button>
+                    <div id="clearsButtons" className="hiden">
+                        <div>
+                            {ConstSteamWebApiKey == "" && (<input
+                                placeholder="Steam api key"
+                                id="key"
+                                onChange={(event) => {
+                                setSteamWebApiKey(event.target.value);
+                            }}/>)}
+                            {ConstSteamWebApiKey == "" && (
+                                <button
+                                    type="button"
+                                    id="keyChangeButton"
+                                    onClick={(event) => {
+                                    setConstSteamWebApiKey(SteamWebApiKey);
+                                    localStorage.setItem('api-key', SteamWebApiKey);
+                                    update_user_data();
+                                }}>Change key</button>
+                            )}
 
-                {ConstSteamWebApiKey != "" && (
-                    <button
-                        type="button"
-                        onClick={(event) => {
-                        setConstSteamWebApiKey("");
-                        localStorage.setItem('api-key', "");
-                    }}>Clear key</button>
-                )}
-            </div>
-            <div>
-                {ConstSteamId == "" && (<input
-                    placeholder="Steam id"
-                    id="key"
-                    onChange={(event) => {
-                    setSteamId(event.target.value);
-                }}/>)}
+                            {ConstSteamWebApiKey != "" && (
+                                <button
+                                    type="button"
+                                    id="keyClearButton"
+                                    onClick={(event) => {
+                                    setConstSteamWebApiKey("");
+                                    localStorage.setItem('api-key', "");
+                                }}>Clear key</button>
+                            )}
+                        </div>
+                        <div>
+                            {ConstSteamId == "" && (<input
+                                placeholder="Steam id"
+                                id="key"
+                                onChange={(event) => {
+                                setSteamId(event.target.value);
+                            }}/>)}
 
-                {ConstSteamId == "" && (
-                    <button
-                        type="button"
-                        onClick={(event) => {
-                        setConstSteamId(SteamId);
-                        localStorage.setItem('steamId', SteamId);
-                        update_user_data();
-                    }}>Change steamID</button>
-                )}</div>
+                            {ConstSteamId == "" && (
+                                <button
+                                    type="button"
+                                    id="steamIdChangeButton"
+                                    onClick={(event) => {
+                                    setConstSteamId(SteamId);
+                                    localStorage.setItem('steamId', SteamId);
+                                    update_user_data();
+                                }}>Change steamID</button>
+                            )}</div>
 
-            {ConstSteamId != "" && (
-                <button
-                    type="button"
-                    onClick={(event) => {
-                    setConstSteamId("");
-                    localStorage.setItem('steamId', "");
-                }}>Clear id</button>
-            )}
-            {personalName && (
-                <div>
-                    <label color="#ffffff">{personalName}</label>
-                    <br></br>
-                    <img src={avaUrl}></img>
-                    <br></br>
-                    <label color="#ffffff">Achievements {Ach}</label>
-                    <br></br>
-                    <label color="#ffffff">Games {gamesCount}</label>
-                    <br></br>
-                    <label color="#ffffff">Percent {percent}</label>
-                    <br></br>
-                    <button
-                        onClick={(event) => {
-                        const root = ReactDOM.createRoot(document.getElementById("root"));
-                        root.render(<Games/>);
-                    }}>Games with ach</button>
-                    <button>All ach</button>
+                        {ConstSteamId != "" && (
+                            <button
+                                type="button"
+                                id="steamIdclearButton"
+                                onClick={(event) => {
+                                setConstSteamId("");
+                                localStorage.setItem('steamId', "");
+                            }}>Clear id</button>
+                        )}
+                    </div>
                 </div>
-            )}
-            <div id="personal data"></div>
+                {personalName && (
+                    <div>
+                        <label color="#ffffff">{personalName}</label>
+                        <br></br>
+                        <img src={avaUrl}></img>
+                        <br></br>
+                        <label color="#ffffff">Achievements {Ach}</label>
+                        <br></br>
+                        <label color="#ffffff">Games {gamesCount}</label>
+
+                        <br></br>
+                        <button
+                            onClick={() => {
+                            const root = ReactDOM.createRoot(document.getElementById("root"));
+                            root.render(<Games/>);
+                        }}>Games with ach</button>
+                        <button>All ach</button>
+                        <br></br>
+                        <div
+                            style={{
+                            marginTop: "1em",
+                            marginLeft: "1em"
+                        }}>
+                            <ProgressRad data-progress={percent}/></div>
+                    </div>
+                )}</div>
+            <div
+                style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1em"
+            }}>
+                {games.map((game) => (<GameCard game={game} backWindow="main"/>))}
+            </div>
             <div id="container"></div>
         </div>
     )

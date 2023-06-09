@@ -10,15 +10,16 @@ function rend_app() {
 export function UnixTimestampToDate(props : number) {
     const date = new Date(props * 1000);
     const year = date.getFullYear();
-    const month = date.getMonth() + 1 ;
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     return `${year}.${month}.${day}`;
 };
 
-function logging(apiid : number) {
-    root.render(<GamePage appid={apiid}/>);
+function logging(apiid : number, backWindow : string) {
+    root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<GamePage appid={apiid} backWindow={backWindow}/>);
 };
-function GameCard({game} : any) {
+export function GameCard({game,backWindow} : any) {
     return (
         <div
             className={`card ${game.percent === 100
@@ -30,7 +31,7 @@ function GameCard({game} : any) {
             game-percent={game.percent}
             last-launch={game.last_launch_time}
             game-playtime={game.playtime}
-            onClick={() => logging(game.appid)}
+            onClick={() => logging(game.appid, backWindow)}
             style={{
             width: "400px",
             height: "200px",
@@ -183,52 +184,29 @@ export default function Games() {
         elements.forEach(element => gameCards.appendChild(element));
 
     };
-    function change_sort() {
-        const container = document.getElementById('game_container');
+    interface SortFunctions {
+        [key : string] : (a : HTMLElement, b : HTMLElement) => number;
+    }
+
+    const sortFunctions : SortFunctions = {
+        "last-launch": (a, b) => Number(b.getAttribute("last-launch")) - Number(a.getAttribute("last-launch")),
+        "game-percent": (a, b) => Number(b.getAttribute("game-percent")) - Number(a.getAttribute("game-percent")),
+        "all-ach": (a, b) => Number(b.getAttribute("all-ach")) - Number(a.getAttribute("all-ach")),
+        "gained-ach": (a, b) => Number(b.getAttribute("gained-ach")) - Number(a.getAttribute("gained-ach")),
+        "non-gained-ach": (a, b) => Number(b.getAttribute("non-gained-ach")) - Number(a.getAttribute("non-gained-ach")),
+        "game-playtime": (a, b) => Number(b.getAttribute("game-playtime")) - Number(a.getAttribute("game-playtime"))
+    };
+
+    function sortGames() {
+        const container = document.getElementById("game_container");
         const elements = Array.from(container.children);
         const value = document
             .querySelector("select")
             .value;
-        const ach = Ach;
-        if (value === "0") {
-            elements.sort((a, b) => {
-                const allA = parseInt(a.getAttribute('last-launch'));
-                const allB = parseInt(b.getAttribute('last-launch'));
-                return allB - allA;
-            });
-        } else if (value === "1") {
-            elements.sort((a, b) => {
-                const allA = parseInt(a.getAttribute('game-percent'));
-                const allB = parseInt(b.getAttribute('game-percent'));
-                return allB - allA;
-            });
-        } else if (value === "2") {
-            elements.sort((a, b) => {
-                const allA = parseInt(a.getAttribute('all-ach'));
-                const allB = parseInt(b.getAttribute('all-ach'));
-                return allB - allA;
-            });
-        } else if (value === "3") {
-            elements.sort((a, b) => {
-                const allA = parseInt(a.getAttribute('gained-ach'));
-                const allB = parseInt(b.getAttribute('gained-ach'));
-                return allB - allA;
-            });
-        } else if (value === "4") {
-            elements.sort((a, b) => {
-                const allA = parseInt(a.getAttribute('non-gained-ach'));
-                const allB = parseInt(b.getAttribute('non-gained-ach'));
-                return allB - allA;
-            });
-        } else if (value === "5") {
-            elements.sort((a, b) => {
-                const allA = parseInt(a.getAttribute('game-playtime'));
-                const allB = parseInt(b.getAttribute('game-playtime'));
-                return allB - allA;
-            });
-        }
-        elements.forEach(element => container.appendChild(element));
-    };
+        elements.sort(sortFunctions[value]);
+        elements.forEach((element) => container.appendChild(element));
+    }
+
     useEffect(useCallback(() => {
         try {
             root = ReactDOM.createRoot(document.getElementById("root"));
@@ -255,13 +233,13 @@ export default function Games() {
                     style={{
                     marginRight: "5px"
                 }}>return</button>
-                <select required onChange={change_sort}>
-                    <option value="0">Last launch</option>
-                    <option value="1">Percent</option>
-                    <option value="2">All ach</option>
-                    <option value="3">Gained ach</option>
-                    <option value="4">Non gained ach</option>
-                    <option value="5">Playtime</option>
+                <select id="select_sort" required onChange={sortGames}>
+                    <option value="last-launch">Last launch</option>
+                    <option value="game-percent">Percent</option>
+                    <option value="all-ach">All ach</option>
+                    <option value="gained-ach">Gained ach</option>
+                    <option value="non-gained-ach">Non gained ach</option>
+                    <option value="game-playtime">Playtime</option>
                 </select>
                 <button
                     className="gameButton"
@@ -285,6 +263,7 @@ export default function Games() {
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset"
                 }}
                     key={game.appid}
+                    window="games"
                     game={game}/>))}
             </div>
         </div>

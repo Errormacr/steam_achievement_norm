@@ -1,8 +1,9 @@
 import {useCallback, useEffect, useState} from "react";
 import ReactDOM from "react-dom/client";
-import Games, {UnixTimestampToDate} from "./Games";
+import Games from "./Games";
 import ProgressRad from "./rad_progress"
-import Ach_cont from './last_ach_containter';
+import Table from './Table';
+import App from "./main_window";
 
 interface Game {
     appid : number;
@@ -14,7 +15,7 @@ interface Game {
     gained : number;
     percent : number;
 }
-export default function GamePage({appid} : any) {
+export default function GamePage({appid, backWindow}: any) {
     const [game,
         setGame] = useState < Game > ({
         appid: 0,
@@ -28,13 +29,16 @@ export default function GamePage({appid} : any) {
         gained: 0,
         percent: 0
     });
+    const [loaded,
+        setLoaded] = useState(false);
 
     useEffect(useCallback(() => {
         try {
             const games = JSON.parse(localStorage.getItem('ach'));
             const curGame = games.find((game : any) => game.appid === appid);
             setGame(curGame);
-            console.log(curGame.Achievement[0].icon);
+            console.log(curGame.Achievement);
+            setLoaded(true);
         } catch (error) {
             window.alert(error.message);
         }
@@ -43,9 +47,14 @@ export default function GamePage({appid} : any) {
     return (
         <div>
             <button
+                className="gameButton"
                 onClick={() => {
                 const root = ReactDOM.createRoot(document.getElementById("root"));
-                root.render(<Games/>);
+                if (backWindow =="main") {
+                    root.render(<App/>);
+                }
+                else {
+                root.render(<Games/>);}
             }}>return</button>
             <div
                 style={{
@@ -78,6 +87,8 @@ export default function GamePage({appid} : any) {
                 }}
                     alt={game.gameName}/>
                 <ProgressRad data-progress={`${game.percent}`}/>
+                <label title="полученных из всех" style={{marginLeft:"2rem",
+            fontSize:"2em"}}>{game.all - game.gained}/{game.all}</label>
 
             </div>
             <div
@@ -87,46 +98,16 @@ export default function GamePage({appid} : any) {
                 justifyContent: "center",
                 alignItems: "center"
             }}>
-                <table>
-                    <tr>
-                        <th></th>
-                        <th>name</th>
-                        <th>description</th>
-                        <th>percent</th>
-                        <th>date</th>
-                    </tr>
-                    {game
-                        .Achievement.sort((a : any, b : any) => {
-                            return (b.unlocktime - a.unlocktime)
-                        })
-                        .sort((a : any, b : any) => {
-                            return (b.achieved - a.achieved)
-                        })
-                        .map((achivment : any) => (
-                            <tr>
-                                <td
-                                    style={{
-                                    width: "3em"
-                                }}>
-                                    <img
-                                        style={{
-                                        width: "2.5em"
-                                    }}
-                                        src={achivment.achieved
-                                        ? achivment.icon
-                                        : achivment.icongray}></img>
-                                </td>
-                                <td>{achivment.displayName}</td>
-                                <td>{achivment.description}</td>
-                                <td>{(parseFloat(achivment.percent)).toFixed(2)}
-                                    %</td>
-                                <td>{UnixTimestampToDate(achivment.unlocktime) == "1970.1.1"
-                                        ? "-"
-                                        : UnixTimestampToDate(achivment.unlocktime)}</td>
-                            </tr>
-                        ))}
-
-                </table>
+                {loaded && (<Table
+                    data={game
+                    .Achievement
+                    .sort((a : any, b : any) => {
+                        return (b.unlocktime - a.unlocktime)
+                    })
+                    .sort((a : any, b : any) => {
+                        return (b.achieved - a.achieved)
+                    })}/>)
+}
             </div>
         </div>
     );
