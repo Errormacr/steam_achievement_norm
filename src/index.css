@@ -11,7 +11,22 @@
     height: 100%;
     z-index: -1;
 }
-
+.root {
+    width: 100%;
+}
+.clearDiv {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #304865;
+    border: 1px solid black;
+}
 label {
     color: white;
 }
@@ -354,35 +369,79 @@ select::-ms-expand {
     font-size: 16px;
     font-weight: bold;
     text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 .gameButton:hover {
     background-color: #a9a9a9;
 }
+.nickname {
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    font-size: 1.2em;
+    font-weight: bold;
+    
+}
 table {
     border-collapse: collapse;
     width: 100%;
-  }
-  
-  th {
+}
+
+th {
     background-color: #43566f;
     font-weight: bold;
     text-align: center;
     color: #c3c2c2;
     padding: 8px;
     border-bottom: 1px solid #ddd;
-  }
-  
-  td {
+}
+
+td {
     text-align: center;
     background-color: #425772;
     color: #fff;
     padding: 8px;
     border-bottom: 1px solid #ddd;
-  }
-  .hiden {
+}
+.hiden {
     width: fit-content;
     height: fit-content;
     display: none;
-  }
+    animation: buttonFlow 1s ease-in-out;
+}
+.ButtonToHide {
+    animation: buttonFlow 1s ease-in-out;
+}
+@keyframes buttonFlow {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+input {
+    border: none;
+    background: #f2f2f2;
+    padding: 0.35rem;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    border-radius: 0.4rem;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    clip-path: circle(0%);
+    animation: reveal 1s ease-in-out forwards;
+}
+input:focus {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+@keyframes reveal {
+    0% {
+        clip-path: circle(0%);
+    }
+    100% {
+        clip-path: circle(100%);
+    }
+}
