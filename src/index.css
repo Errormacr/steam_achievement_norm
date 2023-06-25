@@ -329,8 +329,8 @@ select::-ms-expand {
 }
 
 .rare2 {
-    border: 3px solid #800080;
-    box-shadow: 0 0 8px #800080;
+    border: 3px solid #aa03aa;
+    box-shadow: 0 0 8px #aa03aa;
 }
 .rare3 {
     border: 3px solid #00BFFF;
@@ -341,8 +341,8 @@ select::-ms-expand {
     box-shadow: 0 0 8px #90EE90;
 }
 .rare5 {
-    border: 3px solid #006400;
-    box-shadow: 0 0 8px #006400;
+    border: 3px solid #00b500;
+    box-shadow: 0 0 8px #00b500;
 }
 .full {
     position: relative;

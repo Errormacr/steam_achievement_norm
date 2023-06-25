@@ -23,6 +23,7 @@ async function get_data(urls_a, ip, key) {
             // Add CORS headers to the request
             let headers = new Headers();
             headers.append('Access-Control-Allow-Origin', 'http://localhost:4500');
+            headers.append('timeout', '1000');
 
             return Promise.all([
                 ...urls.map(url => fetch(url, {headers}).then(response => response.json())), {
@@ -48,10 +49,16 @@ async function get_data(urls_a, ip, key) {
                 const arr1 = data[1].achievementpercentages.achievements;
                 const arr2 = data[0].playerstats.achievements;
                 const arr3 = data[2].game.availableGameStats.achievements;
-                const mergedArray = arr1.reduce((acc, curr) => {
+                const mergedArray = arr3.reduce((acc, curr) => {
                     const matchingObjInArr2 = arr2.find(obj => obj.apiname === curr.name);
                     delete matchingObjInArr2.apiname;
-                    const matchingObjInArr3 = arr3.find(obj => obj.name === curr.name);
+                    let matchingObjInArr3 = arr1.find(obj => obj.name === curr.name);
+                    if (!matchingObjInArr3) {
+                        matchingObjInArr3 = {
+                            name: curr.name,
+                            percent: 0.1
+                        }
+                    }
                     if (matchingObjInArr2 && matchingObjInArr3) {
                         acc.push({
                             ...curr,
@@ -62,7 +69,7 @@ async function get_data(urls_a, ip, key) {
 
                     return acc;
                 }, []);
-                return {appid: data[3].appid, last_launch_time: data[4].last_launch_time,playtime: data[5].playtime, gameName: data[0].playerstats.gameName, Achievement: mergedArray};
+                return {appid: data[3].appid, last_launch_time: data[4].last_launch_time, playtime: data[5].playtime, gameName: data[0].playerstats.gameName, Achievement: mergedArray};
             } catch (error) {
                 console.log(error);
 
