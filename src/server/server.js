@@ -38,13 +38,13 @@ async function get_data(urls_a, ip, key) {
             console.error(err);
         }
     });
-
+    let ret_data = {};
     try {
         const results = await Promise.all(responses);
         const filtered = results.filter((data) => {
             return data[0].playerstats.gameName && data[1].achievementpercentages.achievements && data[0].playerstats.achievements && data[2].game;
         });
-        const ret_data = filtered.map((data, index) => {
+        ret_data = filtered.map((data, index) => {
             try {
                 const arr1 = data[1].achievementpercentages.achievements;
                 const arr2 = data[0].playerstats.achievements;
@@ -75,10 +75,12 @@ async function get_data(urls_a, ip, key) {
 
             };
         });
-        return ret_data;
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while retrieving data from Steam Web API');
+    }
+    finally {
+        return ret_data;
     }
 };
 app.post('/data', async(req, res) => {

@@ -387,7 +387,7 @@ select::-ms-expand {
 }
 table {
     border-collapse: collapse;
-    width: 100%;
+    width: 75%;
 }
 
 th {
@@ -445,3 +445,4 @@ input:focus {
         clip-path: circle(100%);
     }
 }
+  

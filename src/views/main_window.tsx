@@ -6,7 +6,8 @@ import ProgressRad from "./rad_progress";
 import AchPage from "./AchivmentsPage";
 import LoadingOverlay from 'react-loading-overlay-ts';
 import BounceLoader from 'react-spinners/BounceLoader'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function App() {
     const [SteamWebApiKey,
         setSteamWebApiKey] = useState("");
@@ -144,42 +145,49 @@ export default function App() {
         let achiv_ach_count = 0;
         let all_ach_count = 0;
         let game_with_ach_count = 0;
+        if (data.length > 0) {
+            for (const ach of data.flat()) {
+                if (ach.Achievement) {
+                    const {Achievement} = ach;
+                    const ach_arr = Achievement.filter(({achieved} : {
+                        achieved: number
+                    }) => achieved === 1);
 
-        for (const ach of data.flat()) {
-            if (ach.Achievement) {
-                const {Achievement} = ach;
-                const ach_arr = Achievement.filter(({achieved} : {
-                    achieved: number
-                }) => achieved === 1);
+                    if (ach_arr.length > 0) {
+                        all_ach_count += (ach_arr.length / Achievement.length) * 100;
+                        game_with_ach_count += 1;
+                    }
 
-                if (ach_arr.length > 0) {
-                    all_ach_count += (ach_arr.length / Achievement.length) * 100;
-                    game_with_ach_count += 1;
+                    data_with_percent_etc.push({
+                        ...ach,
+                        percent: (ach_arr.length / Achievement.length) * 100,
+                        gained: ach_arr.length,
+                        all: Achievement.length
+                    });
+
+                    achiv_ach_count += ach_arr.length;
                 }
-
-                data_with_percent_etc.push({
-                    ...ach,
-                    percent: (ach_arr.length / Achievement.length) * 100,
-                    gained: ach_arr.length,
-                    all: Achievement.length
-                });
-
-                achiv_ach_count += ach_arr.length;
             }
+
+            const sortedGames = data_with_percent_etc.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time).slice(0, 3);
+
+            const achData = JSON.stringify(data_with_percent_etc);
+            localStorage.setItem('ach', achData);
+
+            setGames(sortedGames);
+            setLoad(false);
+            toast.success('Success');
+            return [
+                achiv_ach_count,
+                (all_ach_count / game_with_ach_count).toFixed(2),
+                game_with_ach_count
+            ];
+        } else {
+            setLoad(false);
+            toast.error('Failed to load');
+            console.log("data is 0");
+            return [0, 0, 0]
         }
-
-        const sortedGames = data_with_percent_etc.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time).slice(0, 3);
-
-        const achData = JSON.stringify(data_with_percent_etc);
-        localStorage.setItem('ach', achData);
-
-        setGames(sortedGames);
-        setLoad(false);
-        return [
-            achiv_ach_count,
-            (all_ach_count / game_with_ach_count).toFixed(2),
-            game_with_ach_count
-        ];
     }, [get_api]);
 
     function showClears() {
@@ -221,6 +229,7 @@ export default function App() {
         }
     }, []), []);
     return (
+        <div>
         <LoadingOverlay active={load} spinner={< BounceLoader />}>
 
             <div
@@ -394,5 +403,8 @@ export default function App() {
                     id="container"></div>
             </div>
         </LoadingOverlay>
+        <br></br>
+        <ToastContainer />
+        </div>
     )
 }

@@ -93,7 +93,7 @@ export function GameCard({game,backWindow} : any) {
                                         ? "#f2b01e"
                                         : game.percent >= 25
                                             ? "#f27011"
-                                            : "#"}`
+                                            : "red"}`
                     }}></div>
                 </div>
             </div>
