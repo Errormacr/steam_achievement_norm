@@ -52,13 +52,21 @@ export default function AchPage() {
                     fontSize: "2rem"
                 }}>{achivments.length} достижений</label>
             </div>
-            <div style={{
-                marginTop: "1rem"
+            <div
+                style={{
+                marginTop: "1rem",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
             }}>
                 {loaded && (<Table
-                    data={achivments.sort((a : any, b : any) => {
-                    return (b.unlocktime - a.unlocktime)
-                })}/>)
+                    data={[
+                    achivments.sort((a : any, b : any) => {
+                        return (b.unlocktime - a.unlocktime)
+                    }),
+                    true
+                ]}
+                    allAch={true}/>)
 }</div>
         </div>
     )

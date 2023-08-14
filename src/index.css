@@ -383,7 +383,7 @@ select::-ms-expand {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     font-size: 1.2em;
     font-weight: bold;
-    
+
 }
 table {
     border-collapse: collapse;
@@ -445,4 +445,16 @@ input:focus {
         clip-path: circle(100%);
     }
 }
-  
+
+.sortGamesButton {
+    margin-right: 5px;
+    margin-left: 5px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background-color: #f2f2f2;
+    color: #333;
+    border: none;
+}
+.sortGamesButton.active {
+    background-color: rgb(164, 164, 164)
+}

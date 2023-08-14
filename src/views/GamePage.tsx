@@ -99,14 +99,15 @@ export default function GamePage({appid, backWindow}: any) {
                 alignItems: "center"
             }}>
                 {loaded && (<Table
-                    data={game
+                    data={[game
                     .Achievement
                     .sort((a : any, b : any) => {
                         return (b.unlocktime - a.unlocktime)
                     })
                     .sort((a : any, b : any) => {
                         return (b.achieved - a.achieved)
-                    })}/>)
+                    }),false]}
+                    />)
 }
             </div>
         </div>

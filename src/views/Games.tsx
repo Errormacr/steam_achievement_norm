@@ -3,8 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./main_window";
 import GamePage from "./GamePage";
 let root = ReactDOM.createRoot(document.getElementById("root"));
-function rend_app() {
 
+function rend_app() {
     root.render(<App/>);
 }
 export function UnixTimestampToDate(props : number) {
@@ -19,7 +19,7 @@ function logging(apiid : number, backWindow : string) {
     root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(<GamePage appid={apiid} backWindow={backWindow}/>);
 };
-export function GameCard({game,backWindow} : any) {
+export function GameCard({game, backWindow} : any) {
     return (
         <div
             className={`card ${game.percent === 100
@@ -103,6 +103,7 @@ export function GameCard({game,backWindow} : any) {
                 justifyContent: "center",
                 alignItems: "center"
             }}>
+
                 <div className="row">
                     <div className="cell left" title="Все достижения">{game.all}</div>
                     <div className="cell middle" title="Полученные достижения">{game.gained}</div>
@@ -176,14 +177,8 @@ export function GameCard({game,backWindow} : any) {
 export default function Games() {
     const [Ach,
         setAch] = useState([]);
-    function invert() {
-
-        const gameCards = document.getElementById("game_container");
-        const elements = Array.from(gameCards.children);
-        elements.reverse()
-        elements.forEach(element => gameCards.appendChild(element));
-
-    };
+    const [sortConfig,
+        setSortConfig] = useState("last-launch");
     interface SortFunctions {
         [key : string] : (a : HTMLElement, b : HTMLElement) => number;
     }
@@ -194,16 +189,20 @@ export default function Games() {
         "all-ach": (a, b) => Number(b.getAttribute("all-ach")) - Number(a.getAttribute("all-ach")),
         "gained-ach": (a, b) => Number(b.getAttribute("gained-ach")) - Number(a.getAttribute("gained-ach")),
         "non-gained-ach": (a, b) => Number(b.getAttribute("non-gained-ach")) - Number(a.getAttribute("non-gained-ach")),
-        "game-playtime": (a, b) => Number(b.getAttribute("game-playtime")) - Number(a.getAttribute("game-playtime"))
+        "game-playtime": (a, b) => Number(b.getAttribute("game-playtime")) - Number(a.getAttribute("game-playtime")),
+        "last-launchrev": (a, b) => Number(a.getAttribute("last-launch")) - Number(b.getAttribute("last-launch")),
+        "game-percentrev": (a, b) => Number(a.getAttribute("game-percent")) - Number(b.getAttribute("game-percent")),
+        "all-achrev": (a, b) => Number(a.getAttribute("all-ach")) - Number(b.getAttribute("all-ach")),
+        "gained-achrev": (a, b) => Number(a.getAttribute("gained-ach")) - Number(b.getAttribute("gained-ach")),
+        "non-gained-achrev": (a, b) => Number(a.getAttribute("non-gained-ach")) - Number(b.getAttribute("non-gained-ach")),
+        "game-playtimerev": (a, b) => Number(a.getAttribute("game-playtime")) - Number(b.getAttribute("game-playtime"))
     };
 
-    function sortGames() {
+    function sortGames(sort : string) {
+        setSortConfig(sort);
         const container = document.getElementById("game_container");
         const elements = Array.from(container.children);
-        const value = document
-            .querySelector("select")
-            .value;
-        elements.sort(sortFunctions[value]);
+        elements.sort(sortFunctions[sort]);
         elements.forEach((element) => container.appendChild(element));
     }
 
@@ -221,32 +220,125 @@ export default function Games() {
 
     return (
         <div id="header key">
+            <button
+                className="gameButton"
+                onClick={rend_app}
+                style={{
+                marginLeft: "10px",
+                position: "absolute",
+                width: "110px",
+                left: "0",
+                right: "0"
+            }}>return</button>
             <div
                 style={{
+                background: "white",
+                borderRadius: "1rem",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
+                width: "50rem",
+                height: "3rem",
+                position: "absolute",
+                right: "25%",
+                top: "0",
+                marginTop: "10px",
             }}>
+
+                <div style={{
+                    color: "black"
+                }}>Sort by:
+                </div>
                 <button
-                    className="gameButton"
-                    onClick={rend_app}
-                    style={{
-                    marginRight: "5px"
-                }}>return</button>
-                <select id="select_sort" required onChange={sortGames}>
-                    <option value="last-launch">Last launch</option>
-                    <option value="game-percent">Percent</option>
-                    <option value="all-ach">All ach</option>
-                    <option value="gained-ach">Gained ach</option>
-                    <option value="non-gained-ach">Non gained ach</option>
-                    <option value="game-playtime">Playtime</option>
-                </select>
+                    className={`sortGamesButton ${sortConfig === 'last-launch'
+                    ? 'active'
+                    : sortConfig === 'last-launchrev'
+                        ? "active"
+                        : ""}`}
+                    onClick={() => {
+                    sortGames(sortConfig === "last-launch"
+                        ? "last-launchrev"
+                        : "last-launch");
+                }}>Last Launch {sortConfig === 'last-launch'
+                        ? '\u25BC'
+                        : sortConfig === 'last-launchrev'
+                            ? "\u25B2"
+                            : ""}</button>
                 <button
-                    className="gameButton"
-                    onClick={invert}
-                    style={{
-                    marginLeft: "5px"
-                }}>Invert</button>
+                    className={`sortGamesButton ${sortConfig === 'game-percent'
+                    ? 'active'
+                    : sortConfig === 'game-percentrev'
+                        ? "active"
+                        : ""}`}
+                    onClick={() => {
+                    sortGames(sortConfig === "game-percent"
+                        ? "game-percentrev"
+                        : "game-percent");
+                }}>Percent {sortConfig === 'game-percent'
+                        ? '\u25BC'
+                        : sortConfig === 'game-percentrev'
+                            ? "\u25B2"
+                            : ""}</button>
+                <button
+                    className={`sortGamesButton ${sortConfig === 'all-ach'
+                    ? 'active'
+                    : sortConfig === 'all-achrev'
+                        ? "active"
+                        : ""}`}
+                    onClick={() => {
+                    sortGames(sortConfig === "all-ach"
+                        ? "all-achrev"
+                        : "all-ach");
+                }}>All ach {sortConfig === 'all-ach'
+                        ? '\u25BC'
+                        : sortConfig === 'all-achrev'
+                            ? "\u25B2"
+                            : ""}</button>
+                <button
+                    className={`sortGamesButton ${sortConfig === 'gained-ach'
+                    ? 'active'
+                    : sortConfig === 'gained-achrev'
+                        ? "active"
+                        : ""}`}
+                    onClick={() => {
+                    sortGames(sortConfig === "gained-ach"
+                        ? "gained-achrev"
+                        : "gained-ach");
+                }}>Gained ach {sortConfig === 'gained-ach'
+                        ? '\u25BC'
+                        : sortConfig === 'gained-achrev'
+                            ? "\u25B2"
+                            : ""}</button>
+                <button
+                    className={`sortGamesButton ${sortConfig === 'non-gained-ach'
+                    ? 'active'
+                    : sortConfig === 'non-gained-achrev'
+                        ? "active"
+                        : ""}`}
+                    onClick={() => {
+                    sortGames(sortConfig === "non-gained-ach"
+                        ? "non-gained-achrev"
+                        : "non-gained-ach");
+                }}>Non gained ach {sortConfig === 'non-gained-ach'
+                        ? '\u25BC'
+                        : sortConfig === 'non-gained-achrev'
+                            ? "\u25B2"
+                            : ""}</button>
+                <button
+                    className={`sortGamesButton ${sortConfig === 'game-playtime'
+                    ? 'active'
+                    : sortConfig === 'game-playtimerev'
+                        ? "active"
+                        : ""}`}
+                    onClick={() => {
+                    sortGames(sortConfig === "game-playtime"
+                        ? "game-playtimerev"
+                        : "game-playtime");
+                }}>Playtime {sortConfig === 'game-playtime'
+                        ? '\u25BC'
+                        : sortConfig === 'game-playtimerev'
+                            ? "\u25B2"
+                            : ""}</button>
             </div>
             <br/>
             <div
@@ -254,8 +346,9 @@ export default function Games() {
                 style={{
                 display: "flex",
                 justifyContent: "center",
-                marginTop: "10px",
+                marginTop: "3rem",
                 gap: "10px",
+                
                 flexWrap: "wrap"
             }}>
                 {Ach.map((game) => (<GameCard
