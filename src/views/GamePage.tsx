@@ -4,7 +4,10 @@ import Games from "./Games";
 import ProgressRad from "./rad_progress"
 import Table from './Table';
 import App from "./main_window";
-
+import {I18nextProvider} from 'react-i18next';
+import i18n from 'i18next';
+import {useTranslation} from 'react-i18next';
+import ScrollToTopButton from "./ScrollToTopButton";
 interface Game {
     appid : number;
     last_launch_time : number;
@@ -15,8 +18,8 @@ interface Game {
     gained : number;
     percent : number;
 }
-export default function GamePage({appid, backWindow}: any) {
-    const [game,
+export default function GamePage({appid, backWindow} : any) {
+    const [game, 
         setGame] = useState < Game > ({
         appid: 0,
         last_launch_time: 0,
@@ -31,6 +34,7 @@ export default function GamePage({appid, backWindow}: any) {
     });
     const [loaded,
         setLoaded] = useState(false);
+    const {t} = useTranslation();
 
     useEffect(useCallback(() => {
         try {
@@ -45,71 +49,80 @@ export default function GamePage({appid, backWindow}: any) {
     }, [appid]), []);
 
     return (
-        <div>
-            <button
-                className="gameButton"
-                onClick={() => {
-                const root = ReactDOM.createRoot(document.getElementById("root"));
-                if (backWindow =="main") {
-                    root.render(<App/>);
-                }
-                else {
-                root.render(<Games/>);}
-            }}>return</button>
-            <div
-                style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-            }}>
-                <label
+        <I18nextProvider i18n={i18n}>
+            <div>
+            <ScrollToTopButton />
+                <button
+                    className="gameButton"
+                    onClick={() => {
+                    const root = ReactDOM.createRoot(document.getElementById("root"));
+                    if (backWindow == "main") {
+                        root.render(<App/>);
+                    } else {
+                        root.render(<Games/>);
+                    }
+                }}>{t('Return')}</button>
+                <div
                     style={{
-                    display: "inline-block",
-                    padding: "5px 10px",
-                    fontSize: "2rem"
-                }}>{game.gameName}</label>
-            </div>
-            <div
-                style={{
-                height: "10em",
-                marginTop: "1em",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-            }}>
-                <img
-                    src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`}
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    <label
+                        style={{
+                        display: "inline-block",
+                        padding: "5px 10px",
+                        fontSize: "2rem"
+                    }}>{game.gameName}</label>
+                </div>
+                <div
                     style={{
-                    float: "left",
-                    height: "90%",
-                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset",
-                    marginRight: "20px"
-                }}
-                    alt={game.gameName}/>
-                <ProgressRad data-progress={`${game.percent}`}/>
-                <label title="полученных из всех" style={{marginLeft:"2rem",
-            fontSize:"2em"}}>{game.all - game.gained}/{game.all}</label>
+                    height: "10em",
+                    marginTop: "1em",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    <img
+                        src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`}
+                        style={{
+                        float: "left",
+                        height: "90%",
+                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset",
+                        marginRight: "20px"
+                    }}
+                        alt={game.gameName}/>
+                    <ProgressRad data-progress={`${game.percent}`}/>
+                    <label
+                        title={t('GainedFromAll')}
+                        style={{
+                        marginLeft: "2rem",
+                        fontSize: "2em"
+                    }}>{game.gained}/{game.all}</label>
 
-            </div>
-            <div
-                style={{
-                marginTop: "10px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-            }}>
-                {loaded && (<Table
-                    data={[game
-                    .Achievement
-                    .sort((a : any, b : any) => {
-                        return (b.unlocktime - a.unlocktime)
-                    })
-                    .sort((a : any, b : any) => {
-                        return (b.achieved - a.achieved)
-                    }),false]}
-                    />)
+                </div>
+                <div
+                    style={{
+                    marginTop: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    {loaded && (<Table
+                        data={[
+                        game
+                            .Achievement
+                            .sort((a : any, b : any) => {
+                                return (b.unlocktime - a.unlocktime)
+                            })
+                            .sort((a : any, b : any) => {
+                                return (b.achieved - a.achieved)
+                            }),
+                        false
+                    ]}/>)
 }
+                </div>
             </div>
-        </div>
+        </I18nextProvider>
     );
 }

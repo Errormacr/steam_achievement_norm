@@ -10,14 +10,14 @@ app.use(cors({
     allowedHeaders: '*'
 }));
 app.use(express.json());
-async function get_data(urls_a, ip, key) {
+async function get_data(urls_a, ip, key,lang) {
     const data_key = key;
     const data_st_id = ip;
     const responses = urls_a.map(appid => {
         try {
-            let ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid[0]}&key=${data_key}&steamid=${data_st_id}&l=Russian`;
+            let ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid[0]}&key=${data_key}&steamid=${data_st_id}&l=${lang}`;
             let perc_url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appid[0]}&format=json`;
-            let ico_url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid[0]}&key=${data_key}&l=Russian`;
+            let ico_url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid[0]}&key=${data_key}&l=${lang}`;
             let urls = [ach_url, perc_url, ico_url];
 
             // Add CORS headers to the request
@@ -85,8 +85,9 @@ async function get_data(urls_a, ip, key) {
 };
 app.post('/data', async(req, res) => {
     const array = req.body.appid;
-    const {steam_ip, key} = req.query;
-    const data = await get_data(JSON.parse(array), steam_ip, key);
+    const {steam_ip, key,lang} = req.query;
+    console.log(lang);
+    const data = await get_data(JSON.parse(array), steam_ip, key, lang);
     res.send(data);
 });
 

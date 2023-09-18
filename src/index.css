@@ -219,6 +219,7 @@ label {
     padding: 4px;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 6px;
+    width: 90%;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
 }
 
@@ -250,9 +251,7 @@ label {
 .container p {
     margin-right: 10px;
 }
-.card:hover {
-    background-color: #a9a9a9;
-}
+
 
 .row {
     display: flex;
@@ -284,32 +283,6 @@ label {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     border-left: 1px rgb(192, 192, 192) solid;
-}
-
-select {
-    appearance: none;
-    border: 0;
-    outline: 0;
-    font: inherit;
-    width: 20em;
-    height: 1.6em;
-    padding: 0 4em 0 1em;
-    background: url("https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg") no-repeat right 0.8em center / 1.4em, linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
-    color: white;
-    border-radius: 0.25em;
-    box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-}
-select option {
-    color: inherit;
-    background-color: #320a28;
-}
-select:focus {
-    outline: none;
-}
-
-select::-ms-expand {
-    display: none;
 }
 
 .rare1 {
@@ -423,18 +396,19 @@ td {
         opacity: 1;
     }
 }
-input {
+.idKeyInput {
     border: none;
     background: #f2f2f2;
     padding: 0.35rem;
     font-size: 1rem;
     margin-right: 0.5rem;
+    margin-left: 0.5rem;
     border-radius: 0.4rem;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
     clip-path: circle(0%);
     animation: reveal 1s ease-in-out forwards;
 }
-input:focus {
+.idKeyInput:focus {
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 @keyframes reveal {
@@ -456,5 +430,244 @@ input:focus {
     border: none;
 }
 .sortGamesButton.active {
-    background-color: rgb(164, 164, 164)
+    background-color: rgb(164, 164, 164);
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    /* Установите значение z-index на достаточно большое число */
+}
+
+.modal-content {
+    background-color: #304865;
+    padding: 20px;
+    border-radius: 4px;
+    border: 3px solid #1b2838;
+    width: 12rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.settingsSelect {
+    /* Стили для элемента select */
+    padding: 8px;
+    font-size: 16px;
+    background-color: #475e7b;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    color: white;
+}
+.settingsSelect.option {
+    color: white;
+}
+
+.settingsButton {
+    /* Стили для кнопки */
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: rgb(164, 164, 164);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.settingsButton:hover {
+    /* Стили для кнопки при наведении */
+    background-color: #0056b3;
+}
+.scroll-to-top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.scroll-to-top-button.visible {
+    opacity: 1;
+}
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+/* Стили для кнопки */
+.dropdown-button {
+    background-color: #445974;
+    color: white;
+    border: none;
+    margin-left: 0.5rem;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+/* Стили для списка */
+.dropdown-list {
+    position: absolute;
+    background-color: rgba(50, 67, 138, 0.9);
+    color: white;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+    border-radius: 1rem;
+    border-top: none;
+    z-index: 1000;
+}
+
+/* Стили для элементов списка */
+.dropdown-list li {
+    padding: 10px;
+    cursor: pointer;
+}
+.dropdown-list li.active {
+    color: red;
+}
+.dropdown-list .filter-group {
+    font-weight: bold;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+}
+.dropdown-list .filter-group:first-child {
+    border-top-right-radius: 1rem;
+    border-top-left-radius: 1rem;
+}
+.inputSortFilterContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2.5rem;
+    width: fit-content;
+    border-radius: 1rem;
+    background-color: #445974;
+}
+.arrow {
+    color: #111923;
+    /* Общий цвет для стрелок */
+    cursor: pointer;
+    /* Добавляем указатель при наведении */
+    font-size: 24px;
+    /* Размер шрифта */
+}
+.arrow.activate {
+    color: #00ff2f;
+    /* Общий цвет для стрелок */
+    cursor: pointer;
+    /* Добавляем указатель при наведении */
+    font-size: 24px;
+    /* Размер шрифта */
+}
+.cross {
+    position: absolute;
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+    margin-top: 1rem;
+}
+.cross:after,
+.cross:before {
+    content: "";
+    position: absolute;
+    width: 24px;
+    height: 4px;
+    background: gray;
+}
+.cross:before {
+    transform: rotate(45deg);
+}
+.cross:after {
+    transform: rotate(-45deg);
+}
+.card {
+    width: 400px;
+    height: 200px;
+    border-radius: 16px;
+    position: relative; 
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.card:hover {
+    background-color: #a9a9a9;
+}
+.name-preview {
+    width: 400px;
+    height: 70px;
+    display: flex;
+}
+.name-preview .name {
+    color: white;
+    text-align: left;
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 240px;
+    word-wrap: break-word;
+    max-width: 240px;
+}
+.name-preview .preview {
+    float: right;
+    height: 80%;
+    width: 40%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset;
+    margin-right: 20px;
+    margin-top: 6px
+}
+.progress-bar-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.details-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameCard-background {
+    background-color: gray;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    z-index: -1;
+    background-size: cover;
+}
+.achievement-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+.achievement-image {
+    width: 40px;
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 40px;
 }

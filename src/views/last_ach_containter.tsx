@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
-
+import {I18nextProvider} from 'react-i18next';
+import i18n from 'i18next';
 export default function Ach_cont() {
 
     const [allAch,
@@ -28,26 +29,28 @@ export default function Ach_cont() {
         }
     }, []), []);
     return (
-        <div className="last_ach_container">
-            {allAch.map((ach) => (<img
-                className={ach.percent <= 5
-                ? "rare1"
-                : ach.percent <= 20
-                    ? "rare2"
-                    : ach.percent <= 45
-                        ? "rare3"
-                        : ach.percent <= 60
-                            ? "rare4"
-                            : "rare5"}
-                key={ach.name}
-                src={ach.icon}
-                alt={ach.displayName}
-                title={`${ach
-                .gamename}\n${ach
-                .displayName}\n${ach
-                .description}\n${ach
-                .percent
-                .toFixed(2)}\n${new Date(ach.unlocktime * 1000)}`}/>))}
-        </div>
+        <I18nextProvider i18n={i18n}>
+            <div className="last_ach_container">
+                {allAch.map((ach) => (<img
+                    className={ach.percent <= 5
+                    ? "rare1"
+                    : ach.percent <= 20
+                        ? "rare2"
+                        : ach.percent <= 45
+                            ? "rare3"
+                            : ach.percent <= 60
+                                ? "rare4"
+                                : "rare5"}
+                    key={ach.name}
+                    src={ach.icon}
+                    alt={ach.displayName}
+                    title={`${ach
+                    .gamename}\n${ach
+                    .displayName}\n${ach
+                    .description}\n${ach
+                    .percent
+                    .toFixed(2)}\n${new Date(ach.unlocktime * 1000)}`}/>))}
+            </div>
+        </I18nextProvider>
     )
 }
