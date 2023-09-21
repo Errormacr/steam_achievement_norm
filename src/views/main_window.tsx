@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import Ach_cont from './last_ach_containter';
 import ReactDOM from "react-dom/client";
 import Games from './Games';
-import { GameCard } from "./GameCard";
+import {GameCard} from "./GameCard";
 import ProgressRad from "./rad_progress";
 import AchPage from "./AchivmentsPage";
 import Settings from "./Settings";
@@ -12,6 +12,8 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {I18nextProvider} from 'react-i18next';
 import {useTranslation} from 'react-i18next';
+import ClearButton from './ClearButton'
+import { FriendTable } from "./FriendsMainScreen";
 
 import i18n from 'i18next';
 
@@ -39,6 +41,9 @@ export default function App() {
     const [load,
         setLoad] = useState(false);
     const {t} = useTranslation();
+    const RECENT_GAMES_API = `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/`;
+    const PLAYER_SUMMARIES_API = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/`;
+    const OWNED_GAMES_API = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`;
 
     const get_api = useCallback(async(urls_a : string[]) => {
         try {
@@ -65,7 +70,7 @@ export default function App() {
 
         if (data_key && data_st_id) {
             try {
-                const recent_game = `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${data_key}&steamid=${data_st_id}&format=json`;
+                const recent_game = `${RECENT_GAMES_API}?key=${data_key}&steamid=${data_st_id}&format=json`;
                 let response = await fetch(recent_game);
                 let data = await response.json();
                 const before = localStorage.getItem("recent");
@@ -75,8 +80,8 @@ export default function App() {
                         user_data,
                         games_data] = await Promise.all([
                         fetch(recent_game).then(response => response.json()),
-                        fetch(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${data_key}&steamids=${data_st_id}`).then(response => response.json()),
-                        fetch(`http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${data_key}&steamid=${data_st_id}&format=json&include_appinfo=true&include_played_free_games=true`).then(response => response.json())
+                        fetch(`${PLAYER_SUMMARIES_API}?key=${data_key}&steamids=${data_st_id}`).then(response => response.json()),
+                        fetch(`${OWNED_GAMES_API}?key=${data_key}&steamid=${data_st_id}&format=json&include_appinfo=true&include_played_free_games=true`).then(response => response.json())
                     ]);
 
                     localStorage.setItem("recent", JSON.stringify(data));
@@ -99,10 +104,12 @@ export default function App() {
 
                     const ach = await calculateAchievementCount(data_g_ach_url);
                     setAch(ach[0].toString());
+                    const predproc = localStorage.getItem('percent');
+                    localStorage.setItem('percent', ach[1].toString());
                     setpercent(ach[1].toString());
-
                     ach_container.render(<Ach_cont/>);
 
+                    toast.success("+ " + (parseFloat(ach[1].toString()) - parseFloat(predproc)).toFixed(2).toString() + "% " + t('averageUp'));
                 } else {
                     try {
                         setavaUrl(localStorage.getItem('ava'));
@@ -139,6 +146,7 @@ export default function App() {
                         localStorage.setItem("recent", "");
                     }
                 }
+
             } catch (e) {
                 console.error(e);
             }
@@ -197,7 +205,30 @@ export default function App() {
             return [0, 0, 0]
         }
     }, [get_api]);
-
+    const handleKeyChange = () => {
+        setConstSteamWebApiKey(SteamWebApiKey);
+        localStorage.setItem('recent', '');
+        localStorage.setItem('api-key', SteamWebApiKey);
+        update_user_data();
+    };
+    const handleIdChange = () => {
+        setConstSteamId(SteamId);
+        localStorage.setItem("recent", "");
+        localStorage.setItem('steamId', SteamId);
+        update_user_data();
+    };
+    const handleKeyClear = () => {
+        setConstSteamWebApiKey("");
+        localStorage.setItem('api-key', "");
+    };
+    const handleIdClear = () => {
+        setConstSteamId("");
+        localStorage.setItem('steamId', "");
+    };
+    const handleUpdate = () => {
+        localStorage.setItem('recent',"");
+        update_user_data();
+    };
     function showClears() {
         const buttons = ["keyChangeButton", "keyClearButton", "steamIdChangeButton", "steamIdclearButton"];
         const button = document.getElementById("hideButton");
@@ -219,7 +250,6 @@ export default function App() {
 
         document.addEventListener('click', handleDocumentClick);
     };
-
     useEffect(useCallback(() => {
         try {
             const data = localStorage.getItem("api-key");
@@ -231,6 +261,7 @@ export default function App() {
                 setConstSteamId(data_st_id);
             }
             update_user_data();
+            console.log(percent);
 
         } catch (error) {
             window.alert(error.message);
@@ -242,69 +273,25 @@ export default function App() {
             <div>
                 <LoadingOverlay active={load} spinner={< BounceLoader />}>
 
-                    <div
-                        id="header key"
-                        style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between"
-                    }}>
+                    <div id="header key" className="header">
                         <div>
                             <div id="clearDiv" className="clearDiv">
                                 <button
-                                    style={{
-                                    marginLeft: "1.5rem"
-                                }}
                                     id="hideButton"
                                     className="ButtonToHide gameButton"
                                     onClick={showClears}>{t('changeIdKeyButton')}</button>
-                                <div
-                                    style={{
-                                    width: "100%",
-                                    height: "3rem",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    padding: "5rem"
-                                }}
-                                    id="clearsButtons"
-                                    className="hiden">
+                                <div id="clearsButtons" className="hiden">
                                     <div>
-                                        {ConstSteamWebApiKey == "" && (<input
+                                        {ConstSteamWebApiKey == "" && (
+                                        <input
                                             placeholder="Steam api key"
                                             id="key"
                                             className="idKeyInput"
                                             onChange={(event) => {
                                             setSteamWebApiKey(event.target.value);
                                         }}/>)}
-                                        {ConstSteamWebApiKey == "" && (
-                                            <button
-                                                type="button"
-                                                style={{
-                                                marginRight: "1rem"
-                                            }}
-                                                className="gameButton"
-                                                id="keyChangeButton"
-                                                onClick={(event) => {
-                                                setConstSteamWebApiKey(SteamWebApiKey);
-                                                localStorage.setItem("recent", "");
-                                                localStorage.setItem('api-key', SteamWebApiKey);
-                                                update_user_data();
-                                            }}>{t('ChangeKey')}</button>
-                                        )}
-
-                                        {ConstSteamWebApiKey != "" && (
-                                            <button
-                                                className="gameButton"
-                                                type="button"
-                                                id="keyClearButton"
-                                                style={{
-                                                marginRight: "1rem"
-                                            }}
-                                                onClick={(event) => {
-                                                setConstSteamWebApiKey("");
-                                                localStorage.setItem('api-key', "");
-                                            }}>{t('ClearKey')}</button>
-                                        )}
+                                        {ConstSteamWebApiKey == "" && (<ClearButton text={t('ChangeKey')} onClick={handleKeyChange} id='keyChangeButton'/>)}
+                                        {ConstSteamWebApiKey != "" && (<ClearButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
                                     </div>
                                     <div>
                                         {ConstSteamId == "" && (<input
@@ -315,57 +302,24 @@ export default function App() {
                                             setSteamId(event.target.value);
                                         }}/>)}
 
-                                        {ConstSteamId == "" && (
-                                            <button
-                                                className="gameButton"
-                                                type="button"
-                                                id="steamIdChangeButton"
-                                                onClick={(event) => {
-                                                setConstSteamId(SteamId);
-                                                localStorage.setItem("recent", "");
-                                                localStorage.setItem('steamId', SteamId);
-                                                update_user_data();
-                                            }}>{t('ChangeSteamID')}</button>
+                                        {ConstSteamId == "" && (<ClearButton text={t('ChangeSteamID')} onClick={handleIdChange} id='steamIdChangeButton'/>
                                         )}</div>
 
                                     {ConstSteamId != "" && (
-                                        <button
-                                            type="button"
-                                            className="gameButton"
-                                            id="steamIdclearButton"
-                                            onClick={(event) => {
-                                            setConstSteamId("");
-                                            localStorage.setItem('steamId', "");
-                                        }}>{t('ClearId')}</button>
+                                        <ClearButton text={t('ClearId')} onClick={handleIdClear} id='steamIdclearButton'/>
                                     )}
-                                    <button
-                                        type="button"
-                                        className="gameButton"
-                                        style={{
-                                        marginLeft: "1rem"
-                                    }}
-                                        onClick={(event) => {
-                                        localStorage.setItem('recent', "");
-                                        update_user_data();
-                                    }}>{t('Update')}</button>
+                                    <ClearButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>
                                 <Settings/>
                             </div>
 
                             {personalName && (
-                                <div
-                                    style={{
-                                    marginTop: "4rem",
-                                    marginLeft: "1.5rem"
-                                }}>
+                                <div className="nickname-container">
                                     <label className="nickname">{personalName}</label>
                                     <br></br>
                                     <img src={avaUrl}></img>
                                     <br ></br>
-                                    <div
-                                        style={{
-                                        marginTop: "1rem"
-                                    }}>
+                                    <div className="stats-container">
                                         <label className="nickname">{t('Ach')}: {Ach}</label>
                                         <br></br>
                                         <br></br>
@@ -385,7 +339,7 @@ export default function App() {
                                     <button
                                         className="gameButton"
                                         style={{
-                                            marginTop: "0.3rem",
+                                        marginTop: "0.3rem",
                                         textTransform: "lowercase"
                                     }}
                                         onClick={() => {
@@ -393,28 +347,15 @@ export default function App() {
                                         root.render(<AchPage/>);
                                     }}>{t('AllAch')}</button>
                                     <br></br>
-                                    <div
-                                        style={{
-                                        marginTop: "1em",
-                                        marginLeft: "1em"
-                                    }}>
-                                        <ProgressRad title={t('AverageProcent')} data-progress={percent}/></div>
+                                    <div className="gain-nongainMain">
+                                        <ProgressRad title={t('AverageProcent')} data-progress={percent} main={true}/></div>
                                 </div>
                             )}</div>
-                        <div
-                            style={{
-                            marginTop: "4rem",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "1em"
-                        }}>
+                        <div className="main-game-cards">
                             {games.map((game) => (<GameCard game={game} backWindow="main"/>))}
                         </div>
-                        <div
-                            style={{
-                            marginTop: "4rem"
-                        }}
-                            id="container"></div>
+                        <div className="last-ach-main" id="container"></div>
+                        <FriendTable/>
                     </div>
                 </LoadingOverlay>
                 <br></br>

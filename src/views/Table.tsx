@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
-import { UnixTimestampToDate } from "./GameCard";
+import {UnixTimestampToDate} from "./GameCard";
 import React from 'react';
 import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
@@ -146,23 +146,17 @@ export default function Table(data : any) {
                             className={achivment.percent <= 5
                             ? "rare1"
                             : ""}>
-                            <td
-                                style={{
-                                width: "3em"
-                            }}>
+                            <td >
                                 <img
-                                    style={{
-                                    width: "2.5em"
-                                }}
                                     className={achivment.percent <= 5
-                                    ? "rare1"
+                                    ? "rare1 table-ach-img"
                                     : achivment.percent <= 20
-                                        ? "rare2"
+                                        ? "rare2 table-ach-img"
                                         : achivment.percent <= 45
-                                            ? "rare3"
+                                            ? "rare3 table-ach-img"
                                             : achivment.percent <= 60
-                                                ? "rare4"
-                                                : "rare5"}
+                                                ? "rare4 table-ach-img"
+                                                : "rare5 table-ach-img"}
                                     src={achivment.achieved
                                     ? achivment.icon
                                     : achivment.icongray}></img>

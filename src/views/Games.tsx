@@ -55,62 +55,52 @@ export default function Games() {
         // Фильтрация по времени
         const timeMatch = selectedTimeFilterValue == null || game.playtime > Number(selectedTimeFilterValue);
         let completionMatch;
-        if (selectedCompletionFilterValue == "percent0-10") {
-            completionMatch = game.percent < 10;
-        } else if (selectedCompletionFilterValue == "percent10-20") {
-            completionMatch = 10 < game.percent && game.percent < 20;
-        } else if (selectedCompletionFilterValue == "percent20-30") {
-            completionMatch = 20 < game.percent && game.percent < 30;
-        } else if (selectedCompletionFilterValue == "percent30-40") {
-            completionMatch = 30 < game.percent && game.percent < 40;
-        } else if (selectedCompletionFilterValue == "percent40-50") {
-            completionMatch = 40 < game.percent && game.percent < 50;
-        } else if (selectedCompletionFilterValue == "percent50-60") {
-            completionMatch = 50 < game.percent && game.percent < 60;
-        } else if (selectedCompletionFilterValue == "percent60-70") {
-            completionMatch = 60 < game.percent && game.percent < 70;
-        } else if (selectedCompletionFilterValue == "percent70-80") {
-            completionMatch = 70 < game.percent && game.percent < 80;
-        } else if (selectedCompletionFilterValue == "percent80-90") {
-            completionMatch = 80 < game.percent && game.percent < 90;
-        } else if (selectedCompletionFilterValue == "percent90-100") {
-            completionMatch = 90 < game.percent && game.percent < 100;
-        } else if (selectedCompletionFilterValue == "Completed") {
-
+        if (selectedCompletionFilterValue == "Completed") {
             completionMatch = game.percent == 100;
+
+        } else if (selectedCompletionFilterValue == null) {
+            completionMatch = true;
+        } else if (selectedCompletionFilterValue.startsWith("percent")) {
+            let rangeBounds = selectedCompletionFilterValue
+                .replace("percent", "")
+                .split("-")
+                .map(Number);
+            console.log(rangeBounds)
+
+            completionMatch = rangeBounds[0] < game.percent && game.percent < rangeBounds[1];
         } else {
-            completionMatch = true
+            completionMatch = true;
         }
-        console.log(game)
         // Фильтрация по завершению Возвращаем true, только если все условия выполняются
         return nameMatch && timeMatch && completionMatch;
     }).sort((a : any, b : any) => {
-        if (selectedValue === "last-launch") {
-            return b.last_launch_time - a.last_launch_time
-        } else if (selectedValue === "game-playtime") {
-            return b.playtime - a.playtime;
-        } else if (selectedValue === "all-ach") {
-            return b.all - a.all;
-        } else if (selectedValue === "gained-ach") {
-            return b.gained - a.gained;
-        } else if (selectedValue === "non-gained-ach") {
-            return (b.all - b.gained) - (a.all - a.gained);
-        } else if (selectedValue === "game-percent") {
-            return b.percent - a.percent;
-        } else if (selectedValue === "last-launchrev") {
-            return a.last_launch_time - b.last_launch_time
-        } else if (selectedValue === "game-playtimerev") {
-            return a.playtime - b.playtime;
-        } else if (selectedValue === "all-achrev") {
-            return a.all - b.all;
-        } else if (selectedValue === "gained-achrev") {
-            return a.gained - b.gained;
-        } else if (selectedValue === "non-gained-achrev") {
-            return (a.all - a.gained) - (b.all - b.gained);
-        } else if (selectedValue === "game-percentrev") {
-            return a.percent - b.percent;
-        } else {
-            return 0;
+        switch (selectedValue) {
+            case "last-launch":
+                return b.last_launch_time - a.last_launch_time;
+            case "game-playtime":
+                return b.playtime - a.playtime;
+            case "all-ach":
+                return b.all - a.all;
+            case "gained-ach":
+                return b.gained - a.gained;
+            case "non-gained-ach":
+                return (b.all - b.gained) - (a.all - a.gained);
+            case "game-percent":
+                return b.percent - a.percent;
+            case "last-launchrev":
+                return a.last_launch_time - b.last_launch_time;
+            case "game-playtimerev":
+                return a.playtime - b.playtime;
+            case "all-achrev":
+                return a.all - b.all;
+            case "gained-achrev":
+                return a.gained - b.gained;
+            case "non-gained-achrev":
+                return (a.all - a.gained) - (b.all - b.gained);
+            case "game-percentrev":
+                return a.percent - b.percent;
+            default:
+                return 0;
         }
     });
     const handleTimeFilterItemClick = (value : string) => {
@@ -176,26 +166,44 @@ export default function Games() {
             window.alert(error.message);
         }
     }, []), []);
-
+    const sortingOptions = [
+        {
+            value: 'last-launch',
+            label: 'LastLaunchSort',
+            reverseValue: 'last-launchrev'
+        }, {
+            value: 'game-percent',
+            label: 'PercentAchSort',
+            reverseValue: 'game-percentrev'
+        }, {
+            value: 'all-ach',
+            label: 'AllAChInGameSort',
+            reverseValue: 'all-achrev'
+        }, {
+            value: 'gained-ach',
+            label: 'GainedAchSort',
+            reverseValue: 'gained-achrev'
+        }, {
+            value: 'non-gained-ach',
+            label: 'NonGainedAchSort',
+            reverseValue: 'non-gained-achrev'
+        }, {
+            value: 'game-playtime',
+            label: 'PlayTimeSort',
+            reverseValue: 'game-playtimerev'
+        }
+    ];
     return (
         <I18nextProvider i18n={i18n}>
             <div
-                style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
+                className="details-container">
                 <div className="inputSortFilterContainer">
                     <input
                         type="text"
                         className="idKeyInput"
                         placeholder={t('SearchGames')}
                         value={searchQuery}
-                        onChange={handleSearchInputChange}
-                        style={{
-                        marginRight: '10px'
-                    }}/> {/* Добавляем кнопки для сортировки */}
-
+                        onChange={handleSearchInputChange}/>
                     <div ref={listRef} className="dropdown-container">
                         <button
                             className="dropdown-button"
@@ -205,72 +213,22 @@ export default function Games() {
 
                         {isDropdownOpen && (
                             <ul className="dropdown-list">
-                                <li
-                                    className={(selectedValue === 'last-launch' || selectedValue === 'last-launchrev')
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => {
-                                    if (isArrowDownOpen) {
-                                        handleItemClick('last-launch')
-                                    } else {
-                                        handleItemClick('last-launchrev')
-                                    }
-                                }}>{t('LastLaunchSort')}</li>
-                                <li
-                                    className={(selectedValue === 'game-percent' || selectedValue === 'game-percentrev')
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => {
-                                    if (isArrowDownOpen) {
-                                        handleItemClick('game-percent')
-                                    } else {
-                                        handleItemClick('game-percentrev')
-                                    }
-                                }}>{t('PercentAchSort')}</li>
-                                <li
-                                    className={(selectedValue === 'all-ach' || selectedValue === 'all-achrev')
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => {
-                                    if (isArrowDownOpen) {
-                                        handleItemClick('all-ach')
-                                    } else {
-                                        handleItemClick('all-achrev')
-                                    }
-                                }}>{t('AllAChInGameSort')}</li>
-                                <li
-                                    className={(selectedValue === 'gained-ach' || selectedValue === 'gained-achrev')
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => {
-                                    if (isArrowDownOpen) {
-                                        handleItemClick('gained-ach')
-                                    } else {
-                                        handleItemClick('gained-achrev')
-                                    }
-                                }}>{t('GainedAchSort')}</li>
-                                <li
-                                    className={(selectedValue === 'non-gained-ach' || selectedValue === 'non-gained-ach')
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => {
-                                    if (isArrowDownOpen) {
-                                        handleItemClick('non-gained-ach')
-                                    } else {
-                                        handleItemClick('non-gained-achrev')
-                                    }
-                                }}>{t('NonGainedAchSort')}</li>
-                                <li
-                                    className={(selectedValue === 'game-playtime' || selectedValue === 'game-playtimerev')
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => {
-                                    if (isArrowDownOpen) {
-                                        handleItemClick('game-playtime')
-                                    } else {
-                                        handleItemClick('game-playtimerev')
-                                    }
-                                }}>{t('PlayTimeSort')}</li>
+                                {sortingOptions.map((option) => (
+                                    <li
+                                        key={option.value}
+                                        className={(selectedValue === option.value || selectedValue === option.reverseValue)
+                                        ? "active"
+                                        : ""}
+                                        onClick={() => {
+                                        if (isArrowDownOpen) {
+                                            handleItemClick(option.value);
+                                        } else {
+                                            handleItemClick(option.reverseValue);
+                                        }
+                                    }}>
+                                        {t(option.label)}
+                                    </li>
+                                ))}
                             </ul>
                         )}
                     </div>
@@ -290,54 +248,41 @@ export default function Games() {
                             onClick={() => setTimeFilterDropdownOpen(!isTimeFilterDropdownOpen)}>
                             {t('TimeFilter')}
                         </button>
-
                         {isTimeFilterDropdownOpen && (
                             <ul className="dropdown-list">
-                                <li
-                                    className={selectedTimeFilterValue === '1000'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleTimeFilterItemClick('1000')}>
-                                    {t('Above1000hour')}
-                                </li>
-                                <li
-                                    className={selectedTimeFilterValue === '500'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleTimeFilterItemClick('500')}>
-                                    {t('Above500hour')}
-                                </li>
-                                <li
-                                    className={selectedTimeFilterValue === '100'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleTimeFilterItemClick('100')}>
-                                    {t('Above100hour')}
-                                </li>
-                                <li
-                                    className={selectedTimeFilterValue === '50'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleTimeFilterItemClick('50')}>
-                                    {t('Above50hour')}
-                                </li>
-                                <li
-                                    className={selectedTimeFilterValue === '20'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleTimeFilterItemClick('20')}>
-                                    {t('Above20hour')}
-                                </li>
-                                <li
-                                    className={selectedTimeFilterValue === '2'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleTimeFilterItemClick('2')}>
-                                    {t('Above2hour')}
-                                </li>
-
+                                {[
+                                    {
+                                        value: '1000',
+                                        label: 'Above1000hour'
+                                    }, {
+                                        value: '500',
+                                        label: 'Above500hour'
+                                    }, {
+                                        value: '100',
+                                        label: 'Above100hour'
+                                    }, {
+                                        value: '50',
+                                        label: 'Above50hour'
+                                    }, {
+                                        value: '20',
+                                        label: 'Above20hour'
+                                    }, {
+                                        value: '2',
+                                        label: 'Above2hour'
+                                    }
+                                ].map((filter) => (
+                                    <li
+                                        key={filter.value}
+                                        className={selectedTimeFilterValue === filter.value
+                                        ? 'active'
+                                        : ''}
+                                        onClick={() => handleTimeFilterItemClick(filter.value)}>
+                                        {t(filter.label)}
+                                    </li>
+                                ))}
                             </ul>
                         )}
+
                     </div>
                     <div ref={filterCompletedListRef} className="dropdown-container">
                         {selectedCompletionFilterValue != null && (
@@ -358,93 +303,32 @@ export default function Games() {
 
                         {isCompletedFilterDropdownOpen && (
                             <ul className="dropdown-list">
-
-                                <li
-                                    className={selectedCompletionFilterValue === 'Completed'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('Completed')}>
-                                    {t('Completed')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent90-100'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent90-100')}>
-                                    {t('percent90-100')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent80-90'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent80-90')}>
-                                    {t('percent80-90')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent70-80'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent70-80')}>
-                                    {t('percent70-80')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent60-70'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent60-70')}>
-                                    {t('percent60-70')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent50-60'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent50-60')}>
-                                    {t('percent50-60')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent40-50'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent40-50')}>
-                                    {t('percent40-50')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent30-40'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent30-40')}>
-                                    {t('percent30-40')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent20-30'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent20-30')}>
-                                    {t('percent20-30')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent10-20'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent10-20')}>
-                                    {t('percent10-20')}
-                                </li>
-                                <li
-                                    className={selectedCompletionFilterValue === 'percent0-10'
-                                    ? "active"
-                                    : ""}
-                                    onClick={() => handleCompletionFilterItemClick('percent0-10')}>
-                                    {t('percent0-10')}
-                                </li>
-
+                                {[
+                                    'Completed',
+                                    'percent90-100',
+                                    'percent80-90',
+                                    'percent70-80',
+                                    'percent60-70',
+                                    'percent50-60',
+                                    'percent40-50',
+                                    'percent30-40',
+                                    'percent20-30',
+                                    'percent10-20',
+                                    'percent0-10'
+                                ].map((filterValue) => (
+                                    <li
+                                        key={filterValue}
+                                        className={selectedCompletionFilterValue === filterValue
+                                        ? 'active'
+                                        : ''}
+                                        onClick={() => handleCompletionFilterItemClick(filterValue)}>
+                                        {t(filterValue)}
+                                    </li>
+                                ))}
                             </ul>
                         )}
                     </div>
-                    <div
-                        style={{
-                        marginRight: "0.5rem"
-                    }}
-                        onClick={() => handleToggleArrows()}>
+                    <div className="arrows-container" onClick={() => handleToggleArrows()}>
                         <div
                             className={isArrowUpOpen
                             ? 'arrow activate'
@@ -460,30 +344,12 @@ export default function Games() {
                     </div>
                 </div>
             </div>
-            <button
-                className="gameButton"
-                onClick={rend_app}
-                style={{
-                marginLeft: "10px",
-                marginRight: "10px",
-                position: "absolute",
-                width: "120px",
-                left: "0",
-                right: "0",
-                top: "1%"
-            }}>{t('Return')}</button>
-            <div style={{}} id="header key">
+            <button className="gameButton return" onClick={rend_app}>{t('Return')}</button>
+            <div id="header key">
                 <ScrollToTopButton/>
 
                 <br/>
-                <div
-                    id="game_container"
-                    style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "10px",
-                    flexWrap: "wrap"
-                }}>
+                <div id="game_container" className="game_container">
                     {filteredAch.map((game) => (<GameCard
                         style={{
                         boxShadow: "0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset"

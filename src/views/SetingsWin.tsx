@@ -17,8 +17,11 @@ const SetingsWin : React.FC < ModalProps > = ({isOpen, onClose}) => {
     return (
         <div className="modal">
             <div className="modal-content">
-                <h2 style={{marginBottom:"20px", color:"white"}}>{t('Settings')}</h2>
-                <select className='settingsSelect' value={i18n.language} onChange={(event) => changeLanguage(event.target.value)}>
+                <h2 className='settingsHeader'>{t('Settings')}</h2>
+                <select
+                    className='settingsSelect'
+                    value={i18n.language}
+                    onChange={(event) => changeLanguage(event.target.value)}>
                     <option value="en">{t('English')}</option>
                     <option value="ru">{t('Russian')}</option>
                 </select>

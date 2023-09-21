@@ -81,15 +81,15 @@ label {
     display: flex;
     color: #fff;
     justify-content: center;
+    font-size: 2rem;
     flex-direction: column;
     width: 100%;
     margin: 0.3rem;
-    border-radius: 50%;
+    border-radius: 50%; 
     background: #1b2838;
-    font-size: 2rem;
     text-align: center;
     z-index: 1;
-    font-weight: bold;
+    font-weight: bold; 
 }
 @keyframes turn_in_sec {
     5% {
@@ -252,7 +252,6 @@ label {
     margin-right: 10px;
 }
 
-
 .row {
     display: flex;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset;
@@ -337,6 +336,7 @@ label {
     background-color: gray;
     color: #fff;
     border: none;
+    margin-right: 1.5rem;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 16px;
@@ -358,11 +358,17 @@ label {
     font-weight: bold;
 
 }
+.nickname-container {
+    margin-top: 4rem;
+    margin-left: 1.5rem;
+}
+.stats-container {
+    margin-top: 1rem;
+}
 table {
     border-collapse: collapse;
     width: 75%;
 }
-
 th {
     background-color: #43566f;
     font-weight: bold;
@@ -380,12 +386,16 @@ td {
     border-bottom: 1px solid #ddd;
 }
 .hiden {
-    width: fit-content;
-    height: fit-content;
+    width: 100%;
+    height: 3rem;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem;
     display: none;
     animation: buttonFlow 1s ease-in-out;
 }
 .ButtonToHide {
+    margin-left: 1.5rem;
     animation: buttonFlow 1s ease-in-out;
 }
 @keyframes buttonFlow {
@@ -606,7 +616,7 @@ td {
     width: 400px;
     height: 200px;
     border-radius: 16px;
-    position: relative; 
+    position: relative;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .card:hover {
@@ -633,14 +643,12 @@ td {
     width: 40%;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset;
     margin-right: 20px;
-    margin-top: 6px
+    margin-top: 6px;
 }
-.progress-bar-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.details-container {
+.achievement-images,
+.details-container,
+.label-container,
+.progress-bar-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -658,9 +666,6 @@ td {
     background-size: cover;
 }
 .achievement-images {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-right: 5px;
     margin-top: 10px;
     margin-left: 5px;
@@ -670,4 +675,68 @@ td {
     margin-left: 5px;
     margin-right: 5px;
     height: 40px;
+}
+.table-ach-img {
+    width: 2.5em;
+}
+.game_container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.return {
+    margin-left: 10px;
+    margin-right: 10px;
+    position: absolute;
+    width: 120px;
+    left: 0;
+    top: 1%;
+}
+.arrows-container {
+    margin-right: 0.5rem;
+}
+.game-label {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 2rem;
+}
+.preview-container {
+    height: 10em;
+    margin-top: 1em;
+}
+.preview-img {
+    float: left;
+    height: 90%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 0 5px white inset;
+    margin-right: 20px;
+}
+.gain-nongain {
+    margin-left: 2rem;
+    font-size: 2em;
+}
+.gain-nongainMain {
+    margin-top: 1em;
+    margin-left: 1em;
+}
+.table-container {
+    margin-top: 1rem;
+}
+.settingsHeader {
+    margin-bottom: 20px;
+    color: white;
+}
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.main-game-cards {
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.last-ach-main{
+    margin-top: 4rem;
 }

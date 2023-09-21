@@ -19,12 +19,7 @@ export default function Settings() {
     return (
         <I18nextProvider i18n={i18n}>
             <div>
-                <button
-                    style={{
-                    marginRight: "1.5rem"
-                }}
-                    className="ButtonToHide gameButton"
-                    onClick={openModal}>{t('Settings')}</button>
+                <button className="ButtonToHide gameButton" onClick={openModal}>{t('Settings')}</button>
                 {isOpen && <SetingsWin isOpen={isOpen} onClose={closeModal}/>}
             </div>
         </I18nextProvider>

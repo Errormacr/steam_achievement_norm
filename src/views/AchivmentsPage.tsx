@@ -34,46 +34,23 @@ export default function AchPage() {
         <I18nextProvider i18n={i18n}>
             <div>
                 <ScrollToTopButton/>
-                <div
-                    style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
+                <div className="label-container">
                     <button
-                        style={{
-                        left: "0",
-                        marginLeft: "1rem",
-                        position: "absolute",
-                        padding: "1rem"
-                    }}
                         onClick={() => {
                         const root = ReactDOM.createRoot(document.getElementById("root"));
                         root.render(<App/>);
                     }}
-                        className="gameButton">{t('Return')}</button>
-                    <label
-                        style={{
-                        display: "inline-block",
-                        padding: "5px 10px",
-                        fontSize: "2rem"
-                    }}>{achivments.length} {t("Ach")}</label>
+                        className="gameButton return">{t('Return')}</button>
+                    <label className="game-label">{achivments.length} {t("Ach")}</label>
                 </div>
-                <div
-                    style={{
-                    marginTop: "1rem",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
+                <div className="details-container table-container">
                     {loaded && (<Table
                         data={[
                         achivments.sort((a : any, b : any) => {
                             return (b.unlocktime - a.unlocktime)
                         }),
                         true
-                    ]}
-                        allAch={true}/>)
+                    ]}/>)
 }</div>
             </div>
         </I18nextProvider>

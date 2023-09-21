@@ -19,7 +19,7 @@ interface Game {
     percent : number;
 }
 export default function GamePage({appid, backWindow} : any) {
-    const [game, 
+    const [game,
         setGame] = useState < Game > ({
         appid: 0,
         last_launch_time: 0,
@@ -51,7 +51,7 @@ export default function GamePage({appid, backWindow} : any) {
     return (
         <I18nextProvider i18n={i18n}>
             <div>
-            <ScrollToTopButton />
+                <ScrollToTopButton/>
                 <button
                     className="gameButton"
                     onClick={() => {
@@ -62,52 +62,19 @@ export default function GamePage({appid, backWindow} : any) {
                         root.render(<Games/>);
                     }
                 }}>{t('Return')}</button>
-                <div
-                    style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
-                    <label
-                        style={{
-                        display: "inline-block",
-                        padding: "5px 10px",
-                        fontSize: "2rem"
-                    }}>{game.gameName}</label>
+                <div className="label-container">
+                    <label className="game-label">{game.gameName}</label>
                 </div>
-                <div
-                    style={{
-                    height: "10em",
-                    marginTop: "1em",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
+                <div className="label-container preview-container">
+
                     <img
                         src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`}
-                        style={{
-                        float: "left",
-                        height: "90%",
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset",
-                        marginRight: "20px"
-                    }}
+                        className="preview-img"
                         alt={game.gameName}/>
                     <ProgressRad data-progress={`${game.percent}`}/>
-                    <label
-                        title={t('GainedFromAll')}
-                        style={{
-                        marginLeft: "2rem",
-                        fontSize: "2em"
-                    }}>{game.gained}/{game.all}</label>
-
+                    <label title={t('GainedFromAll')} className="gain-nongain">{game.gained}/{game.all}</label>
                 </div>
-                <div
-                    style={{
-                    marginTop: "10px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
+                <div className="details-container table-container">
                     {loaded && (<Table
                         data={[
                         game
