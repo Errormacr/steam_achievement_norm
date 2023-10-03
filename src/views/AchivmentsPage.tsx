@@ -6,9 +6,16 @@ import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
 import {useTranslation} from 'react-i18next';
 import ScrollToTopButton from "./ScrollToTopButton";
+import AchBox from "./AchContainer";
+interface achiv {
+    achivment : [];
+    gameName : string;
+}
 export default function AchPage() {
     const [achivments,
         setAchivments] = useState([{}]);
+    const [tableOrBox,
+        setTable] = useState(true);
     const [loaded,
         setLoaded] = useState(false);
     const {t} = useTranslation();
@@ -19,7 +26,7 @@ export default function AchPage() {
             for (let game of data) {
                 for (let ach of game.Achievement) {
                     if (ach.achieved) {
-                        achivmentsArr.push(ach);
+                        achivmentsArr.push({achivment: ach, gameName: game.gameName});
                     }
                 }
             }
@@ -42,15 +49,21 @@ export default function AchPage() {
                     }}
                         className="gameButton return">{t('Return')}</button>
                     <label className="game-label">{achivments.length} {t("Ach")}</label>
+                    <button onClick={() => {setTable(!tableOrBox);}}
+                     className="gameButton switchTable">{t('SwitchTable')}</button>
                 </div>
                 <div className="details-container table-container">
-                    {loaded && (<Table
-                        data={[
-                        achivments.sort((a : any, b : any) => {
-                            return (b.unlocktime - a.unlocktime)
-                        }),
-                        true
-                    ]}/>)
+                    {loaded && (tableOrBox
+                        ? (<Table
+                            data={[
+                            achivments.map((achiv: achiv)=> {return achiv.achivment}),
+                            true
+                        ]}/>)
+                        : (<AchBox
+                            data={[
+                            achivments,
+                            true
+                        ]}/>))
 }</div>
             </div>
         </I18nextProvider>

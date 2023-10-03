@@ -2,12 +2,14 @@ import React from "react";
 
 interface ProgressProps extends React.HTMLAttributes < HTMLDivElement > {
     'data-progress' ?: string;
-    'main' ?: boolean;
+    'SizeVnu': string;
+    'SizeVne': string;
 }
 
 const ProgressRad : React.FC < ProgressProps > = ({
     'data-progress': progress,
-    'main': main,
+    'SizeVnu': sizeVNu,
+    'SizeVne': sizeVN,
     ...rest
 }) => {
     const progressValue = +progress || 0;
@@ -20,11 +22,16 @@ const ProgressRad : React.FC < ProgressProps > = ({
     const progressStyle : React.CSSProperties & {
         '--progress' ?: string;
         '--progress-float' ?: string;
+        '--length' ?: string;
+        '--heigth' ?: string;
     } = {
         '--progress': `${rotation}deg`,
         '--progress-float': `${rotationSec}deg`,
+        '--length': `${sizeVN}`,
+        '--heigth': `${sizeVNu}`
     };
     const string = `${parsedProgress.toFixed(2)}%`;
+
     return (
         <div
             className="progress_rad"

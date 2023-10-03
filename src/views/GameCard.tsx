@@ -76,7 +76,7 @@ export function GameCard({game, backWindow} : any) {
                 last-launch={UnixTimestampToDate(last_launch_time) === "1970.1.1"
                 ? "No"
                 : UnixTimestampToDate(last_launch_time)}
-                game-playtime={`${playtime} часов`}
+                game-playtime={`${playtime} ${t('Hours')}`}
                 key={appid}
                 onClick={() => logging(appid, backWindow)}>
                 <div className="name-preview">
@@ -119,7 +119,7 @@ export function GameCard({game, backWindow} : any) {
                         <div className="cell middle" title={t("LastLaunch")}>{UnixTimestampToDate(last_launch_time) == "1970.1.1"
                                 ? "No"
                                 : UnixTimestampToDate(last_launch_time)}</div>
-                        <div className="cell right" title={t("PlayTime")}>{playtime + " часов"}</div>
+                        <div className="cell right" title={t("PlayTime")}>{playtime + ` ${t("Hours")}`}</div>
                     </div>
                 </div>
                 <div className="gameCard-background"></div>

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import Games from "./Games";
 import ProgressRad from "./rad_progress"
 import Table from './Table';
+import AchBox from "./AchContainer";
 import App from "./main_window";
 import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
@@ -34,6 +35,8 @@ export default function GamePage({appid, backWindow} : any) {
     });
     const [loaded,
         setLoaded] = useState(false);
+    const [tableOrBox,
+        setTableOrBox] = useState(true);
     const {t} = useTranslation();
 
     useEffect(useCallback(() => {
@@ -41,7 +44,7 @@ export default function GamePage({appid, backWindow} : any) {
             const games = JSON.parse(localStorage.getItem('ach'));
             const curGame = games.find((game : any) => game.appid === appid);
             setGame(curGame);
-            console.log(curGame.Achievement);
+            console.log(curGame);
             setLoaded(true);
         } catch (error) {
             window.alert(error.message);
@@ -71,23 +74,32 @@ export default function GamePage({appid, backWindow} : any) {
                         src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`}
                         className="preview-img"
                         alt={game.gameName}/>
-                    <ProgressRad data-progress={`${game.percent}`}/>
+                    <ProgressRad
+                        data-progress={`${game.percent}`}
+                        SizeVnu={'9rem'}
+                        SizeVne={'10rem'}/>
                     <label title={t('GainedFromAll')} className="gain-nongain">{game.gained}/{game.all}</label>
                 </div>
+                <button onClick={() => {setTableOrBox(!tableOrBox);}}
+                     className="gameButton switchTable">{t('SwitchTable')}</button>
                 <div className="details-container table-container">
-                    {loaded && (<Table
-                        data={[
-                        game
-                            .Achievement
-                            .sort((a : any, b : any) => {
-                                return (b.unlocktime - a.unlocktime)
-                            })
-                            .sort((a : any, b : any) => {
-                                return (b.achieved - a.achieved)
-                            }),
-                        false
-                    ]}/>)
-}
+                    {loaded && (tableOrBox
+                        ? (<Table
+                            data={[
+                            game
+                                .Achievement,
+                            false
+                        ]}/>)
+                        : (< AchBox data = {
+                            [
+                                game
+                                    .Achievement
+                                    .map((achiv) => {
+                                        return {achivment: achiv, gameName: game.gameName}
+                                    }),
+                                false
+                            ]
+                        } />))}
                 </div>
             </div>
         </I18nextProvider>

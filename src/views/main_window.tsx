@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {I18nextProvider} from 'react-i18next';
 import {useTranslation} from 'react-i18next';
 import ClearButton from './ClearButton'
-import { FriendTable } from "./FriendsMainScreen";
+import {FriendTable} from "./FriendsMainScreen";
 
 import i18n from 'i18next';
 
@@ -226,7 +226,7 @@ export default function App() {
         localStorage.setItem('steamId', "");
     };
     const handleUpdate = () => {
-        localStorage.setItem('recent',"");
+        localStorage.setItem('recent', "");
         update_user_data();
     };
     function showClears() {
@@ -282,15 +282,17 @@ export default function App() {
                                     onClick={showClears}>{t('changeIdKeyButton')}</button>
                                 <div id="clearsButtons" className="hiden">
                                     <div>
-                                        {ConstSteamWebApiKey == "" && (
-                                        <input
+                                        {ConstSteamWebApiKey == "" && (<input
                                             placeholder="Steam api key"
                                             id="key"
                                             className="idKeyInput"
                                             onChange={(event) => {
                                             setSteamWebApiKey(event.target.value);
                                         }}/>)}
-                                        {ConstSteamWebApiKey == "" && (<ClearButton text={t('ChangeKey')} onClick={handleKeyChange} id='keyChangeButton'/>)}
+                                        {ConstSteamWebApiKey == "" && (<ClearButton
+                                            text={t('ChangeKey')}
+                                            onClick={handleKeyChange}
+                                            id='keyChangeButton'/>)}
                                         {ConstSteamWebApiKey != "" && (<ClearButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
                                     </div>
                                     <div>
@@ -302,12 +304,15 @@ export default function App() {
                                             setSteamId(event.target.value);
                                         }}/>)}
 
-                                        {ConstSteamId == "" && (<ClearButton text={t('ChangeSteamID')} onClick={handleIdChange} id='steamIdChangeButton'/>
-                                        )}</div>
+                                        {ConstSteamId == "" && (<ClearButton
+                                            text={t('ChangeSteamID')}
+                                            onClick={handleIdChange}
+                                            id='steamIdChangeButton'/>)}</div>
 
-                                    {ConstSteamId != "" && (
-                                        <ClearButton text={t('ClearId')} onClick={handleIdClear} id='steamIdclearButton'/>
-                                    )}
+                                    {ConstSteamId != "" && (<ClearButton
+                                        text={t('ClearId')}
+                                        onClick={handleIdClear}
+                                        id='steamIdclearButton'/>)}
                                     <ClearButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>
                                 <Settings/>
@@ -348,14 +353,23 @@ export default function App() {
                                     }}>{t('AllAch')}</button>
                                     <br></br>
                                     <div className="gain-nongainMain">
-                                        <ProgressRad title={t('AverageProcent')} data-progress={percent} main={true}/></div>
+                                        <ProgressRad
+                                            title={t('AverageProcent')}
+                                            data-progress={percent}
+                                            SizeVnu={'9rem'}
+                                            SizeVne={'10rem'}/></div>
                                 </div>
                             )}</div>
                         <div className="main-game-cards">
                             {games.map((game) => (<GameCard game={game} backWindow="main"/>))}
                         </div>
-                        <div className="last-ach-main" id="container"></div>
-                        <FriendTable/>
+                        <div
+                            style={{
+                            display: 'flex',
+                            flexDirection: "column"
+                        }}>
+                            <div className="last-ach-main" id="container"></div>
+                        </div>
                     </div>
                 </LoadingOverlay>
                 <br></br>

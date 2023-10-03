@@ -51,8 +51,8 @@ label {
 
 .progress_rad {
     display: flex;
-    width: 9rem;
-    height: 9rem;
+    width: var(--heigth);
+    height: var(--heigth);
     border-radius: 50%;
     background: conic-gradient(red var(--progress), gray 0deg);
     font-size: 0;
@@ -64,8 +64,8 @@ label {
 .progress_rad::before {
     content: "";
     display: flex;
-    width: 10rem;
-    height: 10rem;
+    width: var(--length);
+    height: var(--length);
     margin-left: -0.5rem;
     margin-top: -0.5rem;
     position: absolute;
@@ -739,4 +739,11 @@ td {
 }
 .last-ach-main{
     margin-top: 4rem;
+}
+.switchTable {
+    position: absolute;
+    right: 0;
+    top:0;
+    margin-top: 1rem;
+    margin-right: 1rem;
 }

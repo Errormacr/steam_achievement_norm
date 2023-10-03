@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const fs = require('fs');
 app.use(cors({
     origin: '*',
     methods: [
@@ -10,18 +9,18 @@ app.use(cors({
     allowedHeaders: '*'
 }));
 app.use(express.json());
-async function get_data(urls_a, ip, key,lang) {
+async function get_data(urls_a, ip, key, lang) {
     const data_key = key;
     const data_st_id = ip;
     const responses = urls_a.map(appid => {
         try {
-            let ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid[0]}&key=${data_key}&steamid=${data_st_id}&l=${lang}`;
-            let perc_url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appid[0]}&format=json`;
-            let ico_url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid[0]}&key=${data_key}&l=${lang}`;
-            let urls = [ach_url, perc_url, ico_url];
+            const ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid[0]}&key=${data_key}&steamid=${data_st_id}&l=${lang}`;
+            const perc_url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appid[0]}&format=json`;
+            const ico_url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid[0]}&key=${data_key}&l=${lang}`;
+            const urls = [ach_url, perc_url, ico_url];
 
             // Add CORS headers to the request
-            let headers = new Headers();
+            const headers = new Headers();
             headers.append('Access-Control-Allow-Origin', 'http://localhost:4500');
             headers.append('timeout', '1000');
 
@@ -78,14 +77,37 @@ async function get_data(urls_a, ip, key,lang) {
     } catch (error) {
         console.error(error);
         throw new Error('An error occurred while retrieving data from Steam Web API');
-    }
-    finally {
+    } finally {
         return ret_data;
     }
 };
+
+async function getFriendList(apiKey, steamId) {
+    try {
+        const response = await fetch(`http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=${apiKey}&steamid=${steamId}`);
+
+        const friendIds = response.data.friendslist.friends.map(friend => friend.steamid);
+        return friendIds;
+    } catch (error) {
+        console.error('Ошибка при получении списка друзей:', error);
+        return [];
+    }
+}
+
+async function getPersonData(key,ids){
+    try {
+        const response = await fetch(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${key}&steamids=${ids}`)
+        const friendDate = response.data.friendslist.friends.map(friend => friend.steamid);
+    }
+    catch (error){
+        console.error('Ошибка при получении данных друга:', error);
+        return [];
+    }
+}
+
 app.post('/data', async(req, res) => {
     const array = req.body.appid;
-    const {steam_ip, key,lang} = req.query;
+    const {steam_ip, key, lang} = req.query;
     console.log(lang);
     const data = await get_data(JSON.parse(array), steam_ip, key, lang);
     res.send(data);

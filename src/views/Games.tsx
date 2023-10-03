@@ -119,7 +119,7 @@ export default function Games() {
         }
         setCompletedFilterDropdownOpen(false);
     };
-    const {t} = useTranslation();
+   
     const handleToggleArrows = () => {
         const container = document.getElementById("game_container");
         const elements = Array.from(container.children);
@@ -150,11 +150,12 @@ export default function Games() {
     };
 
     document.addEventListener('click', handleFilterOutsideClick);
+    const {t} = useTranslation();
+
     useEffect(useCallback(() => {
         try {
             root = ReactDOM.createRoot(document.getElementById("root"));
             const ach = JSON.parse(localStorage.getItem("ach"));
-            ach.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time);
             console.log(ach);
             setAch(ach);
 
