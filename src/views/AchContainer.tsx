@@ -332,7 +332,9 @@ export default function AchBox(data : any) {
                                 : ach['achivment'].percent <= 60
                                     ? "rare4"
                                     : "rare5"}
-                        key={ach['achivment'].displayName + ach['achivment'].percent}
+                        key={(data['data'][1]
+                        ? ach['gameName']
+                        : "") + ach['achivment'].displayName + ach['achivment'].percent + ach['achivment'].name}
                         src={ach['achivment'].achieved
                         ? ach['achivment'].icon
                         : ach['achivment'].icongray}
