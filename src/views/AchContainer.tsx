@@ -149,14 +149,12 @@ export default function AchBox(data : any) {
     };
 
     const handleToggleArrows = () => {
-        const container = document.getElementById("game_container");
-        const elements = Array.from(container.children);
-        elements.reverse()
-        elements.forEach((element) => container.appendChild(element));
         if (isArrowDownOpen) {
+            setSelectedValue(selectedValue + "rev");
             setIsArrowUpOpen(true);
             setIsArrowDownOpen(false);
         } else {
+            setSelectedValue(selectedValue.slice(0, -3));
             setIsArrowUpOpen(false);
             setIsArrowDownOpen(true);
         }
@@ -199,7 +197,7 @@ export default function AchBox(data : any) {
         }
     ];
 
-    if (data['data'][1]) {
+    if (!data['data'][1]) {
         sortingOptions.push({value: 'unlocked', label: 'Gained', reverseValue: 'unlockedrev'})
     }
     return (

@@ -317,7 +317,7 @@ export default function App() {
                                 </div>
                                 <Settings/>
                             </div>
-
+<div className="MainCont">
                             {personalName && (
                                 <div className="nickname-container">
                                     <label className="nickname">{personalName}</label>
@@ -359,7 +359,7 @@ export default function App() {
                                             SizeVnu={'9rem'}
                                             SizeVne={'10rem'}/></div>
                                 </div>
-                            )}</div>
+                            )}
                         <div className="main-game-cards">
                             {games.map((game) => (<GameCard game={game} backWindow="main"/>))}
                         </div>
@@ -370,7 +370,7 @@ export default function App() {
                         }}>
                             <div className="last-ach-main" id="container"></div>
                         </div>
-                    </div>
+                    </div></div></div>
                 </LoadingOverlay>
                 <br></br>
                 <ToastContainer/>

@@ -733,11 +733,13 @@ td {
 }
 .main-game-cards {
     margin-top: 4rem;
+    margin-left: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1em;
 }
 .last-ach-main{
+    margin-left:1.5rem  ;
     margin-top: 4rem;
 }
 .switchTable {
@@ -746,4 +748,11 @@ td {
     top:0;
     margin-top: 1rem;
     margin-right: 1rem;
+}
+.MainCont{
+    display: flex;
+    width: 100vw;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
 }
