@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import Ach_cont from './last_ach_containter';
 import ReactDOM from "react-dom/client";
 import Games from './Games';
-import {GameCard} from "./GameCard";
+import {GameCard, UnixTimestampToDate} from './GameCard';
 import ProgressRad from "./rad_progress";
 import AchPage from "./AchivmentsPage";
 import Settings from "./Settings";
@@ -12,10 +12,11 @@ import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {I18nextProvider} from 'react-i18next';
 import {useTranslation} from 'react-i18next';
-import ClearButton from './ClearButton'
+import IdKeyInput from "./IdKeyInput";
+import GameButton from "./GameButton";
 import {FriendTable} from "./FriendsMainScreen";
-
 import i18n from 'i18next';
+import "./scss/MainWindow.scss"
 
 export default function App() {
     const [SteamWebApiKey,
@@ -276,101 +277,94 @@ export default function App() {
                     <div id="header key" className="header">
                         <div>
                             <div id="clearDiv" className="clearDiv">
-                                <button
-                                    id="hideButton"
-                                    className="ButtonToHide gameButton"
-                                    onClick={showClears}>{t('changeIdKeyButton')}</button>
+                                <GameButton
+                                    id='hideButton'
+                                    additionalClass="ButtonToHide"
+                                    text={t('changeIdKeyButton')}
+                                    onClick={showClears}/>
                                 <div id="clearsButtons" className="hiden">
                                     <div>
-                                        {ConstSteamWebApiKey == "" && (<input
-                                            placeholder="Steam api key"
-                                            id="key"
-                                            className="idKeyInput"
+                                        {ConstSteamWebApiKey == "" && (<IdKeyInput
                                             onChange={(event) => {
                                             setSteamWebApiKey(event.target.value);
-                                        }}/>)}
-                                        {ConstSteamWebApiKey == "" && (<ClearButton
+                                        }}
+                                            placeholder="Steam api key"/>)}
+                                        {ConstSteamWebApiKey == "" && (<GameButton
                                             text={t('ChangeKey')}
                                             onClick={handleKeyChange}
                                             id='keyChangeButton'/>)}
-                                        {ConstSteamWebApiKey != "" && (<ClearButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
+                                        {ConstSteamWebApiKey != "" && (<GameButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
                                     </div>
                                     <div>
-                                        {ConstSteamId == "" && (<input
-                                            placeholder="Steam id"
-                                            className="idKeyInput"
-                                            id="key"
+                                        {ConstSteamId == "" && (<IdKeyInput
                                             onChange={(event) => {
                                             setSteamId(event.target.value);
-                                        }}/>)}
+                                        }}
+                                            placeholder="Steam id"/>)}
 
-                                        {ConstSteamId == "" && (<ClearButton
+                                        {ConstSteamId == "" && (<GameButton
                                             text={t('ChangeSteamID')}
                                             onClick={handleIdChange}
                                             id='steamIdChangeButton'/>)}</div>
 
-                                    {ConstSteamId != "" && (<ClearButton
+                                    {ConstSteamId != "" && (<GameButton
                                         text={t('ClearId')}
                                         onClick={handleIdClear}
                                         id='steamIdclearButton'/>)}
-                                    <ClearButton text={t('Update')} onClick={handleUpdate} id=''/>
+                                    <GameButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>
                                 <Settings/>
                             </div>
-<div className="MainCont">
-                            {personalName && (
-                                <div className="nickname-container">
-                                    <label className="nickname">{personalName}</label>
-                                    <br></br>
-                                    <img src={avaUrl}></img>
-                                    <br ></br>
-                                    <div className="stats-container">
-                                        <label className="nickname">{t('Ach')}: {Ach}</label>
+                            <div className="MainCont">
+                                {personalName && (
+                                    <div className="nickname-container">
+                                        <label className="nickname">{personalName}</label>
                                         <br></br>
+                                        <img src={avaUrl}></img>
+                                        <br ></br>
+                                        <div className="stats-container">
+                                            <label className="nickname">{t('Ach')}: {Ach}</label>
+                                            <br></br>
+                                            <br></br>
+                                            <label className="nickname">{t('Games')}: {gamesCount}</label>
+                                        </div>
                                         <br></br>
-                                        <label className="nickname">{t('Games')}: {gamesCount}</label>
+                                        <GameButton
+                                            id=''
+                                            additionalClass="gamesAchButtons"
+                                            onClick={(event) => {
+                                            const root = ReactDOM.createRoot(document.getElementById("root"));
+                                            root.render(<Games/>);
+                                        }}
+                                            text={t('GamesWithAch')}/>
+
+                                        <br/>
+                                        <GameButton
+                                            id=''
+                                            additionalClass="gamesAchButtons"
+                                            onClick={(event) => {
+                                            const root = ReactDOM.createRoot(document.getElementById("root"));
+                                            root.render(<AchPage/>);
+                                        }}
+                                            text={t('AllAch')}/>
+                                        <br></br>
+                                        <div className="gain-nongainMain">
+                                            <ProgressRad
+                                                title={t('AverageProcent')}
+                                                data-progress={percent}
+                                                SizeVnu={'9rem'}
+                                                SizeVne={'10rem'}/></div>
                                     </div>
-                                    <br></br>
-                                    <button
-                                        className="gameButton"
-                                        style={{
-                                        textTransform: "lowercase"
-                                    }}
-                                        onClick={() => {
-                                        const root = ReactDOM.createRoot(document.getElementById("root"));
-                                        root.render(<Games/>);
-                                    }}>{t('GamesWithAch')}</button>
-                                    <br/>
-                                    <button
-                                        className="gameButton"
-                                        style={{
-                                        marginTop: "0.3rem",
-                                        textTransform: "lowercase"
-                                    }}
-                                        onClick={() => {
-                                        const root = ReactDOM.createRoot(document.getElementById("root"));
-                                        root.render(<AchPage/>);
-                                    }}>{t('AllAch')}</button>
-                                    <br></br>
-                                    <div className="gain-nongainMain">
-                                        <ProgressRad
-                                            title={t('AverageProcent')}
-                                            data-progress={percent}
-                                            SizeVnu={'9rem'}
-                                            SizeVne={'10rem'}/></div>
+                                )}
+                                <div className="main-game-cards">
+                                    {games.map((game) => (<GameCard game={game} backWindow="main"/>))}
                                 </div>
-                            )}
-                        <div className="main-game-cards">
-                            {games.map((game) => (<GameCard game={game} backWindow="main"/>))}
+                                <div className="with-friends">
+                                    <div className="last-ach-main" id="container"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div
-                            style={{
-                            display: 'flex',
-                            flexDirection: "column"
-                        }}>
-                            <div className="last-ach-main" id="container"></div>
-                        </div>
-                    </div></div></div>
+                    </div>
                 </LoadingOverlay>
                 <br></br>
                 <ToastContainer/>

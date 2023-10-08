@@ -5,6 +5,8 @@ import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
 import {useTranslation} from 'react-i18next';
 import "./scss/AchConteiner.scss";
+import './scss/FilterSort.scss';
+import IdKeyInput from "./IdKeyInput";
 export default function AchBox(data : any) {
     const [isDropdownOpen,
         setDropdownOpen] = useState(false);
@@ -204,16 +206,12 @@ export default function AchBox(data : any) {
         <I18nextProvider i18n={i18n}>
             <div className="AchSet">
                 <div className="details-container">
-                    <div className="inputSortFilterContainer">
-                        {data['data'][1] && (<input
-                            type="text"
-                            className="idKeyInput"
+                    <div className="inputSortFilterContainerAch">
+                        {data['data'][1] && (<IdKeyInput
                             placeholder={t('SearchGames')}
                             value={searchQueryGameName}
                             onChange={handleSearchInputChange}/>)}
-                        <input
-                            type="text"
-                            className="idKeyInput"
+                        <IdKeyInput
                             placeholder={t('SearchAch')}
                             value={searchQueryAch}
                             onChange={handleAchSearchInputChange}/>

@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import './scss/ScrollToTop.scss'; 
 
 const ScrollToTopButton : React.FC = () => {
     const [isVisible,

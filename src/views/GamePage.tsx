@@ -9,6 +9,8 @@ import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
 import {useTranslation} from 'react-i18next';
 import ScrollToTopButton from "./ScrollToTopButton";
+import GameButton from "./GameButton";
+import "./scss/GamePage.scss";
 interface Game {
     appid : number;
     last_launch_time : number;
@@ -45,6 +47,10 @@ export default function GamePage({appid, backWindow} : any) {
             const curGame = games.find((game : any) => game.appid === appid);
             setGame(curGame);
             console.log(curGame);
+            const boxView = Boolean(localStorage.getItem("boxView"));
+            if (boxView) {
+                setTableOrBox(false);
+            }
             setLoaded(true);
         } catch (error) {
             window.alert(error.message);
@@ -55,16 +61,14 @@ export default function GamePage({appid, backWindow} : any) {
         <I18nextProvider i18n={i18n}>
             <div>
                 <ScrollToTopButton/>
-                <button
-                    className="gameButton"
-                    onClick={() => {
+                <GameButton id='' text={t('Return')} onClick={() => {
                     const root = ReactDOM.createRoot(document.getElementById("root"));
                     if (backWindow == "main") {
                         root.render(<App/>);
                     } else {
                         root.render(<Games/>);
                     }
-                }}>{t('Return')}</button>
+                }}/>
                 <div className="label-container">
                     <label className="game-label">{game.gameName}</label>
                 </div>
@@ -80,16 +84,17 @@ export default function GamePage({appid, backWindow} : any) {
                         SizeVne={'10rem'}/>
                     <label title={t('GainedFromAll')} className="gain-nongain">{game.gained}/{game.all}</label>
                 </div>
-                <button onClick={() => {setTableOrBox(!tableOrBox);}}
-                     className="gameButton switchTable">{t('SwitchTable')}</button>
-                <div className="details-container table-container">
+                <GameButton
+                    id=''
+                    text={t('SwitchTable')}
+                    onClick={() => {
+                    setTableOrBox(!tableOrBox);
+                    localStorage.setItem('boxView', String(!tableOrBox));
+                }}
+                    additionalClass="switchTable"/>
+                <div className="table-container">
                     {loaded && (tableOrBox
-                        ? (<Table
-                            data={[
-                            game
-                                .Achievement,
-                            false
-                        ]}/>)
+                        ? (<Table data={[game.Achievement, false]}/>)
                         : (< AchBox data = {
                             [
                                 game

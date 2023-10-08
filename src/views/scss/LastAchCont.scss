@@ -1,0 +1,14 @@
+.last_ach_container {
+    width: 470px;
+    height: 470px;
+    margin: 6px;
+    float: right;
+    display: flex;
+    flex-wrap: wrap;
+    & img {
+        width: calc(100% / 7.5);
+        margin-right: 5px;
+        height: calc(100% / 7.5);
+        object-fit: cover;
+    }
+}

@@ -3,6 +3,7 @@ import {UnixTimestampToDate} from "./GameCard";
 import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
 import {useTranslation} from 'react-i18next';
+import './scss/Table.scss';
 export default function Table(data : any) {
     const [game,
         setGame] = useState([]);

@@ -1,0 +1,93 @@
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 1rem;
+
+    /* Стили для кнопки */
+    .dropdown-button {
+        background-color: #445974;
+        color: white;
+        border: none;
+        margin-left: 0.5rem;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    /* Стили для списка */
+    .dropdown-list {
+        position: absolute;
+        background-color: rgba(50, 67, 138, 0.9);
+        color: white;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        white-space: nowrap;
+        border-radius: 1rem;
+        border-top: none;
+        z-index: 1000;
+
+        /* Стили для элементов списка */
+        li {
+            padding: 10px;
+            cursor: pointer;
+
+            &.active {
+                color: red;
+            }
+        }
+
+        /* Стили для группы фильтров */
+        .filter-group {
+            font-weight: bold;
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            &:first-child {
+                border-top-right-radius: 1rem;
+                border-top-left-radius: 1rem;
+            }
+        }
+    }
+}
+.arrows-container {
+    margin-right: 0.5rem;
+
+    .arrow {
+        color: #111923;
+        /* Общий цвет для стрелок */
+        cursor: pointer;
+        /* Добавляем указатель при наведении */
+        font-size: 24px;
+        /* Размер шрифта */
+
+        &.activate {
+            color: #00ff2f;
+            /* Общий цвет для стрелок */
+            cursor: pointer;
+            /* Добавляем указатель при наведении */
+            font-size: 24px;
+            /* Размер шрифта */
+        }
+    }
+}
+.cross {
+    position: absolute;
+    cursor: pointer;
+    height: 24px;
+    width: 24px;
+    margin-top: 1rem;
+    &:after,
+    &:before {
+        content: "";
+        position: absolute;
+        width: 24px;
+        height: 4px;
+        background: gray;
+    }
+    &:before {
+        transform: rotate(45deg);
+    }
+    &:after {
+        transform: rotate(-45deg);
+    }
+}

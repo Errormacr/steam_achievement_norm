@@ -1,5 +1,6 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
+import './scss/Settings.scss';
 type ModalProps = {
     isOpen: boolean;
     onClose: () => void;

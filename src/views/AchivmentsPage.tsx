@@ -6,6 +6,7 @@ import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
 import {useTranslation} from 'react-i18next';
 import ScrollToTopButton from "./ScrollToTopButton";
+import GameButton from "./GameButton";
 import AchBox from "./AchContainer";
 interface achiv {
     achivment : [];
@@ -30,6 +31,10 @@ export default function AchPage() {
                     }
                 }
             }
+            const boxView = Boolean(localStorage.getItem("boxView"));
+            if (boxView) {
+                setTable(false);
+            }
             setAchivments(achivmentsArr);
             console.log(achivments);
             setLoaded(true);
@@ -42,28 +47,34 @@ export default function AchPage() {
             <div>
                 <ScrollToTopButton/>
                 <div className="label-container">
-                    <button
+                    <GameButton
+                        id=''
                         onClick={() => {
                         const root = ReactDOM.createRoot(document.getElementById("root"));
                         root.render(<App/>);
                     }}
-                        className="gameButton return">{t('Return')}</button>
+                        additionalClass="return"
+                        text={t('Return')}/>
                     <label className="game-label">{achivments.length} {t("Ach")}</label>
-                    <button onClick={() => {setTable(!tableOrBox);}}
-                     className="gameButton switchTable">{t('SwitchTable')}</button>
+                    <GameButton
+                        id=''
+                        onClick={() => {
+                            setTable(!tableOrBox);
+                            localStorage.setItem('boxView', String(!tableOrBox));
+                        }}
+                        additionalClass="switchTable"
+                        text={t('SwitchTable')}/>
                 </div>
                 <div className="details-container table-container">
                     {loaded && (tableOrBox
                         ? (<Table
                             data={[
-                            achivments.map((achiv: achiv)=> {return achiv.achivment}),
+                            achivments.map((achiv : achiv) => {
+                                return achiv.achivment
+                            }),
                             true
                         ]}/>)
-                        : (<AchBox
-                            data={[
-                            achivments,
-                            true
-                        ]}/>))
+                        : (<AchBox data={[achivments, true]}/>))
 }</div>
             </div>
         </I18nextProvider>

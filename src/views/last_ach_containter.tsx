@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
+import "./scss/LastAchCont.scss";
 export default function Ach_cont() {
 
     const [allAch,

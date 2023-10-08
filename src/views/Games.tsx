@@ -6,6 +6,10 @@ import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
 import {useTranslation} from 'react-i18next';
 import ScrollToTopButton from "./ScrollToTopButton";
+import "./scss/Games.scss";
+import './scss/FilterSort.scss';
+import IdKeyInput from "./IdKeyInput";
+
 let root = ReactDOM.createRoot(document.getElementById("root"));
 function rend_app() {
     root.render(<App/>);
@@ -119,7 +123,7 @@ export default function Games() {
         }
         setCompletedFilterDropdownOpen(false);
     };
-   
+
     const handleToggleArrows = () => {
         const container = document.getElementById("game_container");
         const elements = Array.from(container.children);
@@ -196,15 +200,9 @@ export default function Games() {
     ];
     return (
         <I18nextProvider i18n={i18n}>
-            <div
-                className="details-container">
-                <div className="inputSortFilterContainer">
-                    <input
-                        type="text"
-                        className="idKeyInput"
-                        placeholder={t('SearchGames')}
-                        value={searchQuery}
-                        onChange={handleSearchInputChange}/>
+            <div className="gameFilterCont">
+                <div className="inputSortFilterContainerGames">
+                    <IdKeyInput placeholder={t('SearchGames')} value={searchQuery} onChange={handleSearchInputChange}/>
                     <div ref={listRef} className="dropdown-container">
                         <button
                             className="dropdown-button"
@@ -351,13 +349,7 @@ export default function Games() {
 
                 <br/>
                 <div id="game_container" className="game_container">
-                    {filteredAch.map((game) => (<GameCard
-                        style={{
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset"
-                    }}
-                        key={game.appid}
-                        window="games"
-                        game={game}/>))}
+                    {filteredAch.map((game) => (<GameCard key={game.appid} window="games" game={game}/>))}
                 </div>
             </div>
         </I18nextProvider>

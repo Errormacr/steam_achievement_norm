@@ -1,0 +1,16 @@
+.preview-container {
+    height: 10em;
+    margin-top: 1em;
+
+    .preview-img {
+        float: left;
+        height: 90%;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 0 5px white inset;
+        margin-right: 20px;
+    }
+
+    .gain-nongain {
+        margin-left: 2rem;
+        font-size: 2em;
+    }
+}

@@ -1,0 +1,20 @@
+.gameFilterCont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .inputSortFilterContainerGames {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2.5rem;
+        width: fit-content;
+        border-radius: 1rem;
+        background-color: #445974;
+    }
+}
+.game_container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}

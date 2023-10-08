@@ -1,32 +1,38 @@
-.AchSet{
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap:2rem;
+
+.AchSet {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .AchCont {
+        width: 70%;
+        height: fit-content;
+        margin: 6px;
+        display: flex;
+        gap: 1rem;
+        transform: translateZ(0);
+        flex-wrap: wrap;
+
+        img {
+            width: calc(100% / 20);
+            min-width: 3rem;
+            margin-right: 5px;
+            height: calc(100% / 20);
+            object-fit: cover;
+            &:hover {
+                transform: scale(1.5,1.5);
+                z-index: 999;
+            }
+        }
+    }
+    .inputSortFilterContainerAch {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2.5rem;
+        width: fit-content;
+        border-radius: 1rem;
+        background-color: #445974;
+    }
 }
-.AchCont {
-  width: 70%;
-  height: fit-content;
-  margin: 6px;
-  display: flex;
-  gap: 1rem;
-  transform:translateZ(0);
-  flex-wrap: wrap;
-}
-
-.AchCont img {
-  width: calc(100% / 20);
-  min-width: 3rem;
-  margin-right: 5px;
-  height: calc(100% / 20);
-  object-fit: cover;
-}
-
-
-.AchCont img:hover{
-  transform: scale(1.5,1.5);
-  z-index: 999;
-
-}
-
-

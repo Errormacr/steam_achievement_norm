@@ -1,4 +1,5 @@
 import React from "react";
+import './scss/ProgressRad.scss';
 
 interface ProgressProps extends React.HTMLAttributes < HTMLDivElement > {
     'data-progress' ?: string;

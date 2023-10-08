@@ -1,0 +1,90 @@
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    .clearDiv {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 3rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #304865;
+        border: 1px solid black;
+        .ButtonToHide {
+            margin-left: 1.5rem;
+            animation: buttonFlow 1s ease-in-out;
+        }
+        .hiden {
+            width: 100%;
+            height: 3rem;
+            justify-content: center;
+            align-items: center;
+            padding: 5rem;
+            display: none;
+            animation: buttonFlow 1s ease-in-out;
+        }
+        @keyframes buttonFlow {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    }
+}
+.MainCont {
+    display: flex;
+    width: 99vw;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    .nickname-container {
+        margin-top: 4rem;
+        margin-left: 1.5rem;
+
+        .gamesAchButtons {
+            margin-top: 0.3rem;
+            text-transform: lowercase;
+        }
+
+        .nickname {
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .stats-container {
+            margin-top: 1rem;
+        }
+        .gain-nongainMain {
+            margin-top: 1em;
+            margin-left: 1em;
+        }
+    }
+    .main-game-cards {
+        margin-top: 4rem;
+        margin-left: 2rem;
+        margin-right: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+    .with-friends {
+        display: flex;
+        flex-direction: column;
+        .last-ach-main {
+            margin-left: 1.5rem;
+            margin-top: 4rem;
+        }
+    }
+
+    
+}

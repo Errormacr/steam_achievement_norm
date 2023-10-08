@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import {I18nextProvider, useTranslation} from 'react-i18next';
 import i18n from 'i18next';
 import GamePage from "./GamePage";
+import "./scss/GameCard.scss";
 
 export function UnixTimestampToDate(props : number) {
     const date = new Date(props * 1000);

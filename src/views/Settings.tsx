@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import SetingsWin from './SetingsWin';
 import {I18nextProvider} from 'react-i18next';
 import i18n from 'i18next';
+import GameButton from './GameButton';
 import {useTranslation} from 'react-i18next';
 export default function Settings() {
     const [isOpen,
@@ -19,7 +20,7 @@ export default function Settings() {
     return (
         <I18nextProvider i18n={i18n}>
             <div>
-                <button className="ButtonToHide gameButton" onClick={openModal}>{t('Settings')}</button>
+                <GameButton id='' additionalClass='' onClick={openModal} text={t('Settings')}/>
                 {isOpen && <SetingsWin isOpen={isOpen} onClose={closeModal}/>}
             </div>
         </I18nextProvider>
