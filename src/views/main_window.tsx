@@ -41,6 +41,11 @@ export default function App() {
         setGames] = useState([]);
     const [load,
         setLoad] = useState(false);
+
+    const [apiKeyError,
+        setApiKeyError] = useState("");
+    const [steamIdError,
+        setSteamIdError] = useState("");
     const {t} = useTranslation();
     const RECENT_GAMES_API = `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/`;
     const PLAYER_SUMMARIES_API = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/`;
@@ -286,26 +291,46 @@ export default function App() {
                                     <div>
                                         {ConstSteamWebApiKey == "" && (<IdKeyInput
                                             onChange={(event) => {
-                                            setSteamWebApiKey(event.target.value);
+                                            const value = event.target.value;
+                                            const regex = /^[A-Z0-9]+$/;
+                                            if (regex.test(value) && value.length == 32) {
+                                                setSteamWebApiKey(value);
+                                                setApiKeyError("");
+                                            } else if (value.length != 32) {
+                                                setApiKeyError(t('ApiKeylengthMismatch'));
+                                            } else if (value == "") {
+                                                setApiKeyError(t('*ApiKeyRequired'));
+                                            } else {
+                                                setApiKeyError(t('*ApiKeyError'));
+                                            }
                                         }}
                                             placeholder="Steam api key"/>)}
-                                        {ConstSteamWebApiKey == "" && (<GameButton
-                                            text={t('ChangeKey')}
-                                            onClick={handleKeyChange}
-                                            id='keyChangeButton'/>)}
-                                        {ConstSteamWebApiKey != "" && (<GameButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
-                                    </div>
+                                        {apiKeyError && <div className="input-error">{apiKeyError}</div>}</div>
+                                    {ConstSteamWebApiKey == "" && (<GameButton
+                                        text={t('ChangeKey')}
+                                        onClick={handleKeyChange}
+                                        id='keyChangeButton'/>)}
+                                    {ConstSteamWebApiKey != "" && (<GameButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
                                     <div>
                                         {ConstSteamId == "" && (<IdKeyInput
                                             onChange={(event) => {
-                                            setSteamId(event.target.value);
+                                            const value = event.target.value;
+                                            const regex = /^[0-9]+$/;
+                                            if (regex.test(value)) {
+                                                setSteamWebApiKey(value);
+                                                setSteamIdError("");
+                                            } else if (value == "") {
+                                                setSteamIdError(t('*SteamIdRequired'));
+                                            } else {
+                                                setSteamIdError(t('*SteamIdError'));
+                                            }
                                         }}
                                             placeholder="Steam id"/>)}
-
+                                        {steamIdError && <div className="input-error">{steamIdError}</div>}</div>
                                         {ConstSteamId == "" && (<GameButton
                                             text={t('ChangeSteamID')}
                                             onClick={handleIdChange}
-                                            id='steamIdChangeButton'/>)}</div>
+                                            id='steamIdChangeButton'/>)}
 
                                     {ConstSteamId != "" && (<GameButton
                                         text={t('ClearId')}
