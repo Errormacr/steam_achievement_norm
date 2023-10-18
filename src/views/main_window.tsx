@@ -317,7 +317,7 @@ export default function App() {
                                             const value = event.target.value;
                                             const regex = /^[0-9]+$/;
                                             if (regex.test(value)) {
-                                                setSteamWebApiKey(value);
+                                                setSteamId(value);
                                                 setSteamIdError("");
                                             } else if (value == "") {
                                                 setSteamIdError(t('SteamIdRequired'));
