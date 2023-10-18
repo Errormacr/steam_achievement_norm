@@ -296,10 +296,10 @@ export default function App() {
                                             if (regex.test(value) && value.length == 32) {
                                                 setSteamWebApiKey(value);
                                                 setApiKeyError("");
-                                            } else if (value.length != 32) {
-                                                setApiKeyError(t('ApiKeylengthMismatch'));
                                             } else if (value == "") {
                                                 setApiKeyError(t('ApiKeyRequired'));
+                                            } else if (value.length != 32) {
+                                                setApiKeyError(t('ApiKeylengthMismatch'));
                                             } else {
                                                 setApiKeyError(t('ApiKeyError'));
                                             }
@@ -327,10 +327,10 @@ export default function App() {
                                         }}
                                             placeholder="Steam id"/>)}
                                         {steamIdError && <div className="input-error">{steamIdError}</div>}</div>
-                                        {ConstSteamId == "" && (<GameButton
-                                            text={t('ChangeSteamID')}
-                                            onClick={handleIdChange}
-                                            id='steamIdChangeButton'/>)}
+                                    {ConstSteamId == "" && (<GameButton
+                                        text={t('ChangeSteamID')}
+                                        onClick={handleIdChange}
+                                        id='steamIdChangeButton'/>)}
 
                                     {ConstSteamId != "" && (<GameButton
                                         text={t('ClearId')}
