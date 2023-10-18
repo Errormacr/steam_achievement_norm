@@ -63,5 +63,10 @@
     "percent90-100": "90-100%",
     "averageUp": "to avg procent",
     "Hours": "Hours",
-    "SwitchTable":"Change View"
+    "SwitchTable":"Change View",
+    "ApiKeylengthMismatch": "Key length = 32 symbol",
+    "ApiKeyRequired": "Key is required",
+    "ApiKeyError": "Key is not a valid",
+    "SteamIdRequired": "SteamID is required",
+    "SteamIdError": "SteamID is not a valid"
 }

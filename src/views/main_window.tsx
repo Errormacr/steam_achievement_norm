@@ -299,9 +299,9 @@ export default function App() {
                                             } else if (value.length != 32) {
                                                 setApiKeyError(t('ApiKeylengthMismatch'));
                                             } else if (value == "") {
-                                                setApiKeyError(t('*ApiKeyRequired'));
+                                                setApiKeyError(t('ApiKeyRequired'));
                                             } else {
-                                                setApiKeyError(t('*ApiKeyError'));
+                                                setApiKeyError(t('ApiKeyError'));
                                             }
                                         }}
                                             placeholder="Steam api key"/>)}
@@ -320,9 +320,9 @@ export default function App() {
                                                 setSteamWebApiKey(value);
                                                 setSteamIdError("");
                                             } else if (value == "") {
-                                                setSteamIdError(t('*SteamIdRequired'));
+                                                setSteamIdError(t('SteamIdRequired'));
                                             } else {
-                                                setSteamIdError(t('*SteamIdError'));
+                                                setSteamIdError(t('SteamIdError'));
                                             }
                                         }}
                                             placeholder="Steam id"/>)}
