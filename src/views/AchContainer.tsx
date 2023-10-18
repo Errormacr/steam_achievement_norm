@@ -49,7 +49,7 @@ export default function AchBox(data : any) {
         setDropdownOpen(false);
     };
     const {t} = useTranslation();
-    const filteredAch = allAch.filter((game) => {
+    let filteredAch = allAch.filter((game) => {
         let nameMatch = true
         if (data['data'][1]) {
             const gameName = game
