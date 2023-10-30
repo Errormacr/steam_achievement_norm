@@ -86,7 +86,11 @@ async function getFriendList(apiKey, steamId) {
     try {
         const response = await fetch(`http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=${apiKey}&steamid=${steamId}`);
 
-        const friendIds = response.data.friendslist.friends.map(friend => friend.steamid);
+        const friendIds = response
+            .data
+            .friendslist
+            .friends
+            .map(friend => friend.steamid);
         return friendIds;
     } catch (error) {
         console.error('Ошибка при получении списка друзей:', error);
@@ -94,12 +98,15 @@ async function getFriendList(apiKey, steamId) {
     }
 }
 
-async function getPersonData(key,ids){
+async function getPersonData(key, ids) {
     try {
         const response = await fetch(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${key}&steamids=${ids}`)
-        const friendDate = response.data.friendslist.friends.map(friend => friend.steamid);
-    }
-    catch (error){
+        const friendDate = response
+            .data
+            .friendslist
+            .friends
+            .map(friend => friend.steamid);
+    } catch (error) {
         console.error('Ошибка при получении данных друга:', error);
         return [];
     }
@@ -112,7 +119,37 @@ app.post('/data', async(req, res) => {
     const data = await get_data(JSON.parse(array), steam_ip, key, lang);
     res.send(data);
 });
+app.get('/recent', async(req, res) => {
+    const key = req.query.key;
+    const id = req.query.id;
+    const data = await fetch(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${key}&steamid=${id}&format=json`);
+    res.send(data.json());
+})
+app.get('/player_sum', async (req, res) => {
+    const key = req.query.key;
+    const id = req.query.id;
+    console.log(key, id);
+    try {
+      const response = await fetch(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${key}&steamids=${id}&format=json`);
+      const data = await response.json();
+      res.send(data);
+    } catch (error) {
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
 
+  app.get('/owned', async (req, res) => {
+    const key = req.query.key;
+    const id = req.query.id;
+    try {
+      const response = await fetch(`http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${key}&steamid=${id}&format=json&include_appinfo=true&include_played_free_games=true`);
+      const data = await response.json();
+      res.send(data);
+    } catch (error) {
+      res.status(500).send('Internal Server Error');
+    }
+  });
 app.listen(4500, () => {
     console.log('listening on 4500');
 });

@@ -22,7 +22,7 @@ export default function Table(data : any) {
             window.alert(error.message);
         }
     }, [allAChPage, allAChPage]), []);
-
+    
     const achSort = game.sort((a : any, b : any) => {
         switch (sortConfig) {
             case "namerev":
@@ -36,7 +36,7 @@ export default function Table(data : any) {
             case "descrev":
                 return a
                     .description
-                    .localeCompare(b.description);
+                    .localeCompare(b.description); 
             case "desc":
                 return b
                     .description

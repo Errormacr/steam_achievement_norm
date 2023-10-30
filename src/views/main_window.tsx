@@ -47,9 +47,6 @@ export default function App() {
     const [steamIdError,
         setSteamIdError] = useState("");
     const {t} = useTranslation();
-    const RECENT_GAMES_API = `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/`;
-    const PLAYER_SUMMARIES_API = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/`;
-    const OWNED_GAMES_API = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`;
 
     const get_api = useCallback(async(urls_a : string[]) => {
         try {
@@ -76,8 +73,7 @@ export default function App() {
 
         if (data_key && data_st_id) {
             try {
-                const recent_game = `${RECENT_GAMES_API}?key=${data_key}&steamid=${data_st_id}&format=json`;
-                let response = await fetch(recent_game);
+                let response = await fetch(`http://localhost:4500/recent?key=${data_key}&id=${data_st_id}`);
                 let data = await response.json();
                 const before = localStorage.getItem("recent");
 
@@ -85,19 +81,20 @@ export default function App() {
                     const [data,
                         user_data,
                         games_data] = await Promise.all([
-                        fetch(recent_game).then(response => response.json()),
-                        fetch(`${PLAYER_SUMMARIES_API}?key=${data_key}&steamids=${data_st_id}`).then(response => response.json()),
-                        fetch(`${OWNED_GAMES_API}?key=${data_key}&steamid=${data_st_id}&format=json&include_appinfo=true&include_played_free_games=true`).then(response => response.json())
+                        fetch(`http://localhost:4500/recent?key=${data_key}&id=${data_st_id}`).then(response => response.json()),
+                        fetch(`http://localhost:4500/player_sum?key=${data_key}&id=${data_st_id}`).then(response => response.json()),
+                        fetch(`http://localhost:4500/owned?key=${data_key}&id=${data_st_id}`).then(response => response.json())
                     ]);
 
                     localStorage.setItem("recent", JSON.stringify(data));
-
+                    console.log(user_data);
                     const personalName = user_data.response.players[0].personaname;
                     setpersonalName(personalName);
                     const avaUrl = user_data.response.players[0].avatarfull;
                     localStorage.setItem('ava', avaUrl);
                     localStorage.setItem('name', personalName);
                     setavaUrl(avaUrl);
+                    console.log(games_data);
                     setgamesCount(games_data.response.games.length);
                     const data_g_ach_url : any[] = [];
                     for (let ach in games_data.response.games) {

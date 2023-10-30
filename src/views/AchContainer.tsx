@@ -49,7 +49,8 @@ export default function AchBox(data : any) {
         setDropdownOpen(false);
     };
     const {t} = useTranslation();
-    let filteredAch = allAch.filter((game) => {
+    let filteredAch =data['data'][1] ? 
+    allAch.filter((game) => {
         let nameMatch = true
         if (data['data'][1]) {
             const gameName = game
@@ -129,6 +130,87 @@ export default function AchBox(data : any) {
             default:
                 return 0;
         }
+    })
+    : allAch.sort((a : any, b : any) => {
+        a = a['achivment'];
+        b = b['achivment'];
+        switch (selectedValue) {
+            case "namerev":
+                return a
+                    .displayName
+                    .localeCompare(b.displayName);
+            case "name":
+                return b
+                    .displayName
+                    .localeCompare(a.displayName);
+            case "descrev":
+                return a
+                    .description
+                    .localeCompare(b.description);
+            case "desc":
+                return b
+                    .description
+                    .localeCompare(a.description);
+            case "procrev":
+                return a.percent - b.percent;
+            case "proc":
+                return b.percent - a.percent;
+            case "datarev":
+                if (a.unlocktime === 0) {
+                    return 1;
+                }
+                if (b.unlocktime === 0) {
+                    return -1;
+                }
+                return a.unlocktime - b.unlocktime;
+            case "data":
+                if (a.unlocktime === 0) {
+                    return 1;
+                }
+                if (b.unlocktime === 0) {
+                    return -1;
+                }
+                return b.unlocktime - a.unlocktime;
+            case "unlockedrev":
+                return a.achieved - b.achieved;
+            case "unlocked":
+                return b.achieved - a.achieved;
+            default:
+                return 0;
+        }
+    }).filter((game) => {
+        let nameMatch = true
+        if (data['data'][1]) {
+            const gameName = game
+                .gameName
+                .toLowerCase();
+
+            // Фильтрация по имени игры
+
+            nameMatch = gameName
+                .toLowerCase()
+                .includes(searchQueryGameName.toLowerCase());
+        }
+        const nameAchMatch = game['achivment']
+            .displayName
+            .toLowerCase()
+            .includes(searchQueryAch.toLowerCase())
+        // Фильтрация по времени
+        let completionMatch;
+        if (selectedCompletionFilterValue == null) {
+            completionMatch = true;
+        } else if (selectedCompletionFilterValue.startsWith("percent")) {
+            let rangeBounds = selectedCompletionFilterValue
+                .replace("percent", "")
+                .split("-")
+                .map(Number);
+
+            completionMatch = rangeBounds[0] < game['achivment'].percent && game['achivment'].percent < rangeBounds[1];
+        } else {
+            completionMatch = true;
+        }
+        // Фильтрация по завершению Возвращаем true, только если все условия выполняются
+        return nameMatch && completionMatch && nameAchMatch;
     });
     useEffect(useCallback(() => {
         try {
