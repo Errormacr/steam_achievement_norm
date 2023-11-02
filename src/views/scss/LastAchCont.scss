@@ -12,76 +12,24 @@
         height: calc(100% / 7.5);
         object-fit: cover;
         position: relative;
-        .Mask {
-            position: absolute;
-            top: -20%;
-            right: -20%;
-            bottom: -20%;
-            left: -20%;
-            -webkit-mask-image: url("https://community.cloudflare.steamstatic.com/public/images/applications/community/square_mask.png?v=228c634fbd49cb0abca8f133da74568e");
-            mask-image: url("https://community.cloudflare.steamstatic.com/public/images/applications/community/square_mask.png?v=228c634fbd49cb0abca8f133da74568e");
-            -webkit-mask-repeat: repeat;
-            mask-repeat: repeat;
-            -webkit-mask-size: 100%;
-            mask-size: 100%;
-            overflow: hidden;
-            color: black;
-            .second_mask {
-                animation-name: rotate;
-                animation-duration: 8s;
-                width: 100%;
-                height: 100%    ;
-                animation-timing-function: linear;
-                animation-iteration-count: infinite;
-                animation-direction: reverse;
-                animation-play-state: running;
-                -webkit-mask-image: url(https://community.cloudflare.steamstatic.com/public/images/applications/community/star_mask.png?v=f5bdbe2b5b2e06312107ec50bcce2983);
-                mask-image: url(https://community.cloudflare.steamstatic.com/public/images/applications/community/star_mask.png?v=f5bdbe2b5b2e06312107ec50bcce2983);
-
-                .third_mask {
-                    position: absolute;
-                    top: -10px;
-                    right: -10px;
-                    bottom: -10px;
-                    left: -10px;
-                    animation-name: achievementiconbase_rotate_1Mdch;
-                    animation-duration: 6s;
-                    animation-timing-function: linear;
-                    animation-iteration-count: infinite;
-                    animation-play-state: running;
-                    mix-blend-mode: overlay;
-                    overflow: hidden
-                }
-.Crare1{
-    background: repeating-conic-gradient(rgba(255, 217, 0, 0.178) 0%, rgba(255, 184, 78, 0) 6%, rgba(255, 217, 0, 0.178) 10%, rgb(255, 184, 78) 26%, rgba(255, 217, 0, 0.178) 35%, rgb(255, 184, 78) 40%, rgba(255, 217, 0, 0.178) 60%, rgb(255, 184, 78) 82%, rgba(255, 217, 0, 0.178) 100%);
-
-}
-                @keyframes achievementiconbase_rotate_1Mdch {
-                    to {
-                        transform: rotate(1turn)
-                    }
-                }
-                
-            }
-            
-            }
-        }
+        
     }
+}
 
 .last_ach_container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform .1s ease-in-out;
+    transition: transform 0.1s ease-in-out;
     position: relative;
-    &::after{
+    &::after {
         background: linear-gradient(to right, #3b414a 0%, #2c3138 95%);
         position: absolute;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
-        content: ""
+        content: "";
     }
 }
 @keyframes rotate {

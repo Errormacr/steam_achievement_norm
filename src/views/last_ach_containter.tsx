@@ -34,7 +34,7 @@ export default function Ach_cont() {
             <div className="last_ach_container">
 
                 {allAch.map((ach) => (
-                    <div className="Cont">
+                    <div className="Cont"  key={ach.name}>
                         <div className="Mask">
                             <div className="second_mask">
                                 <div className={ach.percent <= 5
