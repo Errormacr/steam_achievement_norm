@@ -38,16 +38,16 @@ label {
 }
 
 .rare2 {
-    border: #aa03aa 2px solid;
-    box-shadow: 0 0 2px 1px #aa03aa, 0 0 16px 1px #aa03aa;
+    border: #800080 2px solid;
+    box-shadow: 0 0 2px 1px #800080, 0 0 16px 1px #800080;
 }
 .rare3 {
-    border: #00BFFF 2px solid;
-    box-shadow: 0 0 2px 1px #00BFFF, 0 0 16px 1px #00BFFF;
+    border: #0000FF 2px solid;
+    box-shadow: 0 0 2px 1px #0000FF, 0 0 16px 1px #0000FF;
 }
 .rare4 {
-    border: #90EE90 2px solid;
-    box-shadow: 0 0 2px 1px #90EE90, 0 0 16px 1px #90EE90;
+    border: #008000 2px solid;
+    box-shadow: 0 0 2px 1px #008000, 0 0 16px 1px #008000;
 }
 .rare5 {
     border: #00b500 2px solid;
