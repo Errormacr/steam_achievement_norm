@@ -33,6 +33,7 @@ label {
 }
 
 .rare1 {
+    border: rgba(255,184,78,.6) 2px solid;
     box-shadow: 0 0 2px 1px rgba(255,184,78,.6), 0 0 16px 1px rgba(255,184,78,.4);
 }
 

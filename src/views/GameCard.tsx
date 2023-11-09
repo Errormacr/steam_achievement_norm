@@ -127,7 +127,22 @@ export function GameCard({game, backWindow} : any) {
                 <div className="achievement-images">
                     {Achievement.sort((a : any, b : any) => b.unlocktime - a.unlocktime)
                         .slice(0, 7)
-                        .map((achievement : any) => (<img
+                        .map((achievement : any) => (
+                            <div className="Cont"  key={achievement.name}>
+                            <div className="Mask">
+                                <div className="second_mask">
+                                    <div className={achievement.percent <= 5
+                        ? "third_mask Crare1"
+                        : achievement.percent <= 20
+                            ? "third_mask Crare2"
+                            : achievement.percent <= 45
+                                ? "third_mask Crare3"
+                                : achievement.percent <= 60
+                                    ? "third_mask Crare4"
+                                    : "third_mask Crare5"}></div>
+                                </div>
+                            </div>
+                        <img
                             key={achievement.name}
                             className={`achievement-image ${achievement.percent <= 5
                             ? "rare1"
@@ -137,7 +152,7 @@ export function GameCard({game, backWindow} : any) {
                                     ? "rare3"
                                     : achievement.percent <= 60
                                         ? "rare4"
-                                        : "rare5"}`}
+                                        : "rare5"}`} 
                             src={achievement.achieved
                             ? achievement.icon
                             : achievement.icongray}
@@ -149,7 +164,7 @@ export function GameCard({game, backWindow} : any) {
                                 .toFixed(2)} %\n${achievement
                                 .unlocktime
                                 ? UnixTimestampToDate(achievement.unlocktime)
-                                : ""}`}/>))}
+                                : ""}`}/></div>))}
                 </div>
             </div>
         </I18nextProvider>

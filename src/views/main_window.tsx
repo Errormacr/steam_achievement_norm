@@ -52,7 +52,7 @@ export default function App() {
         try {
             const data_key = localStorage.getItem("api-key");
             const data_st_id = localStorage.getItem("steamId");
-            const ret_data = await fetch(`http://localhost:4500/data?steam_ip=${data_st_id}&key=${data_key}&lang=${t('steamLanguage')}`, {
+            const ret_data = await fetch(`http://localhost:4500/data?steam_id=${data_st_id}&key=${data_key}&lang=${t('steamLanguage')}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -61,6 +61,9 @@ export default function App() {
                     appid: JSON.stringify(urls_a)
                 })
             });
+            console.log(JSON.stringify({
+                appid: JSON.stringify(urls_a)
+            }));
             return ret_data.json();
         } catch (error) {
             console.error(error);
@@ -104,7 +107,6 @@ export default function App() {
                             (games_data.response.games[ach].playtime_forever / 60).toFixed(1)
                         ]);
                     }
-
                     const ach = await calculateAchievementCount(data_g_ach_url);
                     setAch(ach[0].toString());
                     const predproc = localStorage.getItem('percent');
