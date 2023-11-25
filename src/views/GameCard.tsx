@@ -143,7 +143,6 @@ export function GameCard({game, backWindow} : any) {
                                 </div>
                             </div>
                         <img
-                            key={achievement.name}
                             className={`achievement-image ${achievement.percent <= 5
                             ? "rare1"
                             : achievement.percent <= 20
