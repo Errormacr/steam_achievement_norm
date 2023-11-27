@@ -32,7 +32,23 @@ export default function Ach_cont() {
     return (
         <I18nextProvider i18n={i18n}>
             <div className="last_ach_container">
-                {allAch.map((ach) => (<img
+
+                {allAch.map((ach) => (
+                    <div className="Cont"  key={ach.name}>
+                        <div className="Mask">
+                            <div className="second_mask">
+                                <div className={ach.percent <= 5
+                    ? "third_mask Crare1"
+                    : ach.percent <= 20
+                        ? "third_mask Crare2"
+                        : ach.percent <= 45
+                            ? "third_mask Crare3"
+                            : ach.percent <= 60
+                                ? "third_mask Crare4"
+                                : "third_mask Crare5"}></div>
+                            </div>
+                        </div>
+                <img
                     className={ach.percent <= 5
                     ? "rare1"
                     : ach.percent <= 20
@@ -50,7 +66,9 @@ export default function Ach_cont() {
                     .displayName}\n${ach
                     .description}\n${ach
                     .percent
-                    .toFixed(2)}\n${new Date(ach.unlocktime * 1000)}`}/>))}
+                    .toFixed(2)}\n${new Date(ach.unlocktime * 1000)}`}/>
+                    
+                    </div>))}
             </div>
         </I18nextProvider>
     )

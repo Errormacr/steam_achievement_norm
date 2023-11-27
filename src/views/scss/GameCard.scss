@@ -77,6 +77,12 @@
             }
         }
     }
+    .Cont {
+        width: 50px;
+        height: 50px;
+        position: relative;
+        object-fit: cover;
+    }
     .achievement-images {
         margin-right: 5px;
         margin-top: 10px;
@@ -84,9 +90,22 @@
         .achievement-image {
             width: 40px;
             margin-left: 5px;
+            object-fit: cover;
+            transition: transform 0.1s ease-in-out;
+            position: relative;
             margin-right: 5px;
             height: 40px;
+            &::after {
+                background: linear-gradient(to right, #3b414a 0%, #2c3138 95%);
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                content: "";
+            }
         }
+
     }
 
     .achievement-images,

@@ -41,16 +41,18 @@ export default function App() {
         setGames] = useState([]);
     const [load,
         setLoad] = useState(false);
+
+    const [apiKeyError,
+        setApiKeyError] = useState("");
+    const [steamIdError,
+        setSteamIdError] = useState("");
     const {t} = useTranslation();
-    const RECENT_GAMES_API = `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/`;
-    const PLAYER_SUMMARIES_API = `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/`;
-    const OWNED_GAMES_API = `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/`;
 
     const get_api = useCallback(async(urls_a : string[]) => {
         try {
             const data_key = localStorage.getItem("api-key");
             const data_st_id = localStorage.getItem("steamId");
-            const ret_data = await fetch(`http://localhost:4500/data?steam_ip=${data_st_id}&key=${data_key}&lang=${t('steamLanguage')}`, {
+            const ret_data = await fetch(`http://localhost:4500/data?steam_id=${data_st_id}&key=${data_key}&lang=${t('steamLanguage')}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -59,6 +61,9 @@ export default function App() {
                     appid: JSON.stringify(urls_a)
                 })
             });
+            console.log(JSON.stringify({
+                appid: JSON.stringify(urls_a)
+            }));
             return ret_data.json();
         } catch (error) {
             console.error(error);
@@ -71,8 +76,7 @@ export default function App() {
 
         if (data_key && data_st_id) {
             try {
-                const recent_game = `${RECENT_GAMES_API}?key=${data_key}&steamid=${data_st_id}&format=json`;
-                let response = await fetch(recent_game);
+                let response = await fetch(`http://localhost:4500/recent?key=${data_key}&id=${data_st_id}`);
                 let data = await response.json();
                 const before = localStorage.getItem("recent");
 
@@ -80,19 +84,20 @@ export default function App() {
                     const [data,
                         user_data,
                         games_data] = await Promise.all([
-                        fetch(recent_game).then(response => response.json()),
-                        fetch(`${PLAYER_SUMMARIES_API}?key=${data_key}&steamids=${data_st_id}`).then(response => response.json()),
-                        fetch(`${OWNED_GAMES_API}?key=${data_key}&steamid=${data_st_id}&format=json&include_appinfo=true&include_played_free_games=true`).then(response => response.json())
+                        fetch(`http://localhost:4500/recent?key=${data_key}&id=${data_st_id}`).then(response => response.json()),
+                        fetch(`http://localhost:4500/player_sum?key=${data_key}&id=${data_st_id}`).then(response => response.json()),
+                        fetch(`http://localhost:4500/owned?key=${data_key}&id=${data_st_id}`).then(response => response.json())
                     ]);
 
                     localStorage.setItem("recent", JSON.stringify(data));
-
+                    console.log(user_data);
                     const personalName = user_data.response.players[0].personaname;
                     setpersonalName(personalName);
                     const avaUrl = user_data.response.players[0].avatarfull;
                     localStorage.setItem('ava', avaUrl);
                     localStorage.setItem('name', personalName);
                     setavaUrl(avaUrl);
+                    console.log(games_data);
                     setgamesCount(games_data.response.games.length);
                     const data_g_ach_url : any[] = [];
                     for (let ach in games_data.response.games) {
@@ -102,7 +107,6 @@ export default function App() {
                             (games_data.response.games[ach].playtime_forever / 60).toFixed(1)
                         ]);
                     }
-
                     const ach = await calculateAchievementCount(data_g_ach_url);
                     setAch(ach[0].toString());
                     const predproc = localStorage.getItem('percent');
@@ -286,26 +290,46 @@ export default function App() {
                                     <div>
                                         {ConstSteamWebApiKey == "" && (<IdKeyInput
                                             onChange={(event) => {
-                                            setSteamWebApiKey(event.target.value);
+                                            const value = event.target.value;
+                                            const regex = /^[A-Z0-9]+$/;
+                                            if (regex.test(value) && value.length == 32) {
+                                                setSteamWebApiKey(value);
+                                                setApiKeyError("");
+                                            } else if (value == "") {
+                                                setApiKeyError(t('ApiKeyRequired'));
+                                            } else if (value.length != 32) {
+                                                setApiKeyError(t('ApiKeylengthMismatch'));
+                                            } else {
+                                                setApiKeyError(t('ApiKeyError'));
+                                            }
                                         }}
                                             placeholder="Steam api key"/>)}
-                                        {ConstSteamWebApiKey == "" && (<GameButton
-                                            text={t('ChangeKey')}
-                                            onClick={handleKeyChange}
-                                            id='keyChangeButton'/>)}
-                                        {ConstSteamWebApiKey != "" && (<GameButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
-                                    </div>
+                                        {apiKeyError && <div className="input-error">{apiKeyError}</div>}</div>
+                                    {ConstSteamWebApiKey == "" && (<GameButton
+                                        text={t('ChangeKey')}
+                                        onClick={handleKeyChange}
+                                        id='keyChangeButton'/>)}
+                                    {ConstSteamWebApiKey != "" && (<GameButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
                                     <div>
                                         {ConstSteamId == "" && (<IdKeyInput
                                             onChange={(event) => {
-                                            setSteamId(event.target.value);
+                                            const value = event.target.value;
+                                            const regex = /^[0-9]+$/;
+                                            if (regex.test(value)) {
+                                                setSteamId(value);
+                                                setSteamIdError("");
+                                            } else if (value == "") {
+                                                setSteamIdError(t('SteamIdRequired'));
+                                            } else {
+                                                setSteamIdError(t('SteamIdError'));
+                                            }
                                         }}
                                             placeholder="Steam id"/>)}
-
-                                        {ConstSteamId == "" && (<GameButton
-                                            text={t('ChangeSteamID')}
-                                            onClick={handleIdChange}
-                                            id='steamIdChangeButton'/>)}</div>
+                                        {steamIdError && <div className="input-error">{steamIdError}</div>}</div>
+                                    {ConstSteamId == "" && (<GameButton
+                                        text={t('ChangeSteamID')}
+                                        onClick={handleIdChange}
+                                        id='steamIdChangeButton'/>)}
 
                                     {ConstSteamId != "" && (<GameButton
                                         text={t('ClearId')}

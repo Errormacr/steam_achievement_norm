@@ -63,6 +63,10 @@
     "percent90-100": "90-100%",
     "averageUp": "к среднему проценту",
     "Hours": "часов",
-    "SwitchTable":"Сменить вид"
-
+    "SwitchTable": "Сменить вид",
+    "ApiKeylengthMismatch": "Длина ключа = 32 символа",
+    "ApiKeyRequired": "Необходим ключ",
+    "ApiKeyError": "Ключ неправильный",
+    "SteamIdRequired": "Необходим SteamID",
+    "SteamIdError": "SteamID неправильный"
 }
