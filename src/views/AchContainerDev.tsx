@@ -1,9 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from "react";
-import {UnixTimestampToDate} from "./GameCard";
 import React from 'react';
-import {I18nextProvider} from 'react-i18next';
+import {I18nextProvider, useTranslation} from 'react-i18next';
 import i18n from 'i18next';
-import {useTranslation} from 'react-i18next';
 import "./scss/AchConteiner.scss";
 import './scss/FilterSort.scss';
 import IdKeyInput from "./IdKeyInput";
@@ -29,10 +27,9 @@ export default function AchBox(data : any) {
         setSelectedCompletionFilterValue] = useState < string | null > (null);
     const [game,
         setGame] = useState([]);
-    const [allAChPage,
-        setAllAchPage] = useState(Boolean);
     const [allAch,
         setAllAch] = useState([]);
+
     const [searchQueryGameName,
         setSearchQueryGameName] = useState('');
     const handleSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
@@ -49,169 +46,169 @@ export default function AchBox(data : any) {
         setDropdownOpen(false);
     };
     const {t} = useTranslation();
-    const filteredAch =data['data'][1] ? 
-    allAch.filter((game) => {
-        let nameMatch = true
-        if (data['data'][1]) {
-            const gameName = game
-                .gameName
-                .toLowerCase();
+    const filteredAch = data['data'][1]
+        ? allAch.filter((game) => {
+            let nameMatch = true
+            if (data['data'][1]) {
+                const gameName = game
+                    .gameName
+                    .toLowerCase();
 
-            // Фильтрация по имени игры
+                // Фильтрация по имени игры
 
-            nameMatch = gameName
+                nameMatch = gameName
+                    .toLowerCase()
+                    .includes(searchQueryGameName.toLowerCase());
+            }
+            const nameAchMatch = game['achivment']
+                .displayName
                 .toLowerCase()
-                .includes(searchQueryGameName.toLowerCase());
-        }
-        const nameAchMatch = game['achivment']
-            .displayName
-            .toLowerCase()
-            .includes(searchQueryAch.toLowerCase())
-        // Фильтрация по времени
-        let completionMatch;
-        if (selectedCompletionFilterValue == null) {
-            completionMatch = true;
-        } else if (selectedCompletionFilterValue.startsWith("percent")) {
-            const rangeBounds = selectedCompletionFilterValue
-                .replace("percent", "")
-                .split("-")
-                .map(Number);
+                .includes(searchQueryAch.toLowerCase())
+            // Фильтрация по времени
+            let completionMatch;
+            if (selectedCompletionFilterValue == null) {
+                completionMatch = true;
+            } else if (selectedCompletionFilterValue.startsWith("percent")) {
+                const rangeBounds = selectedCompletionFilterValue
+                    .replace("percent", "")
+                    .split("-")
+                    .map(Number);
 
-            completionMatch = rangeBounds[0] < game['achivment'].percent && game['achivment'].percent < rangeBounds[1];
-        } else {
-            completionMatch = true;
-        }
-        // Фильтрация по завершению Возвращаем true, только если все условия выполняются
-        return nameMatch && completionMatch && nameAchMatch;
-    }).sort((a : any, b : any) => {
-        a = a['achivment'];
-        b = b['achivment'];
-        switch (selectedValue) {
-            case "namerev":
-                return a
-                    .displayName
-                    .localeCompare(b.displayName);
-            case "name":
-                return b
-                    .displayName
-                    .localeCompare(a.displayName);
-            case "descrev":
-                return a
-                    .description
-                    .localeCompare(b.description);
-            case "desc":
-                return b
-                    .description
-                    .localeCompare(a.description);
-            case "procrev":
-                return a.percent - b.percent;
-            case "proc":
-                return b.percent - a.percent;
-            case "datarev":
-                if (a.unlocktime === 0) {
-                    return 1;
-                }
-                if (b.unlocktime === 0) {
-                    return -1;
-                }
-                return a.unlocktime - b.unlocktime;
-            case "data":
-                if (a.unlocktime === 0) {
-                    return 1;
-                }
-                if (b.unlocktime === 0) {
-                    return -1;
-                }
-                return b.unlocktime - a.unlocktime;
-            case "unlockedrev":
-                return a.achieved - b.achieved;
-            case "unlocked":
-                return b.achieved - a.achieved;
-            default:
-                return 0;
-        }
-    })
-    : allAch.sort((a : any, b : any) => {
-        a = a['achivment'];
-        b = b['achivment'];
-        switch (selectedValue) {
-            case "namerev":
-                return a
-                    .displayName
-                    .localeCompare(b.displayName);
-            case "name":
-                return b
-                    .displayName
-                    .localeCompare(a.displayName);
-            case "descrev":
-                return a
-                    .description
-                    .localeCompare(b.description);
-            case "desc":
-                return b
-                    .description
-                    .localeCompare(a.description);
-            case "procrev":
-                return a.percent - b.percent;
-            case "proc":
-                return b.percent - a.percent;
-            case "datarev":
-                if (a.unlocktime === 0) {
-                    return 1;
-                }
-                if (b.unlocktime === 0) {
-                    return -1;
-                }
-                return a.unlocktime - b.unlocktime;
-            case "data":
-                if (a.unlocktime === 0) {
-                    return 1;
-                }
-                if (b.unlocktime === 0) {
-                    return -1;
-                }
-                return b.unlocktime - a.unlocktime;
-            case "unlockedrev":
-                return a.achieved - b.achieved;
-            case "unlocked":
-                return b.achieved - a.achieved;
-            default:
-                return 0;
-        }
-    }).filter((game) => {
-        let nameMatch = true
-        if (data['data'][1]) {
-            const gameName = game
-                .gameName
-                .toLowerCase();
+                completionMatch = rangeBounds[0] < game['achivment'].percent && game['achivment'].percent < rangeBounds[1];
+            } else {
+                completionMatch = true;
+            }
+            // Фильтрация по завершению Возвращаем true, только если все условия выполняются
+            return nameMatch && completionMatch && nameAchMatch;
+        }).sort((a : any, b : any) => {
+            a = a['achivment'];
+            b = b['achivment'];
+            switch (selectedValue) {
+                case "namerev":
+                    return a
+                        .displayName
+                        .localeCompare(b.displayName);
+                case "name":
+                    return b
+                        .displayName
+                        .localeCompare(a.displayName);
+                case "descrev":
+                    return a
+                        .description
+                        .localeCompare(b.description);
+                case "desc":
+                    return b
+                        .description
+                        .localeCompare(a.description);
+                case "procrev":
+                    return a.percent - b.percent;
+                case "proc":
+                    return b.percent - a.percent;
+                case "datarev":
+                    if (a.unlocktime === 0) {
+                        return 1;
+                    }
+                    if (b.unlocktime === 0) {
+                        return -1;
+                    }
+                    return a.unlocktime - b.unlocktime;
+                case "data":
+                    if (a.unlocktime === 0) {
+                        return 1;
+                    }
+                    if (b.unlocktime === 0) {
+                        return -1;
+                    }
+                    return b.unlocktime - a.unlocktime;
+                case "unlockedrev":
+                    return a.achieved - b.achieved;
+                case "unlocked":
+                    return b.achieved - a.achieved;
+                default:
+                    return 0;
+            }
+        })
+        : allAch.sort((a : any, b : any) => {
+            a = a['achivment'];
+            b = b['achivment'];
+            switch (selectedValue) {
+                case "namerev":
+                    return a
+                        .displayName
+                        .localeCompare(b.displayName);
+                case "name":
+                    return b
+                        .displayName
+                        .localeCompare(a.displayName);
+                case "descrev":
+                    return a
+                        .description
+                        .localeCompare(b.description);
+                case "desc":
+                    return b
+                        .description
+                        .localeCompare(a.description);
+                case "procrev":
+                    return a.percent - b.percent;
+                case "proc":
+                    return b.percent - a.percent;
+                case "datarev":
+                    if (a.unlocktime === 0) {
+                        return 1;
+                    }
+                    if (b.unlocktime === 0) {
+                        return -1;
+                    }
+                    return a.unlocktime - b.unlocktime;
+                case "data":
+                    if (a.unlocktime === 0) {
+                        return 1;
+                    }
+                    if (b.unlocktime === 0) {
+                        return -1;
+                    }
+                    return b.unlocktime - a.unlocktime;
+                case "unlockedrev":
+                    return a.achieved - b.achieved;
+                case "unlocked":
+                    return b.achieved - a.achieved;
+                default:
+                    return 0;
+            }
+        }).filter((game) => {
+            let nameMatch = true
+            if (data['data'][1]) {
+                const gameName = game
+                    .gameName
+                    .toLowerCase();
 
-            // Фильтрация по имени игры
+                // Фильтрация по имени игры
 
-            nameMatch = gameName
+                nameMatch = gameName
+                    .toLowerCase()
+                    .includes(searchQueryGameName.toLowerCase());
+            }
+            const nameAchMatch = game['achivment']
+                .displayName
                 .toLowerCase()
-                .includes(searchQueryGameName.toLowerCase());
-        }
-        const nameAchMatch = game['achivment']
-            .displayName
-            .toLowerCase()
-            .includes(searchQueryAch.toLowerCase())
-        // Фильтрация по времени
-        let completionMatch;
-        if (selectedCompletionFilterValue == null) {
-            completionMatch = true;
-        } else if (selectedCompletionFilterValue.startsWith("percent")) {
-            const rangeBounds = selectedCompletionFilterValue
-                .replace("percent", "")
-                .split("-")
-                .map(Number);
+                .includes(searchQueryAch.toLowerCase())
+            // Фильтрация по времени
+            let completionMatch;
+            if (selectedCompletionFilterValue == null) {
+                completionMatch = true;
+            } else if (selectedCompletionFilterValue.startsWith("percent")) {
+                const rangeBounds = selectedCompletionFilterValue
+                    .replace("percent", "")
+                    .split("-")
+                    .map(Number);
 
-            completionMatch = rangeBounds[0] < game['achivment'].percent && game['achivment'].percent < rangeBounds[1];
-        } else {
-            completionMatch = true;
-        }
-        // Фильтрация по завершению Возвращаем true, только если все условия выполняются
-        return nameMatch && completionMatch && nameAchMatch;
-    });
+                completionMatch = rangeBounds[0] < game['achivment'].percent && game['achivment'].percent < rangeBounds[1];
+            } else {
+                completionMatch = true;
+            }
+            // Фильтрация по завершению Возвращаем true, только если все условия выполняются
+            return nameMatch && completionMatch && nameAchMatch;
+        });
     useEffect(useCallback(() => {
         try {
 
@@ -222,7 +219,10 @@ export default function AchBox(data : any) {
         } catch (error) {
             window.alert(error.message);
         }
-    }, [game, allAChPage]), []);
+    }, []), []);
+
+    
+
     const handleCompletionFilterItemClick = (value : string) => {
         if (selectedCompletionFilterValue === value) {
             setSelectedCompletionFilterValue(null);
@@ -257,6 +257,7 @@ export default function AchBox(data : any) {
         if (filterTimeListRef.current && !filterTimeListRef.current.contains(event.target as Node) && isTimeFilterDropdownOpen) {
             setTimeFilterDropdownOpen(false);
         }
+        
     };
 
     document.addEventListener('click', handleFilterOutsideClick);
@@ -399,31 +400,50 @@ export default function AchBox(data : any) {
                     </div>
                 </div>
                 <div className="AchCont">
+                   
 
-                    {filteredAch.map((ach) => (<img
-                        className={ach['achivment'].percent <= 5
-                        ? "rare1"
-                        : ach['achivment'].percent <= 20
-                            ? "rare2"
-                            : ach['achivment'].percent <= 45
-                                ? "rare3"
-                                : ach['achivment'].percent <= 60
-                                    ? "rare4"
-                                    : "rare5"}
-                        key={(data['data'][1]
-                        ? ach['gameName']
-                        : "") + ach['achivment'].displayName + ach['achivment'].percent + ach['achivment'].name}
-                        src={ach['achivment'].achieved
-                        ? ach['achivment'].icon
-                        : ach['achivment'].icongray}
-                        alt={ach['achivment'].displayName}
-                        title={`${data['data'][1]
-                        ? ach['gameName'] + '\n'
-                        : ""}${ach['achivment']
-                            .displayName}\n${ach['achivment']
-                            .description}\n${ach['achivment']
-                            .percent
-                            .toFixed(2)}\n${new Date(ach['achivment'].unlocktime * 1000)}`}/>))}
+                        {filteredAch.map((ach) => (
+                                <div className="Cont" key={ach['achivment'].name + ach['gameName']}>
+                                    <div className="Mask">
+                                        <div className="second_mask">
+                                            <div
+                                                className={ach['achivment'].percent <= 5
+                                                ? "third_mask Crare1"
+                                                : ach['achivment'].percent <= 20
+                                                    ? "third_mask Crare2"
+                                                    : ach['achivment'].percent <= 45
+                                                        ? "third_mask Crare3"
+                                                        : ach['achivment'].percent <= 60
+                                                            ? "third_mask Crare4"
+                                                            : "third_mask Crare5"}></div>
+                                        </div>
+                                    </div>
+                                    <img
+                                        className={ach['achivment'].percent <= 5
+                                        ? "rare1"
+                                        : ach['achivment'].percent <= 20
+                                            ? "rare2"
+                                            : ach['achivment'].percent <= 45
+                                                ? "rare3"
+                                                : ach['achivment'].percent <= 60
+                                                    ? "rare4"
+                                                    : "rare5"}
+                                        src={ach['achivment'].achieved
+                                        ? ach['achivment'].icon
+                                        : ach['achivment'].icongray}
+                                        alt={ach['achivment'].displayName}
+                                        title={`${data['data'][1]
+                                        ? ach['gameName'] + '\n'
+                                        : ""}${ach['achivment']
+                                            .displayName}\n${ach['achivment']
+                                            .description}\n${ach['achivment']
+                                            .percent
+                                            .toFixed(2)}\n${new Date(ach['achivment'].unlocktime * 1000)}`}/>
+
+                                </div>
+                            )
+                        )}
+
                 </div>
             </div>
         </I18nextProvider>

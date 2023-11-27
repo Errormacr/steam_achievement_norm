@@ -2,9 +2,8 @@ import {useCallback, useEffect, useState} from "react";
 import ReactDOM from "react-dom/client";
 import Table from './Table';
 import App from "./main_window";
-import {I18nextProvider} from 'react-i18next';
+import {I18nextProvider,useTranslation} from 'react-i18next';
 import i18n from 'i18next';
-import {useTranslation} from 'react-i18next';
 import ScrollToTopButton from "./ScrollToTopButton";
 import GameButton from "./GameButton";
 import AchBox from "./AchContainer";
@@ -24,8 +23,8 @@ export default function AchPage() {
         try {
             const data = JSON.parse(localStorage.getItem("ach"));
             const achivmentsArr : any[] = []
-            for (let game of data) {
-                for (let ach of game.Achievement) {
+            for (const game of data) {
+                for (const ach of game.Achievement) {
                     if (ach.achieved) {
                         achivmentsArr.push({achivment: ach, gameName: game.gameName});
                     }
