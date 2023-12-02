@@ -65,11 +65,10 @@ export default function Games() {
         } else if (selectedCompletionFilterValue == null) {
             completionMatch = true;
         } else if (selectedCompletionFilterValue.startsWith("percent")) {
-            let rangeBounds = selectedCompletionFilterValue
+            const rangeBounds = selectedCompletionFilterValue
                 .replace("percent", "")
                 .split("-")
                 .map(Number);
-            console.log(rangeBounds)
 
             completionMatch = rangeBounds[0] < game.percent && game.percent < rangeBounds[1];
         } else {
@@ -160,7 +159,6 @@ export default function Games() {
         try {
             root = ReactDOM.createRoot(document.getElementById("root"));
             const ach = JSON.parse(localStorage.getItem("ach"));
-            console.log(ach);
             setAch(ach);
 
             return () => {

@@ -17,7 +17,6 @@ export default function Table(data : any) {
 
             setAllAchPage(data['data'][1]);
             setGame(data['data'][0]);
-            console.log(allAChPage);
         } catch (error) {
             window.alert(error.message);
         }
@@ -148,4 +147,4 @@ export default function Table(data : any) {
             </table>
         </I18nextProvider>
     );
-};
+}

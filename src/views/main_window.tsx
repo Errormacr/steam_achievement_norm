@@ -76,8 +76,8 @@ export default function App() {
 
         if (data_key && data_st_id) {
             try {
-                let response = await fetch(`http://localhost:4500/recent?key=${data_key}&id=${data_st_id}`);
-                let data = await response.json();
+                const response = await fetch(`http://localhost:4500/recent?key=${data_key}&id=${data_st_id}`);
+                const data = await response.json();
                 const before = localStorage.getItem("recent");
 
                 if ((before == undefined) || (before != JSON.stringify(data)) || (before == null)) {
@@ -90,17 +90,15 @@ export default function App() {
                     ]);
 
                     localStorage.setItem("recent", JSON.stringify(data));
-                    console.log(user_data);
                     const personalName = user_data.response.players[0].personaname;
                     setpersonalName(personalName);
                     const avaUrl = user_data.response.players[0].avatarfull;
                     localStorage.setItem('ava', avaUrl);
                     localStorage.setItem('name', personalName);
                     setavaUrl(avaUrl);
-                    console.log(games_data);
                     setgamesCount(games_data.response.games.length);
                     const data_g_ach_url : any[] = [];
-                    for (let ach in games_data.response.games) {
+                    for (const ach in games_data.response.games) {
                         data_g_ach_url.push([
                             games_data.response.games[ach]['appid'],
                             games_data.response.games[ach]['rtime_last_played'],
@@ -126,14 +124,14 @@ export default function App() {
                         let achiv_ach_count = 0;
                         let percent = 0;
                         let game_with_ach_count = 0;
-                        for (let ach of data) {
+                        for (const ach of data) {
                             if (ach.Achievement) {
-                                let ach_arr = ach
+                                const ach_arr = ach
                                     .Achievement
                                     .filter((ach : any) => (ach as {
                                         achieved : number
                                     }).achieved == 1);
-                                let all_ach_arr = ach.Achievement;
+                                const all_ach_arr = ach.Achievement;
                                 if (ach_arr.length > 0) {
                                     percent += ach_arr.length / all_ach_arr.length * 100;
                                     game_with_ach_count += 1;
@@ -254,7 +252,7 @@ export default function App() {
         }
 
         document.addEventListener('click', handleDocumentClick);
-    };
+    }
     useEffect(useCallback(() => {
         try {
             const data = localStorage.getItem("api-key");
@@ -266,7 +264,6 @@ export default function App() {
                 setConstSteamId(data_st_id);
             }
             update_user_data();
-            console.log(percent);
 
         } catch (error) {
             window.alert(error.message);
@@ -381,7 +378,7 @@ export default function App() {
                                     </div>
                                 )}
                                 <div className="main-game-cards">
-                                    {games.map((game) => (<GameCard game={game} backWindow="main"/>))}
+                                    {games.map((game) => (<GameCard key={game.appid} game={game} backWindow="main"/>))}
                                 </div>
                                 <div className="with-friends">
                                     <div className="last-ach-main" id="container"></div>

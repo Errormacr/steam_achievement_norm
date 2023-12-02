@@ -64,7 +64,7 @@ export function GameCard({ game, backWindow }: any) {
 
   return (
     <I18nextProvider i18n={i18n}>
-        <div
+      <div
         ref={cardRef}
         className={`card ${percent === 100 ? "full" : "not_full"}`}
         all-ach={all}
@@ -72,13 +72,14 @@ export function GameCard({ game, backWindow }: any) {
         non-gained-ach={all - gained}
         game-percent={percent}
         last-launch={
-        UnixTimestampToDate(last_launch_time) === "1970.1.1"
+          UnixTimestampToDate(last_launch_time) === "1970.1.1"
             ? "No"
             : UnixTimestampToDate(last_launch_time)
         }
         game-playtime={`${playtime} ${t("Hours")}`}
         key={appid}
-        onClick={() => logging(appid, backWindow)}>
+        onClick={() => logging(appid, backWindow)}
+      >
         <div className="name-preview">
           <p className="name">{gameName}</p>
           <img
@@ -140,6 +141,7 @@ export function GameCard({ game, backWindow }: any) {
             .slice(0, 7)
             .map((achievement: any) => (
               <img
+              key={achievement.name}
                 className={`achievement-image ${
                   achievement.percent <= 5
                     ? "rare1"

@@ -10,7 +10,6 @@ export default function Ach_cont() {
     useEffect(useCallback(() => {
         try {
             const data = JSON.parse(localStorage.getItem('ach'));
-            console.log(data);
             const all_ach = data.reduce((acc : any, cur : any) => {
                 let arr = cur.Achievement;
                 arr = arr.map((ach : any) => {
@@ -24,7 +23,6 @@ export default function Ach_cont() {
             }, []);
             all_ach.sort((a : any, b : any) => b.unlocktime - a.unlocktime);
             setAllAch(all_ach.slice(0, 36));
-            console.log(all_ach);
         } catch (err) {
             window.alert(err.message);
         }

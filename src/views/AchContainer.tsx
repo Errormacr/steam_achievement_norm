@@ -216,7 +216,6 @@ export default function AchBox(data : any) {
         try {
 
             setGame(data['data'][0]);
-            console.log(data);
             const all_ach = data['data'][0]
             setAllAch(all_ach);
         } catch (error) {

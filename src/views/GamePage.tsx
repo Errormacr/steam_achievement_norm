@@ -42,7 +42,6 @@ export default function GamePage({ appid, backWindow }: any) {
         const games = JSON.parse(localStorage.getItem("ach"));
         const curGame = games.find((game: any) => game.appid === appid);
         setGame(curGame);
-        console.log(curGame);
         const boxView = Boolean(localStorage.getItem("boxView"));
         if (boxView) {
           setTableOrBox(false);

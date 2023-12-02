@@ -35,7 +35,6 @@ export default function AchPage() {
                 setTable(false);
             }
             setAchivments(achivmentsArr);
-            console.log(achivments);
             setLoaded(true);
         } catch (error) {
             window.alert(error.message);
