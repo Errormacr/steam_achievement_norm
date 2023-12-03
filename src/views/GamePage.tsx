@@ -36,21 +36,20 @@ export default function GamePage({ appid, backWindow }: any) {
   const [tableOrBox, setTableOrBox] = useState(true);
   const { t } = useTranslation();
 
-  useEffect(
-    useCallback(() => {
+  useEffect(() => {
       try {
         const games = JSON.parse(localStorage.getItem("ach"));
         const curGame = games.find((game: any) => game.appid === appid);
         setGame(curGame);
-        const boxView = Boolean(localStorage.getItem("boxView"));
-        if (boxView) {
+        const boxView = localStorage.getItem("boxView") == 'true'? true : false;
+        if (!boxView) {
           setTableOrBox(false);
         }
         setLoaded(true);
       } catch (error) {
         window.alert(error.message);
       }
-    }, [appid]),
+    }, 
     []
   );
 

@@ -31,7 +31,7 @@ export default function AchPage() {
                 }
             }
             const boxView = Boolean(localStorage.getItem("boxView"));
-            if (boxView) {
+            if (!boxView) {
                 setTable(false);
             }
             setAchivments(achivmentsArr);
