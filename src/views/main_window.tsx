@@ -1,17 +1,16 @@
 import {useCallback, useEffect, useState} from "react";
-import Ach_cont from './last_ach_containter';
+import Ach_cont from './last_ach_container';
 import ReactDOM from "react-dom/client";
 import Games from './Games';
-import {GameCard, UnixTimestampToDate} from './GameCard';
+import {GameCard} from './GameCard';
 import ProgressRad from "./rad_progress";
-import AchPage from "./AchivmentsPage";
+import AchPage from "./AchievementsPage";
 import Settings from "./Settings";
 import LoadingOverlay from 'react-loading-overlay-ts';
 import BounceLoader from 'react-spinners/BounceLoader'
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {I18nextProvider} from 'react-i18next';
-import {useTranslation} from 'react-i18next';
+import {I18nextProvider, useTranslation} from 'react-i18next';
 import IdKeyInput from "./IdKeyInput";
 import GameButton from "./GameButton";
 import {FriendTable} from "./FriendsMainScreen";
@@ -28,15 +27,15 @@ export default function App() {
     const [SteamId,
         setSteamId] = useState("");
     const [personalName,
-        setpersonalName] = useState("")
+        setPersonalName] = useState("")
     const [Ach,
         setAch] = useState("")
     const [gamesCount,
-        setgamesCount] = useState("")
+        setGamesCount] = useState("")
     const [avaUrl,
-        setavaUrl] = useState("")
+        setAvaUrl] = useState("")
     const [percent,
-        setpercent] = useState("")
+        setPercent] = useState("")
     const [games,
         setGames] = useState([]);
     const [load,
@@ -79,7 +78,6 @@ export default function App() {
                 const response = await fetch(`http://localhost:4500/recent?key=${data_key}&id=${data_st_id}`);
                 const data = await response.json();
                 const before = localStorage.getItem("recent");
-
                 if ((before == undefined) || (before != JSON.stringify(data)) || (before == null)) {
                     const [data,
                         user_data,
@@ -91,12 +89,12 @@ export default function App() {
 
                     localStorage.setItem("recent", JSON.stringify(data));
                     const personalName = user_data.response.players[0].personaname;
-                    setpersonalName(personalName);
+                    setPersonalName(personalName);
                     const avaUrl = user_data.response.players[0].avatarfull;
                     localStorage.setItem('ava', avaUrl);
                     localStorage.setItem('name', personalName);
-                    setavaUrl(avaUrl);
-                    setgamesCount(games_data.response.games.length);
+                    setAvaUrl(avaUrl);
+                    setGamesCount(games_data.response.games.length);
                     const data_g_ach_url : any[] = [];
                     for (const ach in games_data.response.games) {
                         data_g_ach_url.push([
@@ -107,21 +105,21 @@ export default function App() {
                     }
                     const ach = await calculateAchievementCount(data_g_ach_url);
                     setAch(ach[0].toString());
-                    const predproc = localStorage.getItem('percent');
+                    const predPercent = localStorage.getItem('percent');
                     localStorage.setItem('percent', ach[1].toString());
-                    setpercent(ach[1].toString());
+                    setPercent(ach[1].toString());
                     ach_container.render(<Ach_cont/>);
 
-                    toast.success("+ " + (parseFloat(ach[1].toString()) - parseFloat(predproc)).toFixed(2).toString() + "% " + t('averageUp'));
+                    toast.success("+ " + (parseFloat(ach[1].toString()) - parseFloat(predPercent)).toFixed(2).toString() + "% " + t('averageUp'));
                 } else {
                     try {
-                        setavaUrl(localStorage.getItem('ava'));
-                        setpersonalName(localStorage.getItem('name'));
+                        setAvaUrl(localStorage.getItem('ava'));
+                        setPersonalName(localStorage.getItem('name'));
                         const ach = localStorage.getItem('ach');
                         const data = JSON.parse(ach);
                         setGames(data.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time).slice(0, 3));
-                        setgamesCount(data.length);
-                        let achiv_ach_count = 0;
+                        setGamesCount(data.length);
+                        let ach_ach_count = 0;
                         let percent = 0;
                         let game_with_ach_count = 0;
                         for (const ach of data) {
@@ -136,11 +134,11 @@ export default function App() {
                                     percent += ach_arr.length / all_ach_arr.length * 100;
                                     game_with_ach_count += 1;
                                 }
-                                achiv_ach_count += ach_arr.length;
+                                ach_ach_count += ach_arr.length;
                             }
                         }
-                        setpercent((percent / game_with_ach_count).toFixed(2).toString())
-                        setAch(achiv_ach_count.toString());
+                        setPercent((percent / game_with_ach_count).toFixed(2).toString())
+                        setAch(ach_ach_count.toString());
 
                         ach_container.render(<Ach_cont/>)
 
@@ -161,7 +159,7 @@ export default function App() {
         const data = await get_api(data_g_ach_url);
         const data_with_percent_etc = [];
 
-        let achiv_ach_count = 0;
+        let ach_ach_count = 0;
         let all_ach_count = 0;
         let game_with_ach_count = 0;
         if (data.length > 0) {
@@ -184,7 +182,7 @@ export default function App() {
                         all: Achievement.length
                     });
 
-                    achiv_ach_count += ach_arr.length;
+                    ach_ach_count += ach_arr.length;
                 }
             }
 
@@ -197,7 +195,7 @@ export default function App() {
             setLoad(false);
             toast.success(t('Success'));
             return [
-                achiv_ach_count,
+                ach_ach_count,
                 (all_ach_count / game_with_ach_count).toFixed(2),
                 game_with_ach_count
             ];
@@ -233,7 +231,7 @@ export default function App() {
         update_user_data();
     };
     function showClears() {
-        const buttons = ["keyChangeButton", "keyClearButton", "steamIdChangeButton", "steamIdclearButton"];
+        const buttons = ["keyChangeButton", "keyClearButton", "steamIdChangeButton", "steamIdClearButton"];
         const button = document.getElementById("hideButton");
         const div = document.getElementById("clearsButtons");
         const checkDiv = document.getElementById("clearDiv");
@@ -283,7 +281,7 @@ export default function App() {
                                     additionalClass="ButtonToHide"
                                     text={t('changeIdKeyButton')}
                                     onClick={showClears}/>
-                                <div id="clearsButtons" className="hiden">
+                                <div id="clearsButtons" className="hidden">
                                     <div>
                                         {ConstSteamWebApiKey == "" && (<IdKeyInput
                                             onChange={(event) => {
@@ -331,7 +329,7 @@ export default function App() {
                                     {ConstSteamId != "" && (<GameButton
                                         text={t('ClearId')}
                                         onClick={handleIdClear}
-                                        id='steamIdclearButton'/>)}
+                                        id='steamIdClearButton'/>)}
                                     <GameButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>
                                 <Settings/>
@@ -369,9 +367,9 @@ export default function App() {
                                         }}
                                             text={t('AllAch')}/>
                                         <br></br>
-                                        <div className="gain-nongainMain">
+                                        <div className="gain-nonGainMain">
                                             <ProgressRad
-                                                title={t('AverageProcent')}
+                                                title={t('AveragePercent')}
                                                 data-progress={percent}
                                                 SizeVnu={'9rem'}
                                                 SizeVne={'10rem'}/></div>

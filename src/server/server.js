@@ -119,7 +119,6 @@ app.post('/data', async(req, res) => {
     if (isNaN(steam_id)) {
         res.send("steam_id must be a number")
     }
-    console.log(lang);
     try {
         const data = await get_data(JSON.parse(array), steam_id, key, lang);
         res.send(data);
@@ -127,20 +126,25 @@ app.post('/data', async(req, res) => {
         res.send(err.message)
     }
 });
-app.get('/recent', async(req, res) => {
+app.get('/recent', async (req, res) => {
     const key = req.query.key;
     const id = req.query.id;
+
     if (isNaN(id)) {
-        res.send("steam_id must be a number")
-    }
-    try {
-        const data = await fetch(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${key}&steamid=${id}&format=json`);
-        res.send(data.json());
-    } catch (err) {
-        res.send(err.message)
+        res.send("steam_id must be a number");
+        return; // Add return to stop execution if id is not a number
     }
 
-})
+    try {
+        const response = await fetch(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${key}&steamid=${id}&format=json`);
+        const data = await response.json(); // Await the JSON promise
+
+        res.send(data);
+    } catch (err) {
+        res.send(err.message);
+    }
+});
+
 app.get('/player_sum', async(req, res) => {
     const key = req.query.key;
     const id = req.query.id;
