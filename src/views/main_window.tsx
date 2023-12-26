@@ -60,9 +60,7 @@ export default function App() {
                     appid: JSON.stringify(urls_a)
                 })
             });
-            console.log(JSON.stringify({
-                appid: JSON.stringify(urls_a)
-            }));
+        
             return ret_data.json();
         } catch (error) {
             console.error(error);

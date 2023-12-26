@@ -1,12 +1,13 @@
 import {useCallback, useEffect, useState} from "react";
 import {UnixTimestampToDate} from "./GameCard";
-import {I18nextProvider} from 'react-i18next';
+import {I18nextProvider,useTranslation} from 'react-i18next';
 import i18n from 'i18next';
-import {useTranslation} from 'react-i18next';
 import './scss/Table.scss';
-export default function Table(data : any) {
+import { TableData, DatumClass } from './interfaces/TableData';
+export default function Table(data : TableData) {
+    console.log(data);
     const [game,
-        setGame] = useState([]);
+        setGame] = useState(Array<DatumClass>);
     const [sortConfig,
         setSortConfig] = useState("data");
     const [allAChPage,
@@ -15,14 +16,14 @@ export default function Table(data : any) {
     useEffect(useCallback(() => {
         try {
 
-            setAllAchPage(data['data'][1]);
-            setGame(data['data'][0]);
+            setAllAchPage(data.data.allAch);
+            setGame(data.data.achievements);
         } catch (error) {
             window.alert(error.message);
         }
     }, [allAChPage, allAChPage]), []);
     
-    const achSort = game.sort((a : any, b : any) => {
+    const achSort = game.sort((a : DatumClass, b : DatumClass) => {
         switch (sortConfig) {
             case "namerev":
                 return a
@@ -32,7 +33,7 @@ export default function Table(data : any) {
                 return b
                     .displayName
                     .localeCompare(a.displayName);
-            case "descrev":
+            case "descRev":
                 return a
                     .description
                     .localeCompare(b.description); 
@@ -60,7 +61,7 @@ export default function Table(data : any) {
                     return -1;
                 }
                 return b.unlocktime - a.unlocktime;
-            case "unlockedrev":
+            case "unlockedRev":
                 return a.achieved - b.achieved;
             case "unlocked":
                 return b.achieved - a.achieved;
@@ -74,25 +75,25 @@ export default function Table(data : any) {
         {
             value: 'name',
             label: t('Name'),
-            revvalue: 'namerev'
+            revValue: 'namerev'
         }, {
             value: 'desc',
             label: t('Description'),
-            revvalue: 'descrev'
+            revValue: 'descRev'
         }, {
             value: 'proc',
             label: t('PercentPlayer'),
-            revvalue: 'procrev'
+            revValue: 'procrev'
         }, {
             value: 'data',
             label: t('DataGain'),
-            revvalue: 'datarev'
+            revValue: 'datarev'
         }
     ];
     if (allAChPage === false) {
-        sortOptions.unshift({value: 'unlocked', label: t('Gained'), revvalue: 'unlockedrev'});
+        sortOptions.unshift({value: 'unlocked', label: t('Gained'), revValue: 'unlockedRev'});
     } else {
-        sortOptions.unshift({value: '', label: t(''), revvalue: ''});
+        sortOptions.unshift({value: '', label: t(''), revValue: ''});
     }
     return (
         <I18nextProvider i18n={i18n}>
@@ -103,44 +104,44 @@ export default function Table(data : any) {
                             return <th
                                 onClick={() => {
                                 setSortConfig(sortConfig === option.value
-                                    ? option.revvalue
+                                    ? option.revValue
                                     : option.value)
                             }}>{option.label} {sortConfig === option.value
                                     ? "\u25BC"
-                                    : sortConfig === option.revvalue
+                                    : sortConfig === option.revValue
                                         ? "\u25B2"
                                         : ""}</th>
                         })}
                     </tr>
                 </thead>
                 <tbody>
-                    {achSort.map((achivment : any) => (
+                    {achSort.map((achievement : DatumClass) => (
                         <tr
-                            className={achivment.percent <= 5
+                            className={achievement.percent <= 5
                             ? "rare1"
                             : ""}>
                             <td >
                                 <img
-                                    className={achivment.percent <= 5
+                                    className={achievement.percent <= 5
                                     ? "rare1 table-ach-img"
-                                    : achivment.percent <= 20
+                                    : achievement.percent <= 20
                                         ? "rare2 table-ach-img"
-                                        : achivment.percent <= 45
+                                        : achievement.percent <= 45
                                             ? "rare3 table-ach-img"
-                                            : achivment.percent <= 60
+                                            : achievement.percent <= 60
                                                 ? "rare4 table-ach-img"
                                                 : "rare5 table-ach-img"}
-                                    src={achivment.achieved
-                                    ? achivment.icon
-                                    : achivment.icongray}></img>
+                                    src={achievement.achieved
+                                    ? achievement.icon
+                                    : achievement.icongray}></img>
                             </td>
-                            <td>{achivment.displayName}</td>
-                            <td>{achivment.description}</td>
-                            <td>{(parseFloat(achivment.percent)).toFixed(2)}
+                            <td>{achievement.displayName}</td>
+                            <td>{achievement.description}</td>
+                            <td>{achievement.percent.toFixed(2)}
                                 %</td>
-                            <td>{UnixTimestampToDate(achivment.unlocktime) == "1970.1.1"
+                            <td>{UnixTimestampToDate(achievement.unlocktime) == "1970.1.1"
                                     ? "-"
-                                    : UnixTimestampToDate(achivment.unlocktime)}</td>
+                                    : UnixTimestampToDate(achievement.unlocktime)}</td>
                         </tr>
                     ))}</tbody>
 
