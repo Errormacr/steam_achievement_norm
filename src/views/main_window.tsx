@@ -5,6 +5,7 @@ import Games from './Games';
 import {GameCard} from './GameCard';
 import ProgressRad from "./rad_progress";
 import AchPage from "./AchievementsPage";
+import ChangeAccount from "./changeAccount";
 import Settings from "./Settings";
 import LoadingOverlay from 'react-loading-overlay-ts';
 import BounceLoader from 'react-spinners/BounceLoader'
@@ -328,9 +329,12 @@ export default function App() {
                                         text={t('ClearId')}
                                         onClick={handleIdClear}
                                         id='steamIdClearButton'/>)}
+                                        
                                     <GameButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>
-                                <Settings/>
+                                <div>
+                <ChangeAccount/>
+                                <Settings/></div>
                             </div>
                             <div className="MainCont">
                                 {personalName && (

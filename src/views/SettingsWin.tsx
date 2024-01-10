@@ -6,7 +6,7 @@ type ModalProps = {
     onClose: () => void;
 };
 
-const SetingsWin : React.FC < ModalProps > = ({isOpen, onClose}) => {
+const SettingsWin : React.FC < ModalProps > = ({isOpen, onClose}) => {
     if (!isOpen) {
         return null;
     }
@@ -32,4 +32,4 @@ const SetingsWin : React.FC < ModalProps > = ({isOpen, onClose}) => {
     );
 };
 
-export default SetingsWin;
+export default SettingsWin;
