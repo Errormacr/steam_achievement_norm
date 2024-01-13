@@ -7,8 +7,9 @@ import i18n from 'i18next';
 import ScrollToTopButton from "./ScrollToTopButton";
 import GameButton from "./GameButton";
 import AchBox from "./AchContainer";
+import { DatumClass } from "./interfaces/TableData";
 interface achiv {
-    achivment : [];
+    achivment : DatumClass;
     gameName : string;
 }
 export default function AchPage() {
@@ -66,12 +67,12 @@ export default function AchPage() {
                 <div className="details-container table-container">
                     {loaded && (tableOrBox
                         ? (<Table
-                            data={[
-                            achivments.map((achiv : achiv) => {
-                                return achiv.achivment
+                            data={
+                        { achievements:   achivments.map((achiv : achiv) => {
+                                return  achiv.achivment
                             }),
-                            true
-                        ]}/>)
+                            allAch: true
+                        }}/>)
                         : (<AchBox data={[achivments, true]}/>))
 }</div>
             </div>
