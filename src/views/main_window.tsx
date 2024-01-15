@@ -305,7 +305,7 @@ export default function App() {
                                         id='keyChangeButton'/>)}
                                     {ConstSteamWebApiKey != "" && (<GameButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
                                     <div>
-                                        {ConstSteamId == "" && (<IdKeyInput
+                                        {ConstSteamId == "" && <IdKeyInput
                                             onChange={(event) => {
                                             const value = event.target.value;
                                             const regex = /^[0-9]+$/;
@@ -318,7 +318,7 @@ export default function App() {
                                                 setSteamIdError(t('SteamIdError'));
                                             }
                                         }}
-                                            placeholder="Steam id"/>)}
+                                            placeholder="Steam id"/>}
                                         {steamIdError && <div className="input-error">{steamIdError}</div>}</div>
                                     {ConstSteamId == "" && (<GameButton
                                         text={t('ChangeSteamID')}
