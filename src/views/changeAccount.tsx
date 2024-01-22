@@ -21,6 +21,8 @@ export default function ChangeAccount() {
         setNewAccName] = useState("");
     const [newAccAva,
         setNewAccAva] = useState("");
+    const [accounts,
+        setAccounts] = useState([])
     const openModal = () => {
         setIsOpen(true);
     };
@@ -39,6 +41,35 @@ export default function ChangeAccount() {
                 setAddingAcc(false);
             }
         };
+        const storedIdSet = new Set(JSON.parse(localStorage.getItem('idArray')) || []);
+        console.log(storedIdSet);
+        if (storedIdSet.size > 0 && isOpen) {
+            const data_key = localStorage.getItem('api-key');
+
+            const steamIdsArray = Array.from(storedIdSet);
+            const steamIdsString = JSON
+                .stringify(steamIdsArray)
+                .replace(/"/g, '');
+
+            // Используйте steamIdsString в вашем запросе или где-либо еще по вашему
+            // усмотрению
+            console.log(`http://localhost:4500/player_sum?key=${data_key}&id=${steamIdsString}`);
+
+            // Пример использования в fetch запросе
+            fetch(`http://localhost:4500/player_sum?key=${data_key}&id=${steamIdsString}`)
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result);
+                    const playersArray = result
+                        .response
+                        .players
+                        .map((player : any) => ({nickname: player.personaname, ava: player.avatar, steamId: player.steamid}));
+                    setAccounts(playersArray);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
         document.addEventListener('mousedown', handleOutsideClick);
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
@@ -58,7 +89,10 @@ export default function ChangeAccount() {
                 setAccFound(true);
             } catch (error) {
                 setAccFound(false);
-                setSteamIdError(t('AccNotFound'));
+
+                setSteamIdError(SteamId != ""
+                    ? t('AccNotFound')
+                    : "");
                 console.error("Ошибка при получении данных:", error);
             }
         };
@@ -66,6 +100,12 @@ export default function ChangeAccount() {
         fetchData();
 
     }, [SteamId])
+    const handleAddAccount = (steamId : string) => {
+        const storedIdSet = new Set(JSON.parse(localStorage.getItem('idArray')) || new Set());
+        storedIdSet.add(steamId);
+        localStorage.setItem('idArray', JSON.stringify(Array.from(storedIdSet)));
+
+    }
     return (
         <I18nextProvider i18n={i18n}>
             <GameButton id='' additionalClass='' onClick={openModal} text={t('changeAcc')}/> {isOpen && (
@@ -73,18 +113,22 @@ export default function ChangeAccount() {
                     <div className="modal-content">
                         <h2 className='settingsHeader'>{t('chAccHeading')}</h2>
                         <div className='accContainer'>
-                            <div className="userContainer">
+                            {accounts.map(account => <div
+                                className="userContainer"
+                                onClick={() => {
+                                localStorage.setItem("steamId", account.steamId)
+                            }}>
                                 <img
                                     style={{
                                     width: "4.5rem",
                                     height: "4.5rem"
                                 }}
-                                    src={localStorage.getItem('ava')}/>
+                                    src={account.ava}/>
                                 <p
                                     style={{
                                     marginBlock: "0"
-                                }}>Name</p>
-                            </div>
+                                }}>{account.nickname}</p>
+                            </div>)}
 
                         </div>
                         {!addingAcc && <GameButton
@@ -109,10 +153,17 @@ export default function ChangeAccount() {
                         }}
                             placeholder="Steam id"/>}
                         {steamIdError && addingAcc && <div className="input-error">{steamIdError}</div>}
-                        {accFound && addingAcc && <div className="userContainer">
-                            <img src={newAccAva}/>
-                            <p >{newAccName}</p>
-                        </div>}
+                        {accFound && addingAcc && <div>
+                            <div className="userContainer">
+                                <img src={newAccAva}/>
+                                <p >{newAccName}</p>
+
+                            </div>
+                            <GameButton
+                                id=''
+                                additionalClass='addAccButton'
+                                onClick={() => handleAddAccount(SteamId)}
+                                text={t('addAcc')}/></div>}
                     </div>
                 </div>
             )}
