@@ -1,10 +1,9 @@
-import {useCallback, useEffect, useState, useRef} from "react";
+import React,{useCallback, useEffect, useState, useRef} from "react";
 import ReactDOM from "react-dom/client";
 import App from "./main_window";
 import {GameCard} from "./GameCard";
-import {I18nextProvider} from 'react-i18next';
+import {I18nextProvider,useTranslation} from 'react-i18next';
 import i18n from 'i18next';
-import {useTranslation} from 'react-i18next';
 import ScrollToTopButton from "./ScrollToTopButton";
 import "./scss/Games.scss";
 import './scss/FilterSort.scss';

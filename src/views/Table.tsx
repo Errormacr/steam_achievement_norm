@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import React,{useCallback, useEffect, useState} from "react";
 import {UnixTimestampToDate} from "./GameCard";
 import {I18nextProvider,useTranslation} from 'react-i18next';
 import i18n from 'i18next';
@@ -7,7 +7,7 @@ import { TableData, DatumClass } from './interfaces/TableData';
 export default function Table(data : TableData) {
     console.log(data);
     const [game,
-        setGame] = useState(Array<DatumClass>);
+        setGame] = useState<DatumClass[]>([]);
     const [sortConfig,
         setSortConfig] = useState("data");
     const [allAChPage,

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React,{useEffect, useState} from "react";
 import ReactDOM from "react-dom/client";
 import Games from "./Games";
 import ProgressRad from "./rad_progress";

@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import React,{useCallback, useEffect, useState} from "react";
 import Ach_cont from './last_ach_container';
 import ReactDOM from "react-dom/client";
 import Games from './Games';
@@ -15,7 +15,7 @@ import {I18nextProvider, useTranslation} from 'react-i18next';
 import IdKeyInput from "./IdKeyInput";
 import GameButton from "./GameButton";
 import {FriendTable} from "./FriendsMainScreen";
-import i18n from 'i18next';
+import i18n from "../transate";
 import "./scss/MainWindow.scss"
 
 export default function App() {

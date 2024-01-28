@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import React,{useCallback, useEffect, useState} from "react";
 import ReactDOM from "react-dom/client";
 import Table from './Table';
 import App from "./main_window";

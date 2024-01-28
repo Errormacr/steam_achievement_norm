@@ -1,8 +1,8 @@
-import ReactDOM from "react-dom/client";
-import './index.css';
-import App from "./views/main_window";
-import {initReactI18next} from 'react-i18next';
 import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import eng from "./locales/en.json"
+import rus from "./locales/ru.json"
+
 i18n
     .use(initReactI18next)
     .init({
@@ -12,14 +12,14 @@ i18n
         lng: 'ru', // язык по умолчанию
         resources: {
             en: {
-                translation: require('./locales/en.json')
+                translation: eng
             },
             ru: {
-                translation: require('./locales/ru.json')
+                translation: rus
             },
             // Добавьте другие языки здесь
         }
     });
 
-export const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App/>);
+export default i18n;
+
