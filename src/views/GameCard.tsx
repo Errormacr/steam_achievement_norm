@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import ReactDOM from "react-dom/client";
-import { I18nextProvider, useTranslation } from "react-i18next";
-import i18n from "i18next";
-import GamePage from "./GamePage";
-import "./scss/GameCard.scss";
+import React, { useEffect, useState, useRef } from 'react';
+import ReactDOM from 'react-dom/client';
+import { I18nextProvider, useTranslation } from 'react-i18next';
+import i18n from 'i18next';
+import GamePage from './GamePage';
+import './scss/GameCard.scss';
 
-export function UnixTimestampToDate(props: number) {
+export function UnixTimestampToDate (props: number) {
   const date = new Date(props * 1000);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -13,21 +13,22 @@ export function UnixTimestampToDate(props: number) {
   return `${year}.${month}.${day}`;
 }
 
-function logging(apiid: number, backWindow: string) {
-  const root = ReactDOM.createRoot(document.getElementById("root"));
+function logging (apiid: number, backWindow: string) {
+  const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(<GamePage appid={apiid} backWindow={backWindow} />);
 }
 
-export function GameCard({ game, backWindow }: any) {
+export function GameCard ({ game, backWindow }: any) {
   const { t } = useTranslation();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isProgressBarAnimated, setIsProgressBarAnimated] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line no-undef
     const options: IntersectionObserverInit = {
       root: null,
-      rootMargin: "0px",
-      threshold: 0.5,
+      rootMargin: '0px',
+      threshold: 0.5
     };
 
     const intersectionObserver = new IntersectionObserver((entries) => {
@@ -57,26 +58,26 @@ export function GameCard({ game, backWindow }: any) {
     percent,
     all,
     gained,
+    // eslint-disable-next-line camelcase
     last_launch_time,
     playtime,
-    Achievement,
+    Achievement
   } = game;
-
   return (
     <I18nextProvider i18n={i18n}>
       <div
         ref={cardRef}
-        className={`card ${percent === 100 ? "full" : "not_full"}`}
+        className={`card ${percent === 100 ? 'full' : 'not_full'}`}
         all-ach={all}
         gained-ach={gained}
         non-gained-ach={all - gained}
         game-percent={percent}
         last-launch={
-          UnixTimestampToDate(last_launch_time) === "1970.1.1"
-            ? "No"
+          UnixTimestampToDate(last_launch_time) === '1970.1.1'
+            ? 'No'
             : UnixTimestampToDate(last_launch_time)
         }
-        game-playtime={`${playtime} ${t("Hours")}`}
+        game-playtime={`${playtime} ${t('Hours')}`}
         key={appid}
         onClick={() => logging(appid, backWindow)}
       >
@@ -96,42 +97,42 @@ export function GameCard({ game, backWindow }: any) {
                 width: `${isProgressBarAnimated ? percent : 0}%`,
                 backgroundColor: `${
                   percent === 100
-                    ? "#86e01e"
+                    ? '#86e01e'
                     : percent >= 87.5
-                    ? "#9cc31e"
+                    ? '#9cc31e'
                     : percent >= 75
-                    ? "#b6a51e"
+                    ? '#b6a51e'
                     : percent >= 50
-                    ? "#f2b01e"
+                    ? '#f2b01e'
                     : percent >= 25
-                    ? "#f27011"
-                    : "red"
-                }`,
+                    ? '#f27011'
+                    : 'red'
+                }`
               }}
             ></div>
           </div>
         </div>
         <div className="details-container">
           <div className="row">
-            <div className="cell left" title={t("AllAChInGame")}>
+            <div className="cell left" title={t('AllAChInGame')}>
               {all}
             </div>
-            <div className="cell middle" title={t("GainedAch")}>
+            <div className="cell middle" title={t('GainedAch')}>
               {gained}
             </div>
-            <div className="cell middle" title={t("NonGainedAch")}>
+            <div className="cell middle" title={t('NonGainedAch')}>
               {all - gained}
             </div>
-            <div className="cell middle" title={t("PercentAch")}>
+            <div className="cell middle" title={t('PercentAch')}>
               {percent.toFixed(2)}%
             </div>
-            <div className="cell middle" title={t("LastLaunch")}>
-              {UnixTimestampToDate(last_launch_time) == "1970.1.1"
-                ? "No"
+            <div className="cell middle" title={t('LastLaunch')}>
+              {UnixTimestampToDate(last_launch_time) === '1970.1.1'
+                ? 'No'
                 : UnixTimestampToDate(last_launch_time)}
             </div>
-            <div className="cell right" title={t("PlayTime")}>
-              {playtime + ` ${t("Hours")}`}
+            <div className="cell right" title={t('PlayTime')}>
+              {playtime + ` ${t('Hours')}`}
             </div>
           </div>
         </div>
@@ -144,25 +145,25 @@ export function GameCard({ game, backWindow }: any) {
               key={achievement.name}
                 className={`achievement-image ${
                   achievement.percent <= 5
-                    ? "rare1"
+                    ? 'rare1'
                     : achievement.percent <= 20
-                    ? "rare2"
+                    ? 'rare2'
                     : achievement.percent <= 45
-                    ? "rare3"
+                    ? 'rare3'
                     : achievement.percent <= 60
-                    ? "rare4"
-                    : "rare5"
+                    ? 'rare4'
+                    : 'rare5'
                 }`}
                 src={
                   achievement.achieved ? achievement.icon : achievement.icongray
                 }
                 alt="achievement image"
                 title={`${achievement.displayName}${
-                  achievement.description ? "\n" + achievement.description : ""
+                  achievement.description ? '\n' + achievement.description : ''
                 }\n${achievement.percent.toFixed(2)} %\n${
-                  achievement.unlocktimef
+                  achievement.unlocktime
                     ? UnixTimestampToDate(achievement.unlocktime)
-                    : ""
+                    : ''
                 }`}
               />
             ))}

@@ -1,5 +1,5 @@
 import React from 'react';
-import "./scss/IdKeyInput.scss"; 
+import './scss/IdKeyInput.scss';
 
 type InputProps = {
     onChange: (event : any) => void;
@@ -7,11 +7,11 @@ type InputProps = {
     value?: string;
 };
 
-const IdKeyInput : React.FC < InputProps > = ({onChange, placeholder,value}) => {
-    return (<input
+const IdKeyInput : React.FC < InputProps > = ({ onChange, placeholder, value }) => {
+  return (<input
         placeholder={placeholder}
         className="idKeyInput"
-        value={value !== "" ? value : ""}
+        value={value !== '' ? value : ''}
         id="key"
         onChange={onChange}/>);
 };
