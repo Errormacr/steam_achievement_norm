@@ -16,6 +16,7 @@ import IdKeyInput from './IdKeyInput';
 import GameButton from './GameButton';
 import i18n from '../transate';
 import './scss/MainWindow.scss';
+import Diagram from './AchDiagram';
 
 export default function App () {
   const [SteamWebApiKey,
@@ -379,8 +380,11 @@ export default function App () {
                                 </div>
                                 <div className="with-friends">
                                     <div className="last-ach-main" id="container"></div>
+
                                 </div>
                             </div>
+                            <div className='diagramCont'>
+                                    <Diagram></Diagram></div>
                         </div>
                     </div>
                 </LoadingOverlay>

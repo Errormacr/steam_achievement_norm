@@ -75,30 +75,28 @@ export default function ChangeAccount () {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, [isOpen]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const dataKey = localStorage.getItem('api-key');
-        const response = await fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${SteamId}`);
-        const newData = await response.json();
 
-        const personalName = newData.response.players[0].personaname;
-        const avaUrl = newData.response.players[0].avatarfull;
-        setNewAccName(personalName);
-        setNewAccAva(avaUrl);
-        setAccFound(true);
-      } catch (error) {
-        setAccFound(false);
+  const fetchData = async () => {
+    try {
+      const dataKey = localStorage.getItem('api-key');
+      const response = await fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${SteamId}`);
+      const newData = await response.json();
 
-        setSteamIdError(SteamId !== ''
-          ? t('AccNotFound')
-          : '');
-        console.error('Ошибка при получении данных:', error);
-      }
-    };
+      const personalName = newData.response.players[0].personaname;
+      const avaUrl = newData.response.players[0].avatarfull;
+      setNewAccName(personalName);
+      setNewAccAva(avaUrl);
+      setAccFound(true);
+    } catch (error) {
+      setAccFound(false);
 
-    fetchData();
-  }, [SteamId]);
+      setSteamIdError(SteamId !== ''
+        ? t('AccNotFound')
+        : '');
+      console.error('Ошибка при получении данных:', error);
+    }
+  };
+
   const handleAddAccount = (steamId : string) => {
     const storedIdSet = new Set(JSON.parse(localStorage.getItem('idArray')) || new Set());
     storedIdSet.add(steamId);
@@ -141,6 +139,7 @@ export default function ChangeAccount () {
                               const regex = /^[0-9]+$/;
                               if (regex.test(value)) {
                                 setSteamId(value);
+                                fetchData();
                                 setSteamIdError('');
                               } else if (value === '') {
                                 setSteamIdError(t('SteamIdRequired'));
