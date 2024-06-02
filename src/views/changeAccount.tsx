@@ -137,7 +137,7 @@ export default function ChangeAccount () {
                             onChange={(event) => {
                               const value = event.target.value;
                               const regex = /^[0-9]+$/;
-                              if (regex.test(value)) {
+                              if (value !== '' && regex.test(value)) {
                                 setSteamId(value);
                                 fetchData();
                                 setSteamIdError('');

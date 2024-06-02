@@ -1,236 +1,168 @@
 
 import React from 'react';
-import { UnixTimestampToDate } from './GameCard';
-import { ResponsiveLine } from '@nivo/line';
-interface achDayRare {
-    [key: string]: {achCount: number, rare: number}
+import { ResponsivePie } from '@nivo/pie';
+
+interface Ach {
+id: string;
+label: string;
+value: number,
+color: string
 }
+
 export default function Diagram () {
   const games = localStorage.getItem('ach');
   const gamesArr = JSON.parse(games || '[]');
-  const achArr = gamesArr.flatMap((game) => game.Achievement).filter((ach) => (ach.achieved)).sort((a, b) => a.unlocktime - b.unlocktime);
-  const achWithCountRare: achDayRare = {};
-  const achWithoutUnlockTime = {
-    achCount: 0,
-    rare: 0
-  };
-  const dataToShow = [];
-  achArr.forEach((ach) => {
-    const day = UnixTimestampToDate(ach.unlocktime);
-    if (!ach.unlocktime) {
-      achWithoutUnlockTime.achCount += 1;
-      achWithoutUnlockTime.rare += ach.percent;
-    } else if (achWithCountRare[day]) {
-      achWithCountRare[day].achCount += 1;
-      achWithCountRare[day].rare += ach.percent;
+  const dataToShow : Ach[] = [
+
+    {
+      id: '60-100%',
+      label: '60-100%',
+      value: 0,
+      color: '#00b500'
+    }, {
+      id: '45-60%',
+      label: '45-60%',
+      value: 0,
+      color: '#4DDD4D'
+    }, {
+      id: '20-45%',
+      label: '20-45%',
+      value: 0,
+      color: '#0000FF'
+    }, {
+      id: '5-20%',
+      label: '5-20%',
+      value: 0,
+      color: '#800080'
+    }, {
+      id: '0-5%',
+      label: '0-5%',
+      value: 0,
+      color: 'rgb(255,184,78)'
+    }];
+  const aches = gamesArr.flatMap((game) => game.Achievement).filter((ach) => (ach.achieved));
+  aches.forEach((ach) => {
+    if (ach.percent <= 5) {
+      dataToShow[4].value += 1;
+    } else if (ach.percent > 5 && ach.percent <= 20) {
+      dataToShow[3].value += 1;
+    } else if (ach.percent > 20 && ach.percent <= 45) {
+      dataToShow[2].value += 1;
+    } else if (ach.percent > 45 && ach.percent <= 60) {
+      dataToShow[1].value += 1;
     } else {
-      achWithCountRare[day] = {
-        achCount: 1,
-        rare: ach.percent
-      };
+      dataToShow[0].value += 1;
     }
   });
-  let achCount = 0;
-  let rare = 0;
-  for (const key in achWithCountRare) {
-    if (Object.prototype.hasOwnProperty.call(achWithCountRare, key)) { // Проверка, чтобы не перечислять унаследованные свойства
-      const value = achWithCountRare[key];
-      achCount += value.achCount;
-      rare += value.rare;
-      dataToShow.push({
-        x: key,
-        y: rare / achCount
-      });
-    }
-  }
-  console.log(dataToShow);
-  const data = [
-    {
-      id: 'Achievements',
-      color: 'hsl(165, 80%, 50%)',
-      data: dataToShow
-    }];
+
+  console.log(`${new Date().getFullYear()}-1-1`);
   return (
-    <ResponsiveLine
-    data={data}
-    theme={{
-      background: '#1b2838',
-      text: {
-        fontSize: 11,
-        fill: '#f4f1f1',
-        outlineWidth: 0,
-        outlineColor: '#ffffff'
+    <ResponsivePie
+    data={dataToShow}
+    margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+    activeOuterRadiusOffset={8}
+    borderWidth={1}
+    colors={{ datum: 'data.color' }}
+    borderColor={{
+      from: 'color',
+      modifiers: [
+        [
+          'darker',
+          0.2
+        ]
+      ]
+    }}
+    arcLinkLabelsSkipAngle={10}
+    arcLinkLabelsTextColor="#FFFFFF"
+    arcLinkLabelsThickness={2}
+    arcLabel={e => `${(e.value / aches.length * 100).toFixed(2)}%`}
+    arcLinkLabelsColor={{ from: 'color' }}
+    arcLabelsSkipAngle={10}
+    arcLabelsTextColor={{
+      from: 'color',
+      modifiers: [
+        [
+          'darker',
+          2
+        ]
+      ]
+    }}
+    defs={[
+      {
+        id: 'dots',
+        type: 'patternDots',
+        background: 'inherit',
+        size: 4,
+        padding: 1,
+        stagger: true
       },
-      axis: {
-        domain: {
-          line: {
-            stroke: '#f7f7f7',
-            strokeWidth: 1
-          }
-        },
-        legend: {
-          text: {
-            fontSize: 12,
-            fill: '#f5f5f5',
-            outlineWidth: 0,
-            outlineColor: '#ffffff'
-          }
-        },
-        ticks: {
-          line: {
-            stroke: '#777777',
-            strokeWidth: 1
-          },
-          text: {
-            fontSize: 11,
-            fill: '#ffffff',
-            outlineWidth: 0,
-            outlineColor: '#ebe6e6'
-          }
-        }
-      },
-      grid: {
-        line: {
-          stroke: '#dddddd',
-          strokeWidth: 1
-        }
-      },
-      legends: {
-        title: {
-          text: {
-            fontSize: 11,
-            fill: '#333333',
-            outlineWidth: 0,
-            outlineColor: 'transparent'
-          }
-        },
-        text: {
-          fontSize: 11,
-          fill: '#fff0f0',
-          outlineWidth: 0,
-          outlineColor: '#ffffff'
-        },
-        ticks: {
-          line: {},
-          text: {
-            fontSize: 10,
-            fill: '#333333',
-            outlineWidth: 0,
-            outlineColor: 'transparent'
-          }
-        }
-      },
-      annotations: {
-        text: {
-          fontSize: 13,
-          fill: '#333333',
-          outlineWidth: 2,
-          outlineColor: '#ffffff',
-          outlineOpacity: 1
-        },
-        link: {
-          stroke: '#000000',
-          strokeWidth: 1,
-          outlineWidth: 2,
-          outlineColor: '#ffffff',
-          outlineOpacity: 1
-        },
-        outline: {
-          stroke: '#000000',
-          strokeWidth: 2,
-          outlineWidth: 2,
-          outlineColor: '#ffffff',
-          outlineOpacity: 1
-        },
-        symbol: {
-          fill: '#000000',
-          outlineWidth: 2,
-          outlineColor: '#ffffff',
-          outlineOpacity: 1
-        }
-      },
-      tooltip: {
-        container: {
-          background: '#ffffff',
-          color: '#333333',
-          fontSize: 12
-        },
-        basic: {},
-        chip: {},
-        table: {},
-        tableCell: {},
-        tableCellValue: {}
+      {
+        id: 'lines',
+        type: 'patternLines',
+        background: 'inherit',
+        rotation: -45,
+        lineWidth: 6,
+        spacing: 10
       }
-    }}
-    margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-    xScale={{ type: 'point' }}
-    yScale={{
-      type: 'linear',
-      min: 'auto',
-      max: 'auto',
-      stacked: true,
-      reverse: false
-    }}
-    axisTop={null}
-    axisRight={null}
-    axisBottom={{
-      tickSize: 5,
-      tickPadding: 5,
-      tickRotation: 0,
-      legend: 'transportation',
-      legendOffset: 36,
-      legendPosition: 'middle',
-      truncateTickAt: 0
-    }}
-    axisLeft={{
-      tickSize: 5,
-      tickPadding: 5,
-      tickRotation: 0,
-      legend: 'count',
-      legendOffset: -40,
-      legendPosition: 'middle',
-      truncateTickAt: 0
-    }}
-    enableGridX={false}
-    enableGridY={false}
-    colors={{ scheme: 'category10' }}
-    lineWidth={10}
-    pointSize={10}
-    pointColor={{ theme: 'background' }}
-    pointBorderWidth={2}
-    pointBorderColor={{ from: 'serieColor' }}
-    pointLabelYOffset={-12}
-    areaBlendMode="darken"
-    areaOpacity={0}
-    enableTouchCrosshair={true}
-    useMesh={true}
+    ]}
+    fill={[
+      {
+        match: {
+          id: 'ruby'
+        },
+        id: 'dots'
+      },
+      {
+        match: {
+          id: 'c'
+        },
+        id: 'dots'
+      },
+      {
+        match: {
+          id: 'go'
+        },
+        id: 'dots'
+      },
+
+      {
+        match: {
+          id: 'elixir'
+        },
+        id: 'lines'
+      },
+      {
+        match: {
+          id: 'javascript'
+        },
+        id: 'lines'
+      }
+    ]}
     legends={[
       {
-        anchor: 'bottom-right',
+        anchor: 'top-right',
         direction: 'column',
         justify: false,
-        translateX: 100,
-        translateY: 0,
+        translateX: 0,
+        translateY: 56,
         itemsSpacing: 0,
+        itemWidth: 100,
+        itemHeight: 18,
+        itemTextColor: '#999',
         itemDirection: 'left-to-right',
-        itemWidth: 80,
-        itemHeight: 20,
-        itemOpacity: 0.75,
-        symbolSize: 12,
+        itemOpacity: 1,
+        symbolSize: 18,
         symbolShape: 'circle',
-        symbolBorderColor: 'rgba(0, 0, 0, .5)',
         effects: [
           {
             on: 'hover',
             style: {
-              itemBackground: 'rgba(0, 0, 0, .03)',
-              itemOpacity: 1
+              itemTextColor: '#000'
             }
           }
         ]
       }
     ]}
-    motionConfig="molasses"
 />
   );
 }
