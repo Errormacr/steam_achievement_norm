@@ -36,7 +36,7 @@ export default class SteamDataFetcher {
         return response.json();
       } catch (error) {
         attempts++;
-        console.error(`Attempt ${attempts} failed: ${error.message}`);
+        // console.error(`Attempt ${attempts} failed: ${error.message}`);
 
         // Пауза перед следующей попыткой (можно настроить по желанию)
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -52,10 +52,9 @@ export default class SteamDataFetcher {
       const responses = await Promise.all(urls_a.map(async (appid) => {
         try {
           const ach_url = `http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=${appid[0]}&key=${key}&steamid=${ip}&l=${lang}`;
-          const perc_url = `http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${appid[0]}&format=json`;
+          const perc_url = `https://api.steampowered.com/IPlayerService/GetGameAchievements/v1/?format=json&appid=${appid[0]}&language=${lang}`;
           const ico_url = `https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?appid=${appid[0]}&key=${key}&l=${lang}`;
           const urls = [ach_url, perc_url, ico_url];
-
           const data = await Promise.all([
             ...urls.map(url => this.fetchData(url)), {
               appid: appid[0]
@@ -69,23 +68,23 @@ export default class SteamDataFetcher {
           return data;
         } catch (err) {
           q[appid[0]] = err;
-          console.log(q);
-          console.error(appid);
+          // console.log(q);
+          // console.error(appid);
           return null; // or some default/error object
         }
       }));
       const results = responses.filter((data) => {
-        return data && data[0].playerstats.gameName && data[1].achievementpercentages.achievements && data[0].playerstats.achievements && data[2].game;
+        return data && data[0].playerstats.gameName && data[1].response.achievements && data[0].playerstats.achievements && data[2].game;
       });
       const ret_data = results.map((data) => {
         try {
-          const arr1 = data[1].achievementpercentages.achievements;
+          const arr1 = data[1].response.achievements;
           const arr2 = data[0].playerstats.achievements;
           const arr3 = data[2].game.availableGameStats.achievements;
           const mergedArray = arr3.reduce((acc, curr) => {
             const matchingObjInArr2 = arr2.find(obj => obj.apiname === curr.name);
             delete matchingObjInArr2.apiname;
-            let matchingObjInArr3 = arr1.find(obj => obj.name === curr.name);
+            let matchingObjInArr3 = arr1.find(obj => obj.internal_name === curr.name);
             if (!matchingObjInArr3) {
               matchingObjInArr3 = {
                 name: curr.name,
@@ -93,6 +92,14 @@ export default class SteamDataFetcher {
               };
             }
             if (matchingObjInArr2 && matchingObjInArr3) {
+              matchingObjInArr3.description = matchingObjInArr3.localized_desc;
+              delete matchingObjInArr3.localized_desc;
+              matchingObjInArr3.displayName = matchingObjInArr3.localized_name;
+              delete matchingObjInArr3.localized_name;
+              matchingObjInArr3.percent = Number(matchingObjInArr3.player_percent_unlocked);
+              delete matchingObjInArr3.player_percent_unlocked;
+              delete matchingObjInArr3.icon;
+              delete matchingObjInArr3.icon_gray;
               acc.push({
                 ...curr,
                 ...matchingObjInArr2,
@@ -101,17 +108,16 @@ export default class SteamDataFetcher {
             }
             return acc;
           }, []);
-
           return { appid: data[3].appid, last_launch_time: data[4].last_launch_time, playtime: data[5].playtime, gameName: data[0].playerstats.gameName, Achievement: mergedArray };
         } catch (error) {
-          console.log(error);
+          // console.log(error);
           return (error);
         }
       });
 
       return ret_data;
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       throw new Error('An error occurred while retrieving data from Steam Web API');
     }
   }
