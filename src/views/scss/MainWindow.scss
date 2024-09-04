@@ -86,15 +86,14 @@
     .with-friends {
         display: flex;
         flex-direction: column;
-        .last-ach-main {
-            margin-left: 1.5rem;
-            margin-top: 4rem;
-        }
-        
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+        margin-top: 4rem;
+
     }
 
 }
-.diagramCont{
+.diagramCont {
     place-content: center;
     display: flex;
     width: 99vw;

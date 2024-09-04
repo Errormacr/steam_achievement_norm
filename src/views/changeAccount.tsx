@@ -4,7 +4,7 @@ import i18n from 'i18next';
 import GameButton from './GameButton';
 import IdKeyInput from './IdKeyInput';
 
-export default function ChangeAccount () {
+export default function ChangeAccount ({ update }) {
   const [isOpen,
     setIsOpen] = useState(false);
   const [addingAcc,
@@ -63,7 +63,7 @@ export default function ChangeAccount () {
           const playersArray = result
             .response
             .players
-            .map((player : any) => ({ nickname: player.personaname, ava: player.avatar, steamId: player.steamid }));
+            .map((player : any) => ({ nickname: player.personaname, ava: player.avatarfull, steamId: player.steamid }));
           setAccounts(playersArray);
         })
         .catch(error => {
@@ -109,10 +109,13 @@ export default function ChangeAccount () {
                     <div className="modal-content">
                         <h2 className='settingsHeader'>{t('chAccHeading')}</h2>
                         <div className='accContainer'>
-                            {accounts.map(account => <div
+                            {accounts.sort((a, b) => a.steamId - b.steamId).map(account => <div
                                 className="userContainer"
+
                                 onClick={() => {
                                   localStorage.setItem('steamId', account.steamId);
+                                  update();
+                                  closeModal();
                                 }}>
                                 <img
                                     style={{

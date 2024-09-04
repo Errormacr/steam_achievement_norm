@@ -68,5 +68,8 @@
     "ApiKeyRequired": "Необходим ключ",
     "ApiKeyError": "Ключ неправильный",
     "SteamIdRequired": "Необходим SteamID",
-    "SteamIdError": "SteamID неправильный"
+    "SteamIdError": "SteamID неправильный",
+    "addAcc": "Добавить аккаунт",
+    "changeAcc": "Выбрать аккаунт",
+    "chAccHeading":"Управление аккаунтами"
 }
