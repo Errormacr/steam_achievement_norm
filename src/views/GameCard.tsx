@@ -127,9 +127,8 @@ export function GameCard ({ game, backWindow }: any) {
               {percent.toFixed(2)}%
             </div>
             <div className="cell middle" title={t('LastLaunch')}>
-              {UnixTimestampToDate(last_launch_time) === '1970.1.1'
-                ? 'No'
-                : UnixTimestampToDate(last_launch_time)}
+              {
+                last_launch_time.substring(0, 10)}
             </div>
             <div className="cell right" title={t('PlayTime')}>
               {playtime + ` ${t('Hours')}`}
@@ -138,7 +137,7 @@ export function GameCard ({ game, backWindow }: any) {
         </div>
         <div className="gameCard-background"></div>
         <div className="achievement-images">
-          {Achievement.sort((a: any, b: any) => b.unlocktime - a.unlocktime)
+          {Achievement.sort((a: any, b: any) => b.unlockedTimestamp - a.unlockedTimestamp)
             .slice(0, 7)
             .map((achievement: any) => (
               <img
@@ -155,14 +154,14 @@ export function GameCard ({ game, backWindow }: any) {
                     : 'rare5'
                 }`}
                 src={
-                  achievement.achieved ? achievement.icon : achievement.icongray
+                achievement.icon
                 }
                 alt="achievement image"
                 title={`${achievement.displayName}${
                   achievement.description ? '\n' + achievement.description : ''
                 }\n${achievement.percent.toFixed(2)} %\n${
-                  achievement.unlocktime
-                    ? UnixTimestampToDate(achievement.unlocktime)
+                  achievement.unlockedTimestamp
+                    ? UnixTimestampToDate(achievement.unlockedTimestamp)
                     : ''
                 }`}
               />

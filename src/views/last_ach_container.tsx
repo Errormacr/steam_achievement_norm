@@ -20,7 +20,7 @@ export default function AchCont () {
         acc = acc.concat(arr);
         return acc;
       }, []);
-      allAch.sort((a : any, b : any) => b.unlocktime - a.unlocktime);
+      allAch.sort((a : any, b : any) => b.unlockedTimestamp - a.unlockedTimestamp);
       setAllAch(allAch.slice(0, 36));
     } catch (err) {
       window.alert(err.message);
@@ -63,7 +63,7 @@ export default function AchCont () {
                     .displayName}\n${ach
                     .description}\n${ach
                     .percent
-                    .toFixed(2)}\n${new Date(ach.unlocktime * 1000)}`}/>
+                    .toFixed(2)}\n${new Date(ach.unlockedTimestamp * 1000)}`}/>
 
                     </div>))}
             </div>

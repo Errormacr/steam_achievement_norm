@@ -48,24 +48,20 @@ export default function App () {
     setSteamIdError] = useState('');
   const { t } = useTranslation();
 
-  const getApi = useCallback(async (urls : string[]) => {
+  const getApi = useCallback(async () => {
     try {
-      const dataKey = localStorage.getItem('api-key');
       const dataSteamId = localStorage.getItem('steamId');
-      const retData = await fetch(`http://localhost:4500/data?steam_id=${dataSteamId}&key=${dataKey}&lang=${t('steamLanguage')}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          appid: JSON.stringify(urls)
-        })
+      const retData = await fetch(`http://localhost:8888/api/user/all-ach/${dataSteamId}?lang=${t('steamLanguage')}`, {
+        method: 'GET'
       });
-      return retData.json();
+      const data = await retData.json();
+      console.log(data);
+      return data;
     } catch (error) {
       console.error(error);
     }
   }, []);
+
   const updateUserData = useCallback(async () => {
     const dataKey = localStorage.getItem('api-key');
     const dataSteamId = localStorage.getItem('steamId');
@@ -103,7 +99,7 @@ export default function App () {
               ]);
             }
           }
-          const ach = await calculateAchievementCount(dataGameAchUrl);
+          const ach = await calculateAchievementCount();
           setAch(ach[0].toString());
           const predPercent = localStorage.getItem('percent');
           localStorage.setItem('percent', ach[1].toString());
@@ -117,7 +113,7 @@ export default function App () {
             setPersonalName(localStorage.getItem('name'));
             const ach = localStorage.getItem('ach');
             const data = JSON.parse(ach);
-            setGames(data.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time).slice(0, 3));
+            setGames(data.sort((a : any, b : any) => new Date(b.last_launch_time).getTime() - new Date(a.last_launch_time).getTime()).slice(0, 3));
             setGamesCount(data.length);
             let achAchCount = 0;
             let percent = 0;
@@ -127,8 +123,8 @@ export default function App () {
                 const achArr = ach
                   .Achievement
                   .filter((ach : any) => (ach as {
-                                        achieved : number
-                                    }).achieved === 1);
+                                        unlocked : boolean
+                                    }).unlocked);
                 const allAchArr = ach.Achievement;
                 if (achArr.length > 0) {
                   percent += achArr.length / allAchArr.length * 100;
@@ -152,9 +148,9 @@ export default function App () {
     }
   }, []);
 
-  const calculateAchievementCount = useCallback(async (dataGameAchUrl : string[]) => {
+  const calculateAchievementCount = useCallback(async () => {
     setLoad(true);
-    const data = await getApi(dataGameAchUrl);
+    const data = await getApi();
     const dataWithPercentEtc = [];
 
     let achAchCount = 0;
@@ -164,9 +160,9 @@ export default function App () {
       for (const ach of data.flat()) {
         if (ach.Achievement) {
           const { Achievement } = ach;
-          const achArr = Achievement.filter(({ achieved } : {
-                        achieved: number
-                    }) => achieved === 1);
+          const achArr = Achievement.filter(({ unlocked } : {
+            unlocked: boolean
+                    }) => unlocked);
 
           if (achArr.length > 0) {
             allAchCount += (achArr.length / Achievement.length) * 100;
@@ -183,8 +179,8 @@ export default function App () {
           achAchCount += achArr.length;
         }
       }
-
-      const sortedGames = dataWithPercentEtc.sort((a : any, b : any) => b.last_launch_time - a.last_launch_time).slice(0, 3);
+      console.log(new Date(dataWithPercentEtc[0].last_launch_time).getTime());
+      const sortedGames = dataWithPercentEtc.sort((a : any, b : any) => new Date(b.last_launch_time).getTime() - new Date(a.last_launch_time).getTime()).slice(0, 3);
 
       const achData = JSON.stringify(dataWithPercentEtc);
       localStorage.setItem('ach', achData);
@@ -302,31 +298,6 @@ export default function App () {
                                         onClick={handleKeyChange}
                                         id='keyChangeButton'/>)}
                                     {ConstSteamWebApiKey !== '' && (<GameButton text={t('ClearKey')} onClick={handleKeyClear} id='keyClearButton'/>)}
-                                    <div>
-                                        {ConstSteamId === '' && <IdKeyInput
-                                            onChange={(event) => {
-                                              const value = event.target.value;
-                                              const regex = /^[0-9]+$/;
-                                              if (regex.test(value)) {
-                                                setSteamId(value);
-                                                setSteamIdError('');
-                                              } else if (value === '') {
-                                                setSteamIdError(t('SteamIdRequired'));
-                                              } else {
-                                                setSteamIdError(t('SteamIdError'));
-                                              }
-                                            }}
-                                            placeholder="Steam id"/>}
-                                        {steamIdError && <div className="input-error">{steamIdError}</div>}</div>
-                                    {ConstSteamId === '' && (<GameButton
-                                        text={t('ChangeSteamID')}
-                                        onClick={handleIdChange}
-                                        id='steamIdChangeButton'/>)}
-
-                                    {ConstSteamId !== '' && (<GameButton
-                                        text={t('ClearId')}
-                                        onClick={handleIdClear}
-                                        id='steamIdClearButton'/>)}
 
                                     <GameButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>

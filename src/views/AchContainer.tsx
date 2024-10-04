@@ -103,25 +103,25 @@ export default function AchBox (data : any) {
         case 'proc':
           return b.percent - a.percent;
         case 'datarev':
-          if (a.unlocktime === 0) {
+          if (a.unlockedTimestamp === 0) {
             return 1;
           }
-          if (b.unlocktime === 0) {
+          if (b.unlockedTimestamp === 0) {
             return -1;
           }
-          return a.unlocktime - b.unlocktime;
+          return a.unlockedTimestamp - b.unlockedTimestamp;
         case 'data':
-          if (a.unlocktime === 0) {
+          if (a.unlockedTimestamp === 0) {
             return 1;
           }
-          if (b.unlocktime === 0) {
+          if (b.unlockedTimestamp === 0) {
             return -1;
           }
-          return b.unlocktime - a.unlocktime;
+          return b.unlockedTimestamp - a.unlockedTimestamp;
         case 'unlockedrev':
-          return a.achieved - b.achieved;
+          return a.unlocked - b.unlocked;
         case 'unlocked':
-          return b.achieved - a.achieved;
+          return b.unlocked - a.unlocked;
         default:
           return 0;
       }
@@ -151,25 +151,25 @@ export default function AchBox (data : any) {
         case 'proc':
           return b.percent - a.percent;
         case 'datarev':
-          if (a.unlocktime === 0) {
+          if (a.unlockedTimestamp === 0) {
             return 1;
           }
-          if (b.unlocktime === 0) {
+          if (b.unlockedTimestamp === 0) {
             return -1;
           }
-          return a.unlocktime - b.unlocktime;
+          return a.unlockedTimestamp - b.unlockedTimestamp;
         case 'data':
-          if (a.unlocktime === 0) {
+          if (a.unlockedTimestamp === 0) {
             return 1;
           }
-          if (b.unlocktime === 0) {
+          if (b.unlockedTimestamp === 0) {
             return -1;
           }
-          return b.unlocktime - a.unlocktime;
+          return b.unlockedTimestamp - a.unlockedTimestamp;
         case 'unlockedrev':
-          return a.achieved - b.achieved;
+          return a.unlocked - b.unlocked;
         case 'unlocked':
-          return b.achieved - a.achieved;
+          return b.unlocked - a.unlocked;
         default:
           return 0;
       }
@@ -406,9 +406,8 @@ export default function AchBox (data : any) {
                         key={(data.data[1]
                           ? ach.gameName
                           : '') + ach.achivment.displayName + ach.achivment.percent + ach.achivment.name}
-                        src={ach.achivment.achieved
-                          ? ach.achivment.icon
-                          : ach.achivment.icongray}
+                        src={ ach.achivment.icon
+                          }
                         alt={ach.achivment.displayName}
                         title={`${data.data[1]
                         ? ach.gameName + '\n'
@@ -416,7 +415,7 @@ export default function AchBox (data : any) {
                             .displayName}\n${ach.achivment
                             .description}\n${ach.achivment
                             .percent
-                            .toFixed(2)}\n${new Date(ach.achivment.unlocktime * 1000)}`}/>))}
+                            .toFixed(2)}\n${new Date(ach.achivment.unlockedTimestamp * 1000)}`}/>))}
                 </div>
             </div>
         </I18nextProvider>

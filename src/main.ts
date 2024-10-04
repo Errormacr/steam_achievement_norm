@@ -1,10 +1,12 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
+import { exec, spawn, ChildProcess } from 'child_process';
 import SteamDataFetcher from './server/server.js';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
+let nestAppProcess: ChildProcess | null = null;
 const createWindow = () => {
   // Create the browser window.
 
@@ -32,7 +34,21 @@ const createWindow = () => {
 app.on('ready', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const steamDataFetcher = new SteamDataFetcher();
+  const nestAppDirectory = path.join(__dirname, '../../server');
+  nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/main'], { cwd: nestAppDirectory });
 
+  // Capture NestJS app output for logging
+  nestAppProcess.stdout.on('data', (data) => {
+    console.log(`NestJS Output: ${data}`);
+  });
+
+  nestAppProcess.stderr.on('data', (data) => {
+    console.error(`NestJS Error: ${data}`);
+  });
+
+  nestAppProcess.on('close', (code) => {
+    console.log(`NestJS process exited with code ${code}`);
+  });
   createWindow();
 });
 
@@ -41,6 +57,9 @@ app.on('ready', () => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    if (nestAppProcess) {
+      nestAppProcess.kill(); // Terminate the NestJS process
+    }
     app.quit();
   }
 });
