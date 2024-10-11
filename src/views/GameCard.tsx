@@ -63,6 +63,8 @@ export function GameCard ({ game, backWindow }: any) {
     playtime,
     Achievement
   } = game;
+  const [playtimeHours, playtimeMinutes] = playtime.split('.');
+  const playtimeString = playtimeHours !== '0' || playtimeMinutes !== '00' ? playtimeHours + ` ${t('Hours')} ` + (playtimeMinutes * 60 / 100).toFixed(0) + ` ${t('Minutes')}` : t('Non launch game');
   return (
     <I18nextProvider i18n={i18n}>
       <div
@@ -72,11 +74,6 @@ export function GameCard ({ game, backWindow }: any) {
         gained-ach={gained}
         non-gained-ach={all - gained}
         game-percent={percent}
-        last-launch={
-          UnixTimestampToDate(last_launch_time) === '1970.1.1'
-            ? 'No'
-            : UnixTimestampToDate(last_launch_time)
-        }
         game-playtime={`${playtime} ${t('Hours')}`}
         key={appid}
         onClick={() => logging(appid, backWindow)}
@@ -88,6 +85,23 @@ export function GameCard ({ game, backWindow }: any) {
             src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
             alt={gameName}
           />
+        </div>
+        <div className="details-container">
+          <div className="row">
+            <div className="cell left" title={t('AllAChInGame')}>
+              {gained}/{all}
+            </div>
+            <div className="cell middle" title={t('PercentAch')}>
+              {percent.toFixed(2)}%
+            </div>
+            <div className="cell middle" title={t('LastLaunch')}>
+              {
+                last_launch_time.substring(0, 10)}
+            </div>
+            <div className="cell right" title={t('PlayTime')}>
+              {playtimeString}
+            </div>
+          </div>
         </div>
         <div className="progress-bar-container">
           <div className="progress">
@@ -110,29 +124,6 @@ export function GameCard ({ game, backWindow }: any) {
                 }`
               }}
             ></div>
-          </div>
-        </div>
-        <div className="details-container">
-          <div className="row">
-            <div className="cell left" title={t('AllAChInGame')}>
-              {all}
-            </div>
-            <div className="cell middle" title={t('GainedAch')}>
-              {gained}
-            </div>
-            <div className="cell middle" title={t('NonGainedAch')}>
-              {all - gained}
-            </div>
-            <div className="cell middle" title={t('PercentAch')}>
-              {percent.toFixed(2)}%
-            </div>
-            <div className="cell middle" title={t('LastLaunch')}>
-              {
-                last_launch_time.substring(0, 10)}
-            </div>
-            <div className="cell right" title={t('PlayTime')}>
-              {playtime + ` ${t('Hours')}`}
-            </div>
           </div>
         </div>
         <div className="gameCard-background"></div>

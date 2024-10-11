@@ -44,8 +44,6 @@ export default function App () {
 
   const [apiKeyError,
     setApiKeyError] = useState('');
-  const [steamIdError,
-    setSteamIdError] = useState('');
   const { t } = useTranslation();
 
   const getApi = useCallback(async () => {
@@ -74,11 +72,9 @@ export default function App () {
         const before = localStorage.getItem('recent');
         if ((before === undefined) || (before !== JSON.stringify(data)) || (before === null)) {
           const [data,
-            userData,
-            gamesData] = await Promise.all([
+            userData] = await Promise.all([
             fetch(`http://localhost:4500/recent?key=${dataKey}&id=${dataSteamId}`).then(response => response.json()),
-            fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${dataSteamId}`).then(response => response.json()),
-            fetch(`http://localhost:4500/owned?key=${dataKey}&id=${dataSteamId}`).then(response => response.json())
+            fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${dataSteamId}`).then(response => response.json())
           ]);
 
           localStorage.setItem('recent', JSON.stringify(data));
@@ -88,17 +84,6 @@ export default function App () {
           localStorage.setItem('ava', avaUrl);
           localStorage.setItem('name', personalName);
           setAvaUrl(avaUrl);
-          setGamesCount(gamesData.response.games.length);
-          const dataGameAchUrl : any[] = [];
-          for (const ach in gamesData.response.games) {
-            if (Object.hasOwn(gamesData.response.games, ach)) {
-              dataGameAchUrl.push([
-                gamesData.response.games[ach].appid,
-                gamesData.response.games[ach].rtime_last_played,
-                (gamesData.response.games[ach].playtime_forever / 60).toFixed(1)
-              ]);
-            }
-          }
           const ach = await calculateAchievementCount();
           setAch(ach[0].toString());
           const predPercent = localStorage.getItem('percent');
@@ -151,6 +136,7 @@ export default function App () {
   const calculateAchievementCount = useCallback(async () => {
     setLoad(true);
     const data = await getApi();
+    setGamesCount(data.length);
     const dataWithPercentEtc = [];
 
     let achAchCount = 0;
@@ -206,19 +192,9 @@ export default function App () {
     localStorage.setItem('api-key', SteamWebApiKey);
     updateUserData();
   };
-  const handleIdChange = () => {
-    setConstSteamId(SteamId);
-    localStorage.setItem('recent', '');
-    localStorage.setItem('steamId', SteamId);
-    updateUserData();
-  };
   const handleKeyClear = () => {
     setConstSteamWebApiKey('');
     localStorage.setItem('api-key', '');
-  };
-  const handleIdClear = () => {
-    setConstSteamId('');
-    localStorage.setItem('steamId', '');
   };
   const handleUpdate = () => {
     localStorage.setItem('recent', '');
