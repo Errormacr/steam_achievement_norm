@@ -23,14 +23,16 @@ export default function AchPage () {
   useEffect(useCallback(() => {
     try {
       const data = JSON.parse(localStorage.getItem('ach'));
+      console.log(data);
       const achivmentsArr : any[] = [];
       for (const game of data) {
         for (const ach of game.Achievement) {
-          if (ach.achieved) {
+          if (ach.unlocked) {
             achivmentsArr.push({ achivment: ach, gameName: game.gameName });
           }
         }
       }
+      console.log(achivmentsArr);
       const boxView = Boolean(localStorage.getItem('boxView'));
       if (!boxView) {
         setTable(false);

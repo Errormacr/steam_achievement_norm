@@ -15,7 +15,7 @@
     "Russian": "Русский",
     "steamLanguage": "Russian",
     "Return": "Вернуться",
-    "AllAChInGame": "Все достижения в игре",
+    "AllAChInGame": "Получено из",
     "GainedAch": "Полученные достижения",
     "NonGainedAch": "Не полученные достижения",
     "PercentAch": "Процент достижений",
@@ -63,10 +63,15 @@
     "percent90-100": "90-100%",
     "averageUp": "к среднему проценту",
     "Hours": "часов",
+    "Minutes": "минут",
+    "Non launch game": "Не запускалась",
     "SwitchTable": "Сменить вид",
     "ApiKeylengthMismatch": "Длина ключа = 32 символа",
     "ApiKeyRequired": "Необходим ключ",
     "ApiKeyError": "Ключ неправильный",
     "SteamIdRequired": "Необходим SteamID",
-    "SteamIdError": "SteamID неправильный"
+    "SteamIdError": "SteamID неправильный",
+    "addAcc": "Добавить аккаунт",
+    "changeAcc": "Выбрать аккаунт",
+    "chAccHeading":"Управление аккаунтами"
 }

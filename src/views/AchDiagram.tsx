@@ -40,7 +40,7 @@ export default function Diagram () {
       value: 0,
       color: 'rgb(255,184,78)'
     }];
-  const aches = gamesArr.flatMap((game) => game.Achievement).filter((ach) => (ach.achieved));
+  const aches = gamesArr.flatMap((game) => game.Achievement).filter((ach) => (ach.unlocked));
   aches.forEach((ach) => {
     if (ach.percent <= 5) {
       dataToShow[4].value += 1;

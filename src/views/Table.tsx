@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { UnixTimestampToDate } from './GameCard';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import './scss/Table.scss';
@@ -45,21 +44,21 @@ export default function Table (data : TableData) {
       case 'proc':
         return b.percent - a.percent;
       case 'datarev':
-        if (a.unlocktime === 0) {
+        if (a.unlockedTimestamp === 0) {
           return 1;
         }
-        if (b.unlocktime === 0) {
+        if (b.unlockedTimestamp === 0) {
           return -1;
         }
-        return a.unlocktime - b.unlocktime;
+        return a.unlockedTimestamp - b.unlockedTimestamp;
       case 'data':
-        if (a.unlocktime === 0) {
+        if (a.unlockedTimestamp === 0) {
           return 1;
         }
-        if (b.unlocktime === 0) {
+        if (b.unlockedTimestamp === 0) {
           return -1;
         }
-        return b.unlocktime - a.unlocktime;
+        return b.unlockedTimestamp - a.unlockedTimestamp;
       case 'unlockedRev':
         return a.achieved - b.achieved;
       case 'unlocked':
@@ -92,6 +91,7 @@ export default function Table (data : TableData) {
   if (allAChPage === false) {
     sortOptions.unshift({ value: 'unlocked', label: t('Gained'), revValue: 'unlockedRev' });
   } else {
+    console.log(achSort);
     sortOptions.unshift({ value: '', label: t(''), revValue: '' });
   }
   return (
@@ -130,17 +130,15 @@ export default function Table (data : TableData) {
                                           : achievement.percent <= 60
                                             ? 'rare4 table-ach-img'
                                             : 'rare5 table-ach-img'}
-                                    src={achievement.achieved
-                                      ? achievement.icon
-                                      : achievement.icongray}></img>
+                                    src={
+                                      achievement.icon
+                                      }></img>
                             </td>
                             <td>{achievement.displayName}</td>
                             <td>{achievement.description}</td>
                             <td>{achievement.percent.toFixed(2)}
                                 %</td>
-                            <td>{UnixTimestampToDate(achievement.unlocktime) === '1970.1.1'
-                              ? '-'
-                              : UnixTimestampToDate(achievement.unlocktime)}</td>
+                            <td>{new Date(achievement.unlockedTimestamp * 1000).toLocaleDateString()}</td>
                         </tr>
                     ))}</tbody>
 
