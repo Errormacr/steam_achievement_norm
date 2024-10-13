@@ -23,10 +23,6 @@ export default function App () {
     setSteamWebApiKey] = useState('');
   const [ConstSteamWebApiKey,
     setConstSteamWebApiKey] = useState('');
-  const [ConstSteamId,
-    setConstSteamId] = useState('');
-  const [SteamId,
-    setSteamId] = useState('');
   const [personalName,
     setPersonalName] = useState('');
   const [Ach,
@@ -226,10 +222,6 @@ export default function App () {
       const data = localStorage.getItem('api-key');
       if (data !== undefined) {
         setConstSteamWebApiKey(data);
-      }
-      const dataSteamId = localStorage.getItem('steamId');
-      if (dataSteamId !== undefined) {
-        setConstSteamId(dataSteamId);
       }
       updateUserData();
     } catch (error) {
