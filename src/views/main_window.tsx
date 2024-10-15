@@ -25,167 +25,45 @@ export default function App () {
     setConstSteamWebApiKey] = useState('');
   const [personalName,
     setPersonalName] = useState('');
-  const [Ach,
-    setAch] = useState('');
+  const [AchCount,
+    setAchCount] = useState('');
   const [gamesCount,
     setGamesCount] = useState('');
   const [avaUrl,
     setAvaUrl] = useState('');
   const [percent,
     setPercent] = useState('');
-  const [games,
-    setGames] = useState([]);
-  const [load,
-    setLoad] = useState(false);
+  const [needToUpdate, setNeedToUpdate] = useState(true);
 
   const [apiKeyError,
     setApiKeyError] = useState('');
   const { t } = useTranslation();
-
-  const getApi = useCallback(async () => {
-    try {
-      const dataSteamId = localStorage.getItem('steamId');
-      const retData = await fetch(`http://localhost:8888/api/user/all-ach/${dataSteamId}?lang=${t('steamLanguage')}`, {
-        method: 'GET'
-      });
-      const data = await retData.json();
-      console.log(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
+  const updateRecent = useCallback(async () => {
+    
   }, []);
-
   const updateUserData = useCallback(async () => {
-    const dataKey = localStorage.getItem('api-key');
     const dataSteamId = localStorage.getItem('steamId');
     const achContainer = ReactDOM.createRoot(document.getElementById('container'));
 
-    if (dataKey && dataSteamId) {
+    if (dataSteamId) {
       try {
-        const response = await fetch(`http://localhost:4500/recent?key=${dataKey}&id=${dataSteamId}`);
-        const data = await response.json();
-        const before = localStorage.getItem('recent');
-        if ((before === undefined) || (before !== JSON.stringify(data)) || (before === null)) {
-          const [data,
-            userData] = await Promise.all([
-            fetch(`http://localhost:4500/recent?key=${dataKey}&id=${dataSteamId}`).then(response => response.json()),
-            fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${dataSteamId}`).then(response => response.json())
-          ]);
-
-          localStorage.setItem('recent', JSON.stringify(data));
-          const personalName = userData.response.players[0].personaname;
-          setPersonalName(personalName);
-          const avaUrl = userData.response.players[0].avatarfull;
-          localStorage.setItem('ava', avaUrl);
-          localStorage.setItem('name', personalName);
-          setAvaUrl(avaUrl);
-          const ach = await calculateAchievementCount();
-          setAch(ach[0].toString());
-          const predPercent = localStorage.getItem('percent');
-          localStorage.setItem('percent', ach[1].toString());
-          setPercent(ach[1].toString());
-          achContainer.render(<AchCont/>);
-
-          toast.success('+ ' + (parseFloat(ach[1].toString()) - parseFloat(predPercent)).toFixed(2).toString() + '% ' + t('averageUp'));
-        } else {
-          try {
-            setAvaUrl(localStorage.getItem('ava'));
-            setPersonalName(localStorage.getItem('name'));
-            const ach = localStorage.getItem('ach');
-            const data = JSON.parse(ach);
-            setGames(data.sort((a : any, b : any) => new Date(b.last_launch_time).getTime() - new Date(a.last_launch_time).getTime()).slice(0, 3));
-            setGamesCount(data.length);
-            let achAchCount = 0;
-            let percent = 0;
-            let gameWithAchCount = 0;
-            for (const ach of data) {
-              if (ach.Achievement) {
-                const achArr = ach
-                  .Achievement
-                  .filter((ach : any) => (ach as {
-                                        unlocked : boolean
-                                    }).unlocked);
-                const allAchArr = ach.Achievement;
-                if (achArr.length > 0) {
-                  percent += achArr.length / allAchArr.length * 100;
-                  gameWithAchCount += 1;
-                }
-                achAchCount += achArr.length;
-              }
-            }
-            setPercent((percent / gameWithAchCount).toFixed(2).toString());
-            setAch(achAchCount.toString());
-
-            achContainer.render(<AchCont/>);
-          } catch (e) {
-            console.error(e);
-            localStorage.setItem('recent', '');
-          }
-        }
+        const userDataResponse = await fetch(`http://localhost:8888/user/${dataSteamId}/data`);
+        const userData = await userDataResponse.json();
+        setPersonalName(userData.nickname);
+        setAvaUrl(userData.avatarLarge);
+        setPercent(userData.percent);
+        achContainer.render(<AchCont/>);
+        toast.success('+ ' + (parseFloat(ach[1].toString()) - parseFloat(predPercent)).toFixed(2).toString() + '% ' + t('averageUp'));
       } catch (e) {
         console.error(e);
       }
     }
   }, []);
 
-  const calculateAchievementCount = useCallback(async () => {
-    setLoad(true);
-    const data = await getApi();
-    setGamesCount(data.length);
-    const dataWithPercentEtc = [];
-
-    let achAchCount = 0;
-    let allAchCount = 0;
-    let gameWithAchCount = 0;
-    if (data.length > 0) {
-      for (const ach of data.flat()) {
-        if (ach.Achievement) {
-          const { Achievement } = ach;
-          const achArr = Achievement.filter(({ unlocked } : {
-            unlocked: boolean
-                    }) => unlocked);
-
-          if (achArr.length > 0) {
-            allAchCount += (achArr.length / Achievement.length) * 100;
-            gameWithAchCount += 1;
-          }
-
-          dataWithPercentEtc.push({
-            ...ach,
-            percent: (achArr.length / Achievement.length) * 100,
-            gained: achArr.length,
-            all: Achievement.length
-          });
-
-          achAchCount += achArr.length;
-        }
-      }
-      console.log(new Date(dataWithPercentEtc[0].last_launch_time).getTime());
-      const sortedGames = dataWithPercentEtc.sort((a : any, b : any) => new Date(b.last_launch_time).getTime() - new Date(a.last_launch_time).getTime()).slice(0, 3);
-
-      const achData = JSON.stringify(dataWithPercentEtc);
-      localStorage.setItem('ach', achData);
-
-      setGames(sortedGames);
-      setLoad(false);
-      toast.success(t('Success'));
-      return [
-        achAchCount,
-        (allAchCount / gameWithAchCount).toFixed(2),
-        gameWithAchCount
-      ];
-    } else {
-      setLoad(false);
-      toast.error(t('LoadFail'));
-      console.log('data is 0');
-      return [0, 0, 0];
-    }
-  }, [getApi]);
   const handleKeyChange = () => {
     setConstSteamWebApiKey(SteamWebApiKey);
-    localStorage.setItem('recent', '');
-    localStorage.setItem('api-key', SteamWebApiKey);
+    setNeedToUpdate(true)
+    
     updateUserData();
   };
   const handleKeyClear = () => {
@@ -232,7 +110,6 @@ export default function App () {
   return (
         <I18nextProvider i18n={i18n}>
             <div>
-                <LoadingOverlay active={load} spinner={< BounceLoader />}>
 
                     <div id="header key" className="header">
                         <div>
@@ -281,7 +158,7 @@ export default function App () {
                                         <img src={avaUrl}></img>
                                         <br ></br>
                                         <div className="stats-container">
-                                            <label className="nickname">{t('Ach')}: {Ach}</label>
+                                            <label className="nickname">{t('Ach')}: {AchCount}</label>
                                             <br></br>
                                             <br></br>
                                             <label className="nickname">{t('Games')}: {gamesCount}</label>
@@ -326,7 +203,6 @@ export default function App () {
                                     <Diagram></Diagram></div>
                         </div>
                     </div>
-                </LoadingOverlay>
                 <br></br>
                 <ToastContainer/>
             </div>
