@@ -40,7 +40,7 @@ export default function App () {
     const dataSteamId = localStorage.getItem('steamId');
     const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/recent`, { method: 'PUT' });
     const userData = await userDataResponse.json();
-    toast.success('+ ' + userData.percent.change + '% ' + t('averageUp'));
+    toast.success('+ ' + userData.percent.change.toFixed(2) + '% ' + t('averageUp'));
   }, []);
   const updateUserData = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
@@ -48,7 +48,9 @@ export default function App () {
 
     if (dataSteamId) {
       try {
-        await updateRecent();
+        if (needToUpdate) {
+          await updateRecent();
+        }
         const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/data`);
         const userData = await userDataResponse.json();
         setPersonalName(userData.user.nickname);
@@ -57,7 +59,7 @@ export default function App () {
         setGamesCount(userData.gameCount);
         setAchCount(userData.achCount);
         setRecentGames(userData.user.gameDatas);
-        achContainer.render(<AchCont/>)
+        achContainer.render(<AchCont/>);
         // toast.success('+ ' + (parseFloat(ach[1].toString()) - parseFloat(predPercent)).toFixed(2).toString() + '% ' + t('averageUp'));
       } catch (e) {
         console.error(e);
