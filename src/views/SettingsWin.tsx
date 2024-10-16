@@ -23,8 +23,8 @@ const SettingsWin : React.FC < ModalProps > = ({ isOpen, onClose }) => {
                     className='settingsSelect'
                     value={i18n.language}
                     onChange={(event) => changeLanguage(event.target.value)}>
-                    <option value="en">{t('English')}</option>
-                    <option value="ru">{t('Russian')}</option>
+                    <option value="english">{t('English')}</option>
+                    <option value="russian">{t('Russian')}</option>
                 </select>
                 <button className='settingsButton' onClick={onClose}>OK</button>
             </div>

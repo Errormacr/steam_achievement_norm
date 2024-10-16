@@ -7,8 +7,6 @@ import ProgressRad from './rad_progress';
 import AchPage from './AchievementsPage';
 import ChangeAccount from './changeAccount';
 import Settings from './Settings';
-import LoadingOverlay from 'react-loading-overlay-ts';
-import BounceLoader from 'react-spinners/BounceLoader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { I18nextProvider, useTranslation } from 'react-i18next';
@@ -34,12 +32,15 @@ export default function App () {
   const [percent,
     setPercent] = useState('');
   const [needToUpdate, setNeedToUpdate] = useState(true);
-
+  const [recentGames, setRecentGames] = useState([]);
   const [apiKeyError,
     setApiKeyError] = useState('');
   const { t } = useTranslation();
   const updateRecent = useCallback(async () => {
-    
+    const dataSteamId = localStorage.getItem('steamId');
+    const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/recent`, { method: 'PUT' });
+    const userData = await userDataResponse.json();
+    toast.success('+ ' + userData.percent.change + '% ' + t('averageUp'));
   }, []);
   const updateUserData = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
@@ -47,13 +48,17 @@ export default function App () {
 
     if (dataSteamId) {
       try {
-        const userDataResponse = await fetch(`http://localhost:8888/user/${dataSteamId}/data`);
+        await updateRecent();
+        const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/data`);
         const userData = await userDataResponse.json();
-        setPersonalName(userData.nickname);
-        setAvaUrl(userData.avatarLarge);
-        setPercent(userData.percent);
-        achContainer.render(<AchCont/>);
-        toast.success('+ ' + (parseFloat(ach[1].toString()) - parseFloat(predPercent)).toFixed(2).toString() + '% ' + t('averageUp'));
+        setPersonalName(userData.user.nickname);
+        setAvaUrl(userData.user.avatarLarge);
+        setPercent(userData.user.percent);
+        setGamesCount(userData.gameCount);
+        setAchCount(userData.achCount);
+        setRecentGames(userData.user.gameDatas);
+        achContainer.render(<AchCont/>)
+        // toast.success('+ ' + (parseFloat(ach[1].toString()) - parseFloat(predPercent)).toFixed(2).toString() + '% ' + t('averageUp'));
       } catch (e) {
         console.error(e);
       }
@@ -62,8 +67,8 @@ export default function App () {
 
   const handleKeyChange = () => {
     setConstSteamWebApiKey(SteamWebApiKey);
-    setNeedToUpdate(true)
-    
+    setNeedToUpdate(true);
+
     updateUserData();
   };
   const handleKeyClear = () => {
@@ -192,7 +197,7 @@ export default function App () {
                                     </div>
                                 )}
                                 <div className="main-game-cards">
-                                    {games.map((game) => (<GameCard key={game.appid} game={game} backWindow="main"/>))}
+                                    {recentGames.map((game) => (<GameCard key={game.appid} game={game.appid} backWindow="main"/>))}
                                 </div>
                                 <div className="with-friends">
                                     <div className="last-ach-main" id="container"></div>

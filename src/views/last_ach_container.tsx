@@ -5,27 +5,15 @@ import './scss/LastAchCont.scss';
 export default function AchCont () {
   const [allAch,
     setAllAch] = useState([]);
-
-  useEffect(useCallback(() => {
-    try {
-      const data = JSON.parse(localStorage.getItem('ach'));
-      const allAch = data.reduce((acc : any, cur : any) => {
-        let arr = cur.Achievement;
-        arr = arr.map((ach : any) => {
-          return {
-            ...ach,
-            gamename: cur.gameName
-          };
-        });
-        acc = acc.concat(arr);
-        return acc;
-      }, []);
-      allAch.sort((a : any, b : any) => b.unlockedTimestamp - a.unlockedTimestamp);
-      setAllAch(allAch.slice(0, 36));
-    } catch (err) {
-      window.alert(err.message);
-    }
-  }, []), []);
+  const renderWindow = useCallback(async () => {
+    const dataSteamId = localStorage.getItem('steamId');
+    const lastAch = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?orderBy=unlockedDate&desc=1&language=${i18n.language}&unlocked=1&page=1&pageSize=36`);
+    const lastAchData = await lastAch.json();
+    setAllAch(lastAchData);
+  }, []);
+  useEffect(() => {
+    renderWindow();
+  }, []);
   return (
         <I18nextProvider i18n={i18n}>
             <div className="last_ach_container">

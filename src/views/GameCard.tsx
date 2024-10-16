@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
@@ -19,11 +19,32 @@ function logging (apiid: number, backWindow: string) {
 }
 
 export function GameCard ({ game, backWindow }: any) {
+  const [percent, setPercent] = useState(0.0);
+  const [lastLaunchTime, setLastLaunchTime] = useState('');
+  const [playtime, setPlaytime] = useState(0.0);
+  const [all, setAll] = useState(0);
+  const [gained, setGained] = useState(0);
+  const [gameName, setGamename] = useState('');
+  const [aches, setAches] = useState([]);
+
   const { t } = useTranslation();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isProgressBarAnimated, setIsProgressBarAnimated] = useState(false);
-
+  const updateGame = useCallback(async () => {
+    const dataSteamId = localStorage.getItem('steamId');
+    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${game}/data?language=${i18n.language}`);
+    const gameData = await gameResponse.json();
+    setPercent(gameData.userDatas[0].percent);
+    setAll(gameData.achievmentsFromView.length);
+    setGained(gameData.userDatas[0].gainedAch);
+    setPlaytime(gameData.userDatas[0].playtime.toFixed(2));
+    setGamename(gameData.gamename);
+    setLastLaunchTime(gameData.userDatas[0].lastLaunchTime);
+    console.log(i18n.language);
+    setAches(gameData.achievmentsFromView.sort((a, b) => new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()).slice(0, 7));
+  }, []);
   useEffect(() => {
+    updateGame();
     // eslint-disable-next-line no-undef
     const options: IntersectionObserverInit = {
       root: null,
@@ -51,20 +72,6 @@ export function GameCard ({ game, backWindow }: any) {
       }
     };
   }, []);
-
-  const {
-    appid,
-    gameName,
-    percent,
-    all,
-    gained,
-    // eslint-disable-next-line camelcase
-    last_launch_time,
-    playtime,
-    Achievement
-  } = game;
-  const [playtimeHours, playtimeMinutes] = playtime.split('.');
-  const playtimeString = playtimeHours !== '0' || playtimeMinutes !== '00' ? playtimeHours + ` ${t('Hours')} ` + (playtimeMinutes * 60 / 100).toFixed(0) + ` ${t('Minutes')}` : t('Non launch game');
   return (
     <I18nextProvider i18n={i18n}>
       <div
@@ -75,14 +82,14 @@ export function GameCard ({ game, backWindow }: any) {
         non-gained-ach={all - gained}
         game-percent={percent}
         game-playtime={`${playtime} ${t('Hours')}`}
-        key={appid}
-        onClick={() => logging(appid, backWindow)}
+        key={game}
+        onClick={() => logging(game, backWindow)}
       >
         <div className="name-preview">
           <p className="name">{gameName}</p>
           <img
             className="preview"
-            src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
+            src={`https://steamcdn-a.akamaihd.net/steam/apps/${game}/capsule_sm_120.jpg`}
             alt={gameName}
           />
         </div>
@@ -96,10 +103,10 @@ export function GameCard ({ game, backWindow }: any) {
             </div>
             <div className="cell middle" title={t('LastLaunch')}>
               {
-                last_launch_time.substring(0, 10)}
+                lastLaunchTime.substring(0, 10)}
             </div>
             <div className="cell right" title={t('PlayTime')}>
-              {playtimeString}
+              {`${playtime} ` + t('Hours')}
             </div>
           </div>
         </div>
@@ -128,8 +135,7 @@ export function GameCard ({ game, backWindow }: any) {
         </div>
         <div className="gameCard-background"></div>
         <div className="achievement-images">
-          {Achievement.sort((a: any, b: any) => b.unlockedTimestamp - a.unlockedTimestamp)
-            .slice(0, 7)
+          {aches
             .map((achievement: any) => (
               <img
               key={achievement.name}
@@ -145,14 +151,14 @@ export function GameCard ({ game, backWindow }: any) {
                     : 'rare5'
                 }`}
                 src={
-                achievement.icon
+                achievement.unlocked ? achievement.icon : achievement.grayIcon
                 }
                 alt="achievement image"
                 title={`${achievement.displayName}${
                   achievement.description ? '\n' + achievement.description : ''
                 }\n${achievement.percent.toFixed(2)} %\n${
-                  achievement.unlockedTimestamp
-                    ? UnixTimestampToDate(achievement.unlockedTimestamp)
+                  achievement.unlockedDate
+                    ? achievement.unlockedDate
                     : ''
                 }`}
               />
