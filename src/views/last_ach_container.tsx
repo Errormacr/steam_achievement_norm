@@ -46,12 +46,12 @@ export default function AchCont () {
                     key={ach.name}
                     src={ach.icon}
                     alt={ach.displayName}
-                    title={`${ach
+                    title={`${ach.game
                     .gamename}\n${ach
                     .displayName}\n${ach
                     .description}\n${ach
                     .percent
-                    .toFixed(2)}\n${new Date(ach.unlockedTimestamp * 1000)}`}/>
+                    .toFixed(2)}\n${ach.unlockedDate}`}/>
 
                     </div>))}
             </div>

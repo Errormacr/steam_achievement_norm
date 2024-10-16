@@ -38,7 +38,7 @@ export default function App () {
   const { t } = useTranslation();
   const updateRecent = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/recent`, { method: 'PUT' });
+    const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/recent?lang=${i18n.language}`, { method: 'PUT' });
     const userData = await userDataResponse.json();
     toast.success('+ ' + userData.percent.change.toFixed(2) + '% ' + t('averageUp'));
   }, []);
