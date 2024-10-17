@@ -13,6 +13,21 @@ export function UnixTimestampToDate (props: number) {
   return `${year}-${month}-${day}`;
 }
 
+export interface Achievements {
+  appid: number;
+  name: string;
+  hidden: number;
+  icon: string;
+  grayIcon: string;
+  percent: number;
+  steamID: string;
+  unlocked: boolean;
+  unlockedDate: Date;
+  language: string;
+  description: string;
+  displayName: string;
+}
+
 function logging (apiid: number, backWindow: string) {
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(<GamePage appid={apiid} backWindow={backWindow} />);
@@ -41,7 +56,7 @@ export function GameCard ({ game, backWindow }: any) {
     setGamename(gameData.gamename);
     setLastLaunchTime(gameData.userDatas[0].lastLaunchTime);
     console.log(i18n.language);
-    setAches(gameData.achievmentsFromView.sort((a, b) => new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()).slice(0, 7));
+    setAches(gameData.achievmentsFromView.sort((a:Achievements, b:Achievements) => new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()).slice(0, 7));
   }, []);
   useEffect(() => {
     updateGame();
@@ -136,7 +151,7 @@ export function GameCard ({ game, backWindow }: any) {
         <div className="gameCard-background"></div>
         <div className="achievement-images">
           {aches
-            .map((achievement: any) => (
+            .map((achievement: Achievements) => (
               <img
               key={achievement.name}
                 className={`achievement-image ${
