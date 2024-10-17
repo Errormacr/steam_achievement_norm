@@ -33,7 +33,7 @@ export default function Diagram () {
 
       const responses = await Promise.all(urls.map(url => fetch(url)));
       const dataFromApi = await Promise.all(responses.map(response => response.json()));
-
+      console.log(dataFromApi);
       const achievementCounts = dataFromApi.map(data => data.count);
 
       // Update dataToShow with the counts

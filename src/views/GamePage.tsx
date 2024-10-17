@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import Games from './Games';
 import ProgressRad from './rad_progress';
@@ -12,10 +12,9 @@ import GameButton from './GameButton';
 import './scss/GamePage.scss';
 interface Game {
     appid : number;
-    last_launch_time : number;
-    playtime : string;
+    last_launch_time : string;
+    playtime : number;
     gameName : string;
-    Achievement : any[];
     all : number;
     gained : number;
     percent : number;
@@ -24,12 +23,9 @@ export default function GamePage ({ appid, backWindow } : any) {
   const [game,
     setGame] = useState < Game >({
       appid: 0,
-      last_launch_time: 0,
-      playtime: '',
+      last_launch_time: '',
+      playtime: 0,
       gameName: '',
-      Achievement: [
-        {}
-      ],
       all: 0,
       gained: 0,
       percent: 0
@@ -39,7 +35,21 @@ export default function GamePage ({ appid, backWindow } : any) {
   const [tableOrBox,
     setTableOrBox] = useState(true);
   const { t } = useTranslation();
-
+  const renderComponent = useCallback(async () => {
+    const dataSteamId = localStorage.getItem('steamId');
+    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${game}/data?language=${i18n.language}&achievements=false`);
+    const gameData = await gameResponse.json();
+    const newGameData = {
+      appid: appid,
+      last_launch_time: gameData.userDatas[0].lastLaunchTime,
+      playtime: gameData.userDatas[0].playtime,
+      gameName: gameData.gamename,
+      all: gameData.achievementCount,
+      gained: gameData.userDatas[0].gainedAch,
+      percent: gameData.userDatas[0].percent
+    };
+    setGame(newGameData);
+  }, []);
   useEffect(() => {
     try {
       const games = JSON.parse(localStorage.getItem('ach'));
