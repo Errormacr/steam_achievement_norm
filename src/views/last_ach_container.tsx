@@ -9,7 +9,7 @@ export default function AchCont () {
     const dataSteamId = localStorage.getItem('steamId');
     const lastAch = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?orderBy=unlockedDate&desc=1&language=${i18n.language}&unlocked=1&page=1&pageSize=36`);
     const lastAchData = await lastAch.json();
-    setAllAch(lastAchData);
+    setAllAch(lastAchData.rows);
   }, []);
   useEffect(() => {
     renderWindow();
