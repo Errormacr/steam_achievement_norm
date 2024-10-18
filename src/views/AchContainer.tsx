@@ -5,13 +5,15 @@ import './scss/AchConteiner.scss';
 import './scss/FilterSort.scss';
 import IdKeyInput from './IdKeyInput';
 interface AchBoxProps {
-  appid: number;
+  appid?: number;
   all: boolean;
 }
 const AchBox : React.FC < AchBoxProps > = ({
   appid
   , all
 }) => {
+  const [ach, setAch] = useState([]);
+
   const [isDropdownOpen,
     setDropdownOpen] = useState(false);
   const [selectedValue,
@@ -49,7 +51,7 @@ const AchBox : React.FC < AchBoxProps > = ({
   const { t } = useTranslation();
   const updateAchievements = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?orderBy=unlocked&desc=1&page=1&pageSize=10&percentMin=0&percentMax=100&language=russian&gameName=port&appid=400&displayName=%D1%8B&unlocked=1`);
+    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?orderBy=unlocked&desc=1&page=1&pageSize=10&percentMin=0&percentMax=100&language=${i18n.language}&gameName=port${appid ? `&appid=${appid}` : ''}&displayName=%D1%8B&unlocked=1`);
   }, []);
   useEffect(useCallback(() => {
     try {
