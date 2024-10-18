@@ -49,9 +49,11 @@ app.on('ready', () => {
   nestAppProcess.on('close', (code) => {
     console.log(`NestJS process exited with code ${code}`);
   });
-  createWindow();
+  sleep(1000).then(() => createWindow());
 });
-
+function sleep (ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.

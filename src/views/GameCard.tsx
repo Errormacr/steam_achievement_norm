@@ -28,9 +28,9 @@ export interface Achievements {
   displayName: string;
 }
 
-function logging (apiid: number, backWindow: string) {
+function logging (appid: number, backWindow: string) {
   const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render(<GamePage appid={apiid} backWindow={backWindow} />);
+  root.render(<GamePage appid={appid} backWindow={backWindow} />);
 }
 
 export function GameCard ({ game, backWindow }: any) {

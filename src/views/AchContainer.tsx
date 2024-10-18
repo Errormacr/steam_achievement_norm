@@ -4,7 +4,14 @@ import i18n from 'i18next';
 import './scss/AchConteiner.scss';
 import './scss/FilterSort.scss';
 import IdKeyInput from './IdKeyInput';
-export default function AchBox (data : any) {
+interface AchBoxProps {
+  appid: number;
+  all: boolean;
+}
+const AchBox : React.FC < AchBoxProps > = ({
+  appid
+  , all
+}) => {
   const [isDropdownOpen,
     setDropdownOpen] = useState(false);
   const [selectedValue,
@@ -24,10 +31,6 @@ export default function AchBox (data : any) {
     setSelectedTimeFilterValue] = useState < string | null >(null);
   const [selectedCompletionFilterValue,
     setSelectedCompletionFilterValue] = useState < string | null >(null);
-  const [game,
-    setGame] = useState([]);
-  const [allAch,
-    setAllAch] = useState([]);
   const [searchQueryGameName,
     setSearchQueryGameName] = useState('');
   const handleSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
@@ -44,178 +47,16 @@ export default function AchBox (data : any) {
     setDropdownOpen(false);
   };
   const { t } = useTranslation();
-  const filteredAch = data.data[1]
-    ? allAch.filter((game) => {
-      let nameMatch = true;
-      if (data.data[1]) {
-        const gameName = game
-          .gameName
-          .toLowerCase();
-
-        // Фильтрация по имени игры
-
-        nameMatch = gameName
-          .toLowerCase()
-          .includes(searchQueryGameName.toLowerCase());
-      }
-      const nameAchMatch = game.achivment
-        .displayName
-        .toLowerCase()
-        .includes(searchQueryAch.toLowerCase());
-        // Фильтрация по времени
-      let completionMatch;
-      if (selectedCompletionFilterValue == null) {
-        completionMatch = true;
-      } else if (selectedCompletionFilterValue.startsWith('percent')) {
-        const rangeBounds = selectedCompletionFilterValue
-          .replace('percent', '')
-          .split('-')
-          .map(Number);
-
-        completionMatch = rangeBounds[0] < game.achivment.percent && game.achivment.percent < rangeBounds[1];
-      } else {
-        completionMatch = true;
-      }
-      // Фильтрация по завершению Возвращаем true, только если все условия выполняются
-      return nameMatch && completionMatch && nameAchMatch;
-    }).sort((a : any, b : any) => {
-      a = a.achivment;
-      b = b.achivment;
-      switch (selectedValue) {
-        case 'namerev':
-          return a
-            .displayName
-            .localeCompare(b.displayName);
-        case 'name':
-          return b
-            .displayName
-            .localeCompare(a.displayName);
-        case 'descrev':
-          return a
-            .description
-            .localeCompare(b.description);
-        case 'desc':
-          return b
-            .description
-            .localeCompare(a.description);
-        case 'procrev':
-          return a.percent - b.percent;
-        case 'proc':
-          return b.percent - a.percent;
-        case 'datarev':
-          if (a.unlockedTimestamp === 0) {
-            return 1;
-          }
-          if (b.unlockedTimestamp === 0) {
-            return -1;
-          }
-          return a.unlockedTimestamp - b.unlockedTimestamp;
-        case 'data':
-          if (a.unlockedTimestamp === 0) {
-            return 1;
-          }
-          if (b.unlockedTimestamp === 0) {
-            return -1;
-          }
-          return b.unlockedTimestamp - a.unlockedTimestamp;
-        case 'unlockedrev':
-          return a.unlocked - b.unlocked;
-        case 'unlocked':
-          return b.unlocked - a.unlocked;
-        default:
-          return 0;
-      }
-    })
-    : allAch.sort((a : any, b : any) => {
-      a = a.achivment;
-      b = b.achivment;
-      switch (selectedValue) {
-        case 'namerev':
-          return a
-            .displayName
-            .localeCompare(b.displayName);
-        case 'name':
-          return b
-            .displayName
-            .localeCompare(a.displayName);
-        case 'descrev':
-          return a
-            .description
-            .localeCompare(b.description);
-        case 'desc':
-          return b
-            .description
-            .localeCompare(a.description);
-        case 'procrev':
-          return a.percent - b.percent;
-        case 'proc':
-          return b.percent - a.percent;
-        case 'datarev':
-          if (a.unlockedTimestamp === 0) {
-            return 1;
-          }
-          if (b.unlockedTimestamp === 0) {
-            return -1;
-          }
-          return a.unlockedTimestamp - b.unlockedTimestamp;
-        case 'data':
-          if (a.unlockedTimestamp === 0) {
-            return 1;
-          }
-          if (b.unlockedTimestamp === 0) {
-            return -1;
-          }
-          return b.unlockedTimestamp - a.unlockedTimestamp;
-        case 'unlockedrev':
-          return a.unlocked - b.unlocked;
-        case 'unlocked':
-          return b.unlocked - a.unlocked;
-        default:
-          return 0;
-      }
-    }).filter((game) => {
-      let nameMatch = true;
-      if (data.data[1]) {
-        const gameName = game
-          .gameName
-          .toLowerCase();
-
-        // Фильтрация по имени игры
-
-        nameMatch = gameName
-          .toLowerCase()
-          .includes(searchQueryGameName.toLowerCase());
-      }
-      const nameAchMatch = game.achivment
-        .displayName
-        .toLowerCase()
-        .includes(searchQueryAch.toLowerCase());
-        // Фильтрация по времени
-      let completionMatch;
-      if (selectedCompletionFilterValue == null) {
-        completionMatch = true;
-      } else if (selectedCompletionFilterValue.startsWith('percent')) {
-        const rangeBounds = selectedCompletionFilterValue
-          .replace('percent', '')
-          .split('-')
-          .map(Number);
-
-        completionMatch = rangeBounds[0] < game.achivment.percent && game.achivment.percent < rangeBounds[1];
-      } else {
-        completionMatch = true;
-      }
-      // Фильтрация по завершению Возвращаем true, только если все условия выполняются
-      return nameMatch && completionMatch && nameAchMatch;
-    });
+  const updateAchievements = useCallback(async () => {
+    const dataSteamId = localStorage.getItem('steamId');
+    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?orderBy=unlocked&desc=1&page=1&pageSize=10&percentMin=0&percentMax=100&language=russian&gameName=port&appid=400&displayName=%D1%8B&unlocked=1`);
+  }, []);
   useEffect(useCallback(() => {
     try {
-      setGame(data.data[0]);
-      const allAch = data.data[0];
-      setAllAch(allAch);
     } catch (error) {
       window.alert(error.message);
     }
-  }, [game]), []);
+  }, []), []);
   const handleCompletionFilterItemClick = (value : string) => {
     if (selectedCompletionFilterValue === value) {
       setSelectedCompletionFilterValue(null);
@@ -274,7 +115,7 @@ export default function AchBox (data : any) {
     }
   ];
 
-  if (!data.data[1]) {
+  if (!all) {
     sortingOptions.push({ value: 'unlocked', label: 'Gained', reverseValue: 'unlockedrev' });
   }
   return (
@@ -282,7 +123,7 @@ export default function AchBox (data : any) {
             <div className="AchSet">
                 <div className="details-container">
                     <div className="inputSortFilterContainerAch">
-                        {data.data[1] && (<IdKeyInput
+                        {all && (<IdKeyInput
                             placeholder={t('SearchGames')}
                             value={searchQueryGameName}
                             onChange={handleSearchInputChange}/>)}
@@ -403,13 +244,13 @@ export default function AchBox (data : any) {
                               : ach.achivment.percent <= 60
                                 ? 'rare4'
                                 : 'rare5'}
-                        key={(data.data[1]
+                        key={(all
                           ? ach.gameName
                           : '') + ach.achivment.displayName + ach.achivment.percent + ach.achivment.name}
                         src={ ach.achivment.icon
                           }
                         alt={ach.achivment.displayName}
-                        title={`${data.data[1]
+                        title={`${all
                         ? ach.gameName + '\n'
                         : ''}${ach.achivment
                             .displayName}\n${ach.achivment
@@ -420,4 +261,5 @@ export default function AchBox (data : any) {
             </div>
         </I18nextProvider>
   );
-}
+};
+export default AchBox;

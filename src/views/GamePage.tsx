@@ -19,7 +19,11 @@ interface Game {
     gained : number;
     percent : number;
 }
-export default function GamePage ({ appid, backWindow } : any) {
+interface GamePageProps {
+  appid: number;
+  backWindow: string;
+}
+const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
   const [game,
     setGame] = useState < Game >({
       appid: 0,
@@ -52,9 +56,7 @@ export default function GamePage ({ appid, backWindow } : any) {
   }, []);
   useEffect(() => {
     try {
-      const games = JSON.parse(localStorage.getItem('ach'));
-      const curGame = games.find((game : any) => game.appid === appid);
-      setGame(curGame);
+      renderComponent();
       const boxView = localStorage.getItem('boxView') === 'true';
       if (!boxView) {
         setTableOrBox(false);
@@ -124,4 +126,6 @@ export default function GamePage ({ appid, backWindow } : any) {
             </div>
         </I18nextProvider>
   );
-}
+};
+
+export default GamePage;
