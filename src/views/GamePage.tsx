@@ -41,7 +41,7 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
   const { t } = useTranslation();
   const renderComponent = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${game}/data?language=${i18n.language}&achievements=false`);
+    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${appid}/data?language=${i18n.language}&achievements=false`);
     const gameData = await gameResponse.json();
     const newGameData = {
       appid: appid,
@@ -113,15 +113,7 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
                               achievements: game.Achievement,
                               allAch: false
                             }}/>)
-                      : (<AchBox
-                            data={[
-                              game
-                                .Achievement
-                                .map((achiv) => {
-                                  return { achivment: achiv, gameName: game.gameName };
-                                }),
-                              false
-                            ]}/>))}
+                      : (<AchBox appid={appid} all={false}/>))}
                 </div>
             </div>
         </I18nextProvider>

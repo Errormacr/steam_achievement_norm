@@ -17,7 +17,8 @@ const AchBox : React.FC < AchBoxProps > = ({
   const [isDropdownOpen,
     setDropdownOpen] = useState(false);
   const [selectedValue,
-    setSelectedValue] = useState < string | null >('data');
+    setSelectedValue] = useState < string | null >('unlockedDate');
+  const [desc, setDesc] = useState(true);
   const [isArrowUpOpen,
     setIsArrowUpOpen] = useState(false);
   const [isArrowDownOpen,
@@ -29,8 +30,6 @@ const AchBox : React.FC < AchBoxProps > = ({
     setTimeFilterDropdownOpen] = useState(false);
   const [isCompletedFilterDropdownOpen,
     setCompletedFilterDropdownOpen] = useState(false);
-  const [selectedTimeFilterValue,
-    setSelectedTimeFilterValue] = useState < string | null >(null);
   const [selectedCompletionFilterValue,
     setSelectedCompletionFilterValue] = useState < string | null >(null);
   const [searchQueryGameName,
@@ -49,16 +48,40 @@ const AchBox : React.FC < AchBoxProps > = ({
     setDropdownOpen(false);
   };
   const { t } = useTranslation();
-  const updateAchievements = useCallback(async () => {
+  const updateAchievements = async () => {
+    const queryParams = new URLSearchParams({
+      orderBy: selectedValue,
+      desc: desc ? '1' : '0',
+      language: i18n.language
+    });
+    if (selectedCompletionFilterValue) {
+      const [min, max] = selectedCompletionFilterValue.slice(7).split('-');
+      queryParams.append('percentMin', min);
+      queryParams.append('percentMax', max);
+    }
+    if (!all) {
+      queryParams.append('appid', '' + appid);
+    } else {
+      queryParams.append('unlocked', '1');
+    }
+    if (searchQueryAch) {
+      queryParams.append('displayName', searchQueryAch);
+    }
+    if (searchQueryGameName) {
+      queryParams.append('gameName', searchQueryGameName);
+    }
     const dataSteamId = localStorage.getItem('steamId');
-    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?orderBy=unlocked&desc=1&page=1&pageSize=10&percentMin=0&percentMax=100&language=${i18n.language}&gameName=port${appid ? `&appid=${appid}` : ''}&displayName=%D1%8B&unlocked=1`);
-  }, []);
-  useEffect(useCallback(() => {
+    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?${queryParams.toString()}`);
+    const achData = await achResponse.json();
+    setAch(achData.rows);
+  };
+  useEffect(() => {
     try {
+      updateAchievements();
     } catch (error) {
       window.alert(error.message);
     }
-  }, []), []);
+  }, [desc, selectedCompletionFilterValue, selectedValue, searchQueryAch, searchQueryGameName]);
   const handleCompletionFilterItemClick = (value : string) => {
     if (selectedCompletionFilterValue === value) {
       setSelectedCompletionFilterValue(null);
@@ -69,15 +92,9 @@ const AchBox : React.FC < AchBoxProps > = ({
   };
 
   const handleToggleArrows = () => {
-    if (isArrowDownOpen) {
-      setSelectedValue(selectedValue + 'rev');
-      setIsArrowUpOpen(true);
-      setIsArrowDownOpen(false);
-    } else {
-      setSelectedValue(selectedValue.slice(0, -3));
-      setIsArrowUpOpen(false);
-      setIsArrowDownOpen(true);
-    }
+    setDesc(!desc);
+    setIsArrowUpOpen(!isArrowUpOpen);
+    setIsArrowDownOpen(!isArrowDownOpen);
   };
 
   const handleOutsideClick = (event : MouseEvent) => {
@@ -99,26 +116,22 @@ const AchBox : React.FC < AchBoxProps > = ({
 
   const sortingOptions = [
     {
-      value: 'name',
-      label: 'Name',
-      reverseValue: 'namerev'
+      value: 'displayName',
+      label: 'Name'
     }, {
-      value: 'desc',
-      label: 'Description',
-      reverseValue: 'descrev'
+      value: 'description',
+      label: 'Description'
     }, {
-      value: 'proc',
-      label: 'PercentPlayer',
-      reverseValue: 'procrev'
+      value: 'percent',
+      label: 'PercentPlayer'
     }, {
-      value: 'data',
-      label: 'DataGain',
-      reverseValue: 'datarev'
+      value: 'unlockedDate',
+      label: 'DataGain'
     }
   ];
 
   if (!all) {
-    sortingOptions.push({ value: 'unlocked', label: 'Gained', reverseValue: 'unlockedrev' });
+    sortingOptions.push({ value: 'unlocked', label: 'Gained' });
   }
   return (
         <I18nextProvider i18n={i18n}>
@@ -145,34 +158,17 @@ const AchBox : React.FC < AchBoxProps > = ({
                                     {sortingOptions.map((option) => (
                                         <li
                                             key={option.value}
-                                            className={(selectedValue === option.value || selectedValue === option.reverseValue)
+                                            className={(selectedValue === option.value)
                                               ? 'active'
                                               : ''}
                                             onClick={() => {
-                                              if (isArrowDownOpen) {
-                                                handleItemClick(option.value);
-                                              } else {
-                                                handleItemClick(option.reverseValue);
-                                              }
+                                              handleItemClick(option.value);
                                             }}>
                                             {t(option.label)}
                                         </li>
                                     ))}
                                 </ul>
                             )}
-                        </div>
-                        <div ref={filterTimeListRef} className="dropdown-container">
-                            {selectedTimeFilterValue != null && (
-                                <div
-                                    onClick={() => {
-                                      setSelectedTimeFilterValue(null);
-                                    }}
-                                    className="cross">
-                                    <div className="horizontal"></div>
-                                    <div className="vertical"></div>
-                                </div>
-                            )}
-
                         </div>
                         <div ref={filterCompletedListRef} className="dropdown-container">
                             {selectedCompletionFilterValue != null && (
@@ -236,29 +232,29 @@ const AchBox : React.FC < AchBoxProps > = ({
                 </div>
                 <div className="AchCont">
 
-                    {filteredAch.map((ach) => (<img
-                        className={ach.achivment.percent <= 5
+                    {ach.map((achievement) => (<img
+                        className={achievement.percent <= 5
                           ? 'rare1'
-                          : ach.achivment.percent <= 20
+                          : achievement.percent <= 20
                             ? 'rare2'
-                            : ach.achivment.percent <= 45
+                            : achievement.percent <= 45
                               ? 'rare3'
-                              : ach.achivment.percent <= 60
+                              : achievement.percent <= 60
                                 ? 'rare4'
                                 : 'rare5'}
                         key={(all
-                          ? ach.gameName
-                          : '') + ach.achivment.displayName + ach.achivment.percent + ach.achivment.name}
-                        src={ ach.achivment.icon
+                          ? achievement.game.gamename
+                          : '') + achievement.displayName + achievement.percent + achievement.name}
+                        src={ achievement.unlocked ? achievement.icon : achievement.grayIcon
                           }
-                        alt={ach.achivment.displayName}
+                        alt={achievement.displayName}
                         title={`${all
-                        ? ach.gameName + '\n'
-                        : ''}${ach.achivment
-                            .displayName}\n${ach.achivment
-                            .description}\n${ach.achivment
+                        ? achievement.game.gamename + '\n'
+                        : ''}${achievement
+                            .displayName}\n${achievement
+                            .description}\n${achievement
                             .percent
-                            .toFixed(2)}\n${new Date(ach.achivment.unlockedTimestamp * 1000)}`}/>))}
+                            .toFixed(2)}\n${achievement.unlockedDate ?? ''}`}/>))}
                 </div>
             </div>
         </I18nextProvider>

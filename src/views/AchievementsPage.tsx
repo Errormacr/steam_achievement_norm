@@ -13,8 +13,6 @@ interface achiv {
     gameName : string;
 }
 export default function AchPage () {
-  const [achivments,
-    setAchivments] = useState([{}]);
   const [tableOrBox,
     setTable] = useState(true);
   const [loaded,
@@ -22,27 +20,15 @@ export default function AchPage () {
   const { t } = useTranslation();
   useEffect(useCallback(() => {
     try {
-      const data = JSON.parse(localStorage.getItem('ach'));
-      console.log(data);
-      const achivmentsArr : any[] = [];
-      for (const game of data) {
-        for (const ach of game.Achievement) {
-          if (ach.unlocked) {
-            achivmentsArr.push({ achivment: ach, gameName: game.gameName });
-          }
-        }
-      }
-      console.log(achivmentsArr);
       const boxView = Boolean(localStorage.getItem('boxView'));
       if (!boxView) {
         setTable(false);
       }
-      setAchivments(achivmentsArr);
       setLoaded(true);
     } catch (error) {
       window.alert(error.message);
     }
-  }, [achivments]), []);
+  }, []), []);
   return (
         <I18nextProvider i18n={i18n}>
             <div>
@@ -56,7 +42,7 @@ export default function AchPage () {
                         }}
                         additionalClass="return"
                         text={t('Return')}/>
-                    <label className="game-label">{achivments.length} {t('Ach')}</label>
+                    {/* <label className="game-label">{achivments.length} {t('Ach')}</label> */}
                     <GameButton
                         id=''
                         onClick={() => {
@@ -68,15 +54,17 @@ export default function AchPage () {
                 </div>
                 <div className="details-container table-container">
                     {loaded && (tableOrBox
-                      ? (<Table
-                            data={
-                        {
-                          achievements: achivments.map((achiv : achiv) => {
-                            return achiv.achivment;
-                          }),
-                          allAch: true
-                        }}/>)
-                      : (<AchBox data={[achivments, true]}/>))
+                      ? <div></div>
+
+                      // (<Table
+                      //       data={
+                      //   {
+                      //     achievements: achivments.map((achiv : achiv) => {
+                      //       return achiv.achivment;
+                      //     }),
+                      //     allAch: true
+                      //   }}/>)
+                      : (<AchBox all={true}/>))
 }</div>
             </div>
         </I18nextProvider>
