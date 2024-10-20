@@ -1,98 +1,73 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import './scss/Table.scss';
-import { TableData, DatumClass } from './interfaces/TableData';
-export default function Table (data : TableData) {
-  console.log(data);
-  const [game,
-    setGame] = useState<DatumClass[]>([]);
+interface AchBoxProps {
+  appid?: number;
+  all: boolean;
+}
+
+const Table: React.FC < AchBoxProps > = ({
+  appid
+  , all
+}) => {
+  const [ach,
+    setAch] = useState([]);
   const [sortConfig,
-    setSortConfig] = useState('data');
-  const [allAChPage,
-    setAllAchPage] = useState(Boolean);
+    setSortConfig] = useState('unlockedDate');
+  const [desc, setDesc] = useState(true);
   const { t } = useTranslation();
-  useEffect(useCallback(() => {
+
+  const updateAchievements = async () => {
+    const queryParams = new URLSearchParams({
+      orderBy: sortConfig,
+      desc: desc ? '1' : '0',
+      language: i18n.language
+    });
+    if (!all) {
+      queryParams.append('appid', '' + appid);
+    } else {
+      queryParams.append('unlocked', '1');
+    }
+    const dataSteamId = localStorage.getItem('steamId');
+    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?${queryParams.toString()}`);
+    const achData = await achResponse.json();
+    setAch(achData.rows);
+  };
+
+  useEffect(() => {
     try {
-      setAllAchPage(data.data.allAch);
-      setGame(data.data.achievements);
+      updateAchievements();
     } catch (error) {
       window.alert(error.message);
     }
-  }, [allAChPage, allAChPage]), []);
-
-  const achSort = game.sort((a : DatumClass, b : DatumClass) => {
-    switch (sortConfig) {
-      case 'namerev':
-        return a
-          .displayName
-          .localeCompare(b.displayName);
-      case 'name':
-        return b
-          .displayName
-          .localeCompare(a.displayName);
-      case 'descRev':
-        return a
-          .description
-          .localeCompare(b.description);
-      case 'desc':
-        return b
-          .description
-          .localeCompare(a.description);
-      case 'procrev':
-        return a.percent - b.percent;
-      case 'proc':
-        return b.percent - a.percent;
-      case 'datarev':
-        if (a.unlockedTimestamp === 0) {
-          return 1;
-        }
-        if (b.unlockedTimestamp === 0) {
-          return -1;
-        }
-        return a.unlockedTimestamp - b.unlockedTimestamp;
-      case 'data':
-        if (a.unlockedTimestamp === 0) {
-          return 1;
-        }
-        if (b.unlockedTimestamp === 0) {
-          return -1;
-        }
-        return b.unlockedTimestamp - a.unlockedTimestamp;
-      case 'unlockedRev':
-        return a.achieved - b.achieved;
-      case 'unlocked':
-        return b.achieved - a.achieved;
-      default:
-        return 0;
-    }
-  });
+  }, [sortConfig, desc]);
 
   const sortOptions = [
 
     {
-      value: 'name',
-      label: t('Name'),
-      revValue: 'namerev'
+      value: 'displayName',
+      label: t('Name')
     }, {
-      value: 'desc',
-      label: t('Description'),
-      revValue: 'descRev'
+      value: 'description',
+      label: t('Description')
     }, {
-      value: 'proc',
-      label: t('PercentPlayer'),
-      revValue: 'procrev'
+      value: 'percent',
+      label: t('PercentPlayer')
     }, {
-      value: 'data',
-      label: t('DataGain'),
-      revValue: 'datarev'
+      value: 'unlockedDate',
+      label: t('DataGain')
     }
   ];
-  if (allAChPage === false) {
-    sortOptions.unshift({ value: 'unlocked', label: t('Gained'), revValue: 'unlockedRev' });
+  const handleSortChange = (event:string) => {
+    if (sortConfig === event) {
+      setDesc(!desc);
+    } else { setSortConfig(event); }
+  };
+  if (!all) {
+    sortOptions.unshift({ value: 'unlocked', label: t('Gained') });
   } else {
-    console.log(achSort);
-    sortOptions.unshift({ value: '', label: t(''), revValue: '' });
+    sortOptions.unshift({ value: '', label: '' });
   }
   return (
         <I18nextProvider i18n={i18n}>
@@ -102,47 +77,45 @@ export default function Table (data : TableData) {
                         {sortOptions.map((option) => {
                           return <th
                                 onClick={() => {
-                                  setSortConfig(sortConfig === option.value
-                                    ? option.revValue
-                                    : option.value);
+                                  handleSortChange(option.value);
                                 }}>{option.label} {sortConfig === option.value
-                                  ? '\u25BC'
-                                  : sortConfig === option.revValue
-                                    ? '\u25B2'
-                                    : ''}</th>;
+                                  ? desc
+                                    ? '\u25BC'
+                                    : '\u25B2'
+                                  : ''}</th>;
                         })}
                     </tr>
                 </thead>
                 <tbody>
-                    {achSort.map((achievement : DatumClass) => (
-                        <tr
-                            className={achievement.percent <= 5
-                              ? 'rare1'
-                              : ''}>
-                            <td >
-                                <img
-                                    className={achievement.percent <= 5
-                                      ? 'rare1 table-ach-img'
-                                      : achievement.percent <= 20
-                                        ? 'rare2 table-ach-img'
-                                        : achievement.percent <= 45
-                                          ? 'rare3 table-ach-img'
-                                          : achievement.percent <= 60
-                                            ? 'rare4 table-ach-img'
-                                            : 'rare5 table-ach-img'}
-                                    src={
-                                      achievement.icon
-                                      }></img>
-                            </td>
-                            <td>{achievement.displayName}</td>
-                            <td>{achievement.description}</td>
-                            <td>{achievement.percent.toFixed(2)}
-                                %</td>
-                            <td>{new Date(achievement.unlockedTimestamp * 1000).toLocaleDateString()}</td>
-                        </tr>
-                    ))}</tbody>
+                {ach.map((achievement) => {
+                  const rowClass = achievement.percent <= 5 ? 'rare1' : '';
+                  const imgClass = () => {
+                    if (achievement.percent <= 5) return 'rare1 table-ach-img';
+                    if (achievement.percent <= 20) return 'rare2 table-ach-img';
+                    if (achievement.percent <= 45) return 'rare3 table-ach-img';
+                    if (achievement.percent <= 60) return 'rare4 table-ach-img';
+                    return 'rare5 table-ach-img';
+                  };
+                  const formattedDate =
+                     achievement.unlockedDate ? new Date(achievement.unlockedDate).toLocaleString() : '';
+
+                  return (
+            <tr className={rowClass}>
+                <td>
+                    <img
+                        className={imgClass()}
+                        src={achievement.unlocked ? achievement.icon : achievement.grayIcon}></img>
+                </td>
+                <td>{achievement.displayName}</td>
+                <td>{achievement.description}</td>
+                <td>{achievement.percent.toFixed(2)}%</td>
+                <td>{formattedDate}</td>
+            </tr>
+                  );
+                })}</tbody>
 
             </table>
         </I18nextProvider>
   );
-}
+};
+export default Table;

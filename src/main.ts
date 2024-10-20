@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
-import { exec, spawn, ChildProcess } from 'child_process';
-import SteamDataFetcher from './server/server.js';
+import { spawn, ChildProcess } from 'child_process';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -33,7 +32,6 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const steamDataFetcher = new SteamDataFetcher();
   const nestAppDirectory = path.join(__dirname, '../../server');
   nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/main'], { cwd: nestAppDirectory });
 

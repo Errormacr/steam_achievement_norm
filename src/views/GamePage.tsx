@@ -108,11 +108,7 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
                     additionalClass="switchTable"/>
                 <div className="table-container">
                     {loaded && (tableOrBox
-                      ? (<Table
-                            data={{
-                              achievements: game.Achievement,
-                              allAch: false
-                            }}/>)
+                      ? (<Table appid={appid} all={false} />)
                       : (<AchBox appid={appid} all={false}/>))}
                 </div>
             </div>

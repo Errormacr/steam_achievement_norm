@@ -7,20 +7,20 @@ import i18n from 'i18next';
 import ScrollToTopButton from './ScrollToTopButton';
 import GameButton from './GameButton';
 import AchBox from './AchContainer';
-import { DatumClass } from './interfaces/TableData';
-interface achiv {
-    achivment : DatumClass;
-    gameName : string;
-}
+
 export default function AchPage () {
   const [tableOrBox,
     setTable] = useState(true);
   const [loaded,
     setLoaded] = useState(false);
+  const [achCount, setAchCount] = useState(0);
   const { t } = useTranslation();
   useEffect(useCallback(() => {
     try {
       const boxView = Boolean(localStorage.getItem('boxView'));
+      const steamId = localStorage.getItem('steamId');
+      const baseUrl = `http://localhost:8888/api/user/${steamId}/achievements?orderBy=unlockedDate&desc=1&language=${i18n.language}&unlocked=1&page=1&pageSize=0&`;
+      fetch(baseUrl).then(resp => { resp.json().then(data => { setAchCount(data.count); }); });
       if (!boxView) {
         setTable(false);
       }
@@ -42,7 +42,7 @@ export default function AchPage () {
                         }}
                         additionalClass="return"
                         text={t('Return')}/>
-                    {/* <label className="game-label">{achivments.length} {t('Ach')}</label> */}
+                    <label className="game-label">{achCount} {t('Ach')}</label>
                     <GameButton
                         id=''
                         onClick={() => {
@@ -54,16 +54,9 @@ export default function AchPage () {
                 </div>
                 <div className="details-container table-container">
                     {loaded && (tableOrBox
-                      ? <div></div>
-
-                      // (<Table
-                      //       data={
-                      //   {
-                      //     achievements: achivments.map((achiv : achiv) => {
-                      //       return achiv.achivment;
-                      //     }),
-                      //     allAch: true
-                      //   }}/>)
+                      ? (<Table
+                       all={true}
+                         />)
                       : (<AchBox all={true}/>))
 }</div>
             </div>

@@ -31,7 +31,6 @@ export default function App () {
     setAvaUrl] = useState('');
   const [percent,
     setPercent] = useState('');
-  const [needToUpdate, setNeedToUpdate] = useState(true);
   const [recentGames, setRecentGames] = useState([]);
   const [apiKeyError,
     setApiKeyError] = useState('');
@@ -48,9 +47,12 @@ export default function App () {
 
     if (dataSteamId) {
       try {
+        const needToUpdate = !sessionStorage.getItem('updatet');
         if (needToUpdate) {
           await updateRecent();
+          sessionStorage.setItem('updatet', 'true');
         }
+
         const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/data`);
         const userData = await userDataResponse.json();
         setPersonalName(userData.user.nickname);
@@ -69,7 +71,6 @@ export default function App () {
 
   const handleKeyChange = () => {
     setConstSteamWebApiKey(SteamWebApiKey);
-    setNeedToUpdate(true);
 
     updateUserData();
   };
