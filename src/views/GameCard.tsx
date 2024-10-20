@@ -98,7 +98,7 @@ export function GameCard ({ game, backWindow }: any) {
         game-percent={percent}
         game-playtime={`${playtime} ${t('Hours')}`}
         key={game}
-        onClick={() => logging(game, backWindow)}
+        onClick={() => { if (all)logging(game, backWindow); }}
       >
         <div className="name-preview">
           <p className="name">{gameName}</p>

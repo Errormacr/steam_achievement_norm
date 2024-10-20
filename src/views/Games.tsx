@@ -17,14 +17,11 @@ function rendApp () {
 export default function Games () {
   const [games,
     setGames] = useState([]);
+  const [desc, setDesc] = useState(true);
   const [isDropdownOpen,
     setDropdownOpen] = useState(false);
   const [selectedValue,
-    setSelectedValue] = useState < string | null >('last-launch');
-  const [isArrowUpOpen,
-    setIsArrowUpOpen] = useState(false);
-  const [isArrowDownOpen,
-    setIsArrowDownOpen] = useState(true);
+    setSelectedValue] = useState < string | null >('lastLaunchTime');
   const listRef = useRef(null);
   const filterTimeListRef = useRef(null);
   const filterCompletedListRef = useRef(null);
@@ -40,69 +37,15 @@ export default function Games () {
     setSelectedValue(value);
     setDropdownOpen(false);
   };
+  const [page, setPage] = useState(1); // To track the current page of data being loaded
+  const [isLoading, setIsLoading] = useState(false); // To avoid multiple requests while loading
+  const [hasMore, setHasMore] = useState(true); // Whether more games are available to load
+  const observer = useRef<IntersectionObserver | null>(null); // Ref for the IntersectionObserver
   const [searchQuery,
     setSearchQuery] = useState('');
   const handleSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
     setSearchQuery(e.target.value);
   };
-  console.log(games);
-  const filteredGames = games.filter((game) => {
-    const gameName = game
-      .gameName
-      .toLowerCase();
-
-    // Фильтрация по имени игры
-    const nameMatch = gameName.includes(searchQuery.toLowerCase());
-
-    // Фильтрация по времени
-    const timeMatch = selectedTimeFilterValue == null || game.playtime > Number(selectedTimeFilterValue);
-    let completionMatch;
-    if (selectedCompletionFilterValue === 'Completed') {
-      completionMatch = game.percent === 100;
-    } else if (selectedCompletionFilterValue == null) {
-      completionMatch = true;
-    } else if (selectedCompletionFilterValue.startsWith('percent')) {
-      const rangeBounds = selectedCompletionFilterValue
-        .replace('percent', '')
-        .split('-')
-        .map(Number);
-
-      completionMatch = rangeBounds[0] < game.percent && game.percent < rangeBounds[1];
-    } else {
-      completionMatch = true;
-    }
-    // Фильтрация по завершению Возвращаем true, только если все условия выполняются
-    return nameMatch && timeMatch && completionMatch;
-  }).sort((a : any, b : any) => {
-    switch (selectedValue) {
-      case 'last-launch':
-        return b.last_launch_time - a.last_launch_time;
-      case 'game-playtime':
-        return b.playtime - a.playtime;
-      case 'all-ach':
-        return b.all - a.all;
-      case 'gained-ach':
-        return b.gained - a.gained;
-      case 'non-gained-ach':
-        return (b.all - b.gained) - (a.all - a.gained);
-      case 'game-percent':
-        return b.percent - a.percent;
-      case 'last-launchrev':
-        return a.last_launch_time - b.last_launch_time;
-      case 'game-playtimerev':
-        return a.playtime - b.playtime;
-      case 'all-achrev':
-        return a.all - b.all;
-      case 'gained-achrev':
-        return a.gained - b.gained;
-      case 'non-gained-achrev':
-        return (a.all - a.gained) - (b.all - b.gained);
-      case 'game-percentrev':
-        return a.percent - b.percent;
-      default:
-        return 0;
-    }
-  });
   const handleTimeFilterItemClick = (value : string) => {
     if (selectedTimeFilterValue === value) {
       setSelectedTimeFilterValue(null);
@@ -121,17 +64,7 @@ export default function Games () {
   };
 
   const handleToggleArrows = () => {
-    const container = document.getElementById('game_container');
-    const elements = Array.from(container.children);
-    elements.reverse();
-    elements.forEach((element) => container.appendChild(element));
-    if (isArrowDownOpen) {
-      setIsArrowUpOpen(true);
-      setIsArrowDownOpen(false);
-    } else {
-      setIsArrowUpOpen(false);
-      setIsArrowDownOpen(true);
-    }
+    setDesc(!desc);
   };
 
   const handleOutsideClick = (event : MouseEvent) => {
@@ -152,11 +85,68 @@ export default function Games () {
   document.addEventListener('click', handleFilterOutsideClick);
   const { t } = useTranslation();
 
+  const updateGames = async () => {
+    setIsLoading(true);
+    const queryParams = new URLSearchParams({
+      orderBy: selectedValue,
+      desc: desc ? '1' : '0',
+      language: i18n.language,
+      page: page.toString(),
+      pageSize: '30'
+    });
+    if (selectedCompletionFilterValue) {
+      if (selectedTimeFilterValue === 'Completed') {
+        queryParams.append('percentMin', '99');
+      } else {
+        const [min, max] = selectedCompletionFilterValue.slice(7).split('-');
+        queryParams.append('percentMin', min);
+        queryParams.append('percentMax', max);
+      }
+    }
+    if (searchQuery) {
+      queryParams.append('gameName', searchQuery);
+    }
+    if (selectedTimeFilterValue) {
+      queryParams.append('playtime', selectedTimeFilterValue);
+    }
+    const dataSteamId = localStorage.getItem('steamId');
+    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/games?${queryParams.toString()}`);
+    const achData = await achResponse.json();
+    setHasMore(achData.rows.length > 0);
+    setGames((prev) => [...prev, ...achData.rows]);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setGames([]);
+      if (page !== 1) { setPage(1); }
+      updateGames();
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timeoutId);
+  }, [selectedTimeFilterValue, searchQuery, selectedCompletionFilterValue,
+    selectedValue,
+    desc]);
+  useEffect(() => { updateGames(); }, [page]);
+  const lastGameObserver = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1); // Increment the page to load more games
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
+  );
   useEffect(useCallback(() => {
     try {
       root = ReactDOM.createRoot(document.getElementById('root'));
-      const games = JSON.parse(localStorage.getItem('ach'));
-      setGames(games);
 
       return () => {
         document.removeEventListener('click', handleOutsideClick);
@@ -168,29 +158,23 @@ export default function Games () {
   }, []), []);
   const sortingOptions = [
     {
-      value: 'last-launch',
-      label: 'LastLaunchSort',
-      reverseValue: 'last-launchrev'
+      value: 'lastLaunchTime',
+      label: 'LastLaunchSort'
     }, {
-      value: 'game-percent',
-      label: 'PercentAchSort',
-      reverseValue: 'game-percentrev'
+      value: 'percent',
+      label: 'PercentAchSort'
     }, {
-      value: 'all-ach',
-      label: 'AllAChInGameSort',
-      reverseValue: 'all-achrev'
+      value: 'allAchCount',
+      label: 'AllAChInGameSort'
     }, {
-      value: 'gained-ach',
-      label: 'GainedAchSort',
-      reverseValue: 'gained-achrev'
+      value: 'unlockedCount',
+      label: 'GainedAchSort'
     }, {
-      value: 'non-gained-ach',
-      label: 'NonGainedAchSort',
-      reverseValue: 'non-gained-achrev'
+      value: 'notUnlockedCount',
+      label: 'NonGainedAchSort'
     }, {
-      value: 'game-playtime',
-      label: 'PlayTimeSort',
-      reverseValue: 'game-playtimerev'
+      value: 'playtime',
+      label: 'PlayTimeSort'
     }
   ];
   return (
@@ -210,15 +194,11 @@ export default function Games () {
                                 {sortingOptions.map((option) => (
                                     <li
                                         key={option.value}
-                                        className={(selectedValue === option.value || selectedValue === option.reverseValue)
+                                        className={(selectedValue === option.value)
                                           ? 'active'
                                           : ''}
                                         onClick={() => {
-                                          if (isArrowDownOpen) {
-                                            handleItemClick(option.value);
-                                          } else {
-                                            handleItemClick(option.reverseValue);
-                                          }
+                                          handleItemClick(option.value);
                                         }}>
                                         {t(option.label)}
                                     </li>
@@ -298,7 +278,7 @@ export default function Games () {
                         {isCompletedFilterDropdownOpen && (
                             <ul className="dropdown-list">
                                 {[
-                                  'Completed',
+                                  'percent99-100',
                                   'percent90-100',
                                   'percent80-90',
                                   'percent70-80',
@@ -324,13 +304,13 @@ export default function Games () {
                     </div>
                     <div className="arrows-container" onClick={() => handleToggleArrows()}>
                         <div
-                            className={isArrowUpOpen
+                            className={desc
                               ? 'arrow activate'
                               : 'arrow'}>
                             &#x25B2;
                         </div>
                         <div
-                            className={isArrowDownOpen
+                            className={!desc
                               ? 'arrow activate'
                               : 'arrow'}>
                             &#x25BC;
@@ -344,8 +324,21 @@ export default function Games () {
 
                 <br/>
                 <div id="game_container" className="game_container">
-                    {filteredGames.map((game) => (<GameCard key={game.appid} window="games" game={game}/>))}
+          {games.map((game, index) => {
+            if (games.length === index + 1) {
+              // Attach the ref to the last game element for lazy loading
+              return (
+                <div ref={lastGameObserver} key={game.appid}>
+                  <GameCard window="games" game={game.appid} />
                 </div>
+              );
+            } else {
+              return <GameCard key={game.appid} window="games" game={game.appid} />;
+            }
+          })}
+        </div>
+
+        {isLoading && <div>{t('Loading...')}</div>}
             </div>
         </I18nextProvider>
   );
