@@ -90,16 +90,17 @@ export default function App () {
     div.style.display = 'flex';
     checkDiv.style.justifyContent = 'center';
 
-    function handleDocumentClick (event : any) {
-      if (!checkDiv.contains(event.target) && !buttons.includes(event.target.id)) {
+    function handleClickOutside (event) {
+      const isOutside = !checkDiv.contains(event.target) && !buttons.includes(event.target.id);
+      if (isOutside) {
         div.style.display = 'none';
         checkDiv.style.justifyContent = 'space-between';
         button.style.display = 'block';
-        document.removeEventListener('click', handleDocumentClick);
+        document.removeEventListener('click', handleClickOutside);
       }
     }
 
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('click', handleClickOutside);
   }
   useEffect(useCallback(() => {
     try {

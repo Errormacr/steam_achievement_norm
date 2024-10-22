@@ -1,3 +1,5 @@
+import { AchievmentsFromView } from '.';
+
 export interface UpdatedGame {
     updatet: Updated[];
     percent: Percent;
@@ -16,6 +18,38 @@ export interface Updated {
 }
 
 export interface GameData {
+    steamID: string;
+    appid: number;
+    gainedAch: number;
+    lastLaunchTime: Date;
+    percent: number;
+    playtime: number;
+}
+
+export interface GameDataRow extends Omit<GameData, 'gainedAch'>{
+    allAchCount: number;
+    unlockedCount: number;
+    notUnlockedCount: number;
+    lastLaunchTime: Date;
+    percent: number;
+    playtime: number;
+    game: Game;
+}
+
+export interface Game {
+    gamename: string;
+}
+
+export interface gameDataWithAch {
+    appid: number;
+    gamename: string;
+    lowerGamename: string;
+    userDatas: UserData[];
+    achievmentsFromView: AchievmentsFromView[];
+    achievementCount: number;
+}
+
+export interface UserData {
     steamID: string;
     appid: number;
     gainedAch: number;

@@ -4,15 +4,8 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import GamePage from './GamePage';
 import './scss/GameCard.scss';
-import { Achievements, GamePageProps } from '../interfaces';
-
-export function UnixTimestampToDate (props: number) {
-  const date = new Date(props * 1000);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return `${year}-${month}-${day}`;
-}
+import { Achievements, gameDataWithAch, GamePageProps } from '../interfaces';
+import { ApiService } from '../services/api.services';
 
 function logging (appid: number, backWindow: string) {
   const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -33,14 +26,13 @@ const GameCard: React.FC < GamePageProps > = ({ appid, backWindow }) => {
   const [isProgressBarAnimated, setIsProgressBarAnimated] = useState(false);
   const updateGame = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`);
-    const gameData = await gameResponse.json();
+    const gameData = await ApiService.get<gameDataWithAch>(`user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`);
     setPercent(gameData.userDatas[0].percent);
     setAll(gameData.achievmentsFromView.length);
     setGained(gameData.userDatas[0].gainedAch);
-    setPlaytime(gameData.userDatas[0].playtime.toFixed(2));
+    setPlaytime(+gameData.userDatas[0].playtime.toFixed(2));
     setGamename(gameData.gamename);
-    setLastLaunchTime(gameData.userDatas[0].lastLaunchTime);
+    setLastLaunchTime(`${gameData.userDatas[0].lastLaunchTime}`);
     console.log(i18n.language);
     setAches(gameData.achievmentsFromView.sort((a:Achievements, b:Achievements) => new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()).slice(0, 7));
   }, []);

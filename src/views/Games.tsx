@@ -8,6 +8,8 @@ import ScrollToTopButton from './ScrollToTopButton';
 import './scss/Games.scss';
 import './scss/FilterSort.scss';
 import IdKeyInput from './IdKeyInput';
+import { ApiService } from '../services/api.services';
+import { GameDataRow, Pagination } from '../interfaces';
 
 let root = ReactDOM.createRoot(document.getElementById('root'));
 function rendApp () {
@@ -37,10 +39,10 @@ export default function Games () {
     setDropdownOpen(false);
   };
   const [prevPage, setPrevPage] = useState(1);
-  const [page, setPage] = useState(1); // To track the current page of data being loaded
-  const [isLoading, setIsLoading] = useState(false); // To avoid multiple requests while loading
-  const [hasMore, setHasMore] = useState(true); // Whether more games are available to load
-  const observer = useRef<IntersectionObserver | null>(null); // Ref for the IntersectionObserver
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef<IntersectionObserver | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -121,10 +123,7 @@ export default function Games () {
       queryParams.append('playtime', selectedTimeFilterValue);
     }
     const dataSteamId = localStorage.getItem('steamId');
-    const achResponse = await fetch(
-      `http://localhost:8888/api/user/${dataSteamId}/games?${queryParams.toString()}`
-    );
-    const achData = await achResponse.json();
+    const achData = await ApiService.get<Pagination<GameDataRow>>(`user/${dataSteamId}/games?${queryParams.toString()}`);
     setHasMore(achData.rows.length > 0);
     setGames((prev) => [...prev, ...achData.rows]);
     setIsLoading(false);
@@ -145,13 +144,13 @@ export default function Games () {
   ]);
 
   const lastGameObserver = useCallback(
-    (node) => {
+    (node: Element) => {
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          setPage((prevPage) => prevPage + 1); // Increment the page to load more games
+          setPage((prevPage) => prevPage + 1);
         }
       });
 
@@ -364,7 +363,6 @@ export default function Games () {
         <div id="game_container" className="game_container">
           {games.map((game, index) => {
             if (games.length === index + 1) {
-              // Attach the ref to the last game element for lazy loading
               return (
                 <div ref={lastGameObserver} key={game.appid}>
                   <GameCard backWindow="games" appid={game.appid} />
