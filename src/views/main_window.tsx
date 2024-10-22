@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import AchCont from './last_ach_container';
 import ReactDOM from 'react-dom/client';
 import Games from './Games';
-import { GameCard } from './GameCard';
 import ProgressRad from './rad_progress';
 import AchPage from './AchievementsPage';
 import ChangeAccount from './changeAccount';
@@ -15,6 +14,9 @@ import GameButton from './GameButton';
 import i18n from '../transate';
 import './scss/MainWindow.scss';
 import Diagram from './AchDiagram';
+import GameCard from './GameCard';
+import { ApiService } from '../services/api.services';
+import { UpdatedGame, UserData } from '../interfaces';
 
 export default function App () {
   const [SteamWebApiKey,
@@ -24,21 +26,20 @@ export default function App () {
   const [personalName,
     setPersonalName] = useState('');
   const [AchCount,
-    setAchCount] = useState('');
+    setAchCount] = useState(0);
   const [gamesCount,
-    setGamesCount] = useState('');
+    setGamesCount] = useState(0);
   const [avaUrl,
     setAvaUrl] = useState('');
   const [percent,
-    setPercent] = useState('');
+    setPercent] = useState(0);
   const [recentGames, setRecentGames] = useState([]);
   const [apiKeyError,
     setApiKeyError] = useState('');
   const { t } = useTranslation();
   const updateRecent = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/recent?lang=${i18n.language}`, { method: 'PUT' });
-    const userData = await userDataResponse.json();
+    const userData = await ApiService.put<UpdatedGame>(`user/${dataSteamId}/recent?lang=${i18n.language}`);
     toast.success('+ ' + userData.percent.change.toFixed(2) + '% ' + t('averageUp'));
   }, []);
   const updateUserData = useCallback(async () => {
@@ -53,8 +54,7 @@ export default function App () {
           sessionStorage.setItem('updatet', 'true');
         }
 
-        const userDataResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/data`);
-        const userData = await userDataResponse.json();
+        const userData = await ApiService.get<UserData>(`user/${dataSteamId}/data`);
         setPersonalName(userData.user.nickname);
         setAvaUrl(userData.user.avatarLarge);
         setPercent(userData.user.percent);
@@ -62,7 +62,6 @@ export default function App () {
         setAchCount(userData.achCount);
         setRecentGames(userData.user.gameDatas);
         achContainer.render(<AchCont/>);
-        // toast.success('+ ' + (parseFloat(ach[1].toString()) - parseFloat(predPercent)).toFixed(2).toString() + '% ' + t('averageUp'));
       } catch (e) {
         console.error(e);
       }
@@ -79,7 +78,6 @@ export default function App () {
     localStorage.setItem('api-key', '');
   };
   const handleUpdate = () => {
-    localStorage.setItem('recent', '');
     updateUserData();
   };
   function showClears () {
@@ -155,7 +153,7 @@ export default function App () {
                                     <GameButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>
                                 <div>
-                <ChangeAccount update={handleUpdate}/>
+                <ChangeAccount/>
                                 <Settings/></div>
                             </div>
                             <div className="MainCont">
@@ -194,13 +192,13 @@ export default function App () {
                                         <div className="gain-nonGainMain">
                                             <ProgressRad
                                                 title={t('AveragePercent')}
-                                                data-progress={percent}
+                                                data-progress={`${percent}`}
                                                 SizeVnu={'9rem'}
                                                 SizeVne={'10rem'}/></div>
                                     </div>
                                 )}
                                 <div className="main-game-cards">
-                                    {recentGames.map((game) => (<GameCard key={game.appid} game={game.appid} backWindow="main"/>))}
+                                    {recentGames.map((game) => (<GameCard key={game.appid} appid={game.appid} backWindow="main"/>))}
                                 </div>
                                 <div className="with-friends">
                                     <div className="last-ach-main" id="container"></div>

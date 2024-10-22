@@ -4,6 +4,7 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import GamePage from './GamePage';
 import './scss/GameCard.scss';
+import { Achievements, GamePageProps } from '../interfaces';
 
 export function UnixTimestampToDate (props: number) {
   const date = new Date(props * 1000);
@@ -13,27 +14,12 @@ export function UnixTimestampToDate (props: number) {
   return `${year}-${month}-${day}`;
 }
 
-export interface Achievements {
-  appid: number;
-  name: string;
-  hidden: number;
-  icon: string;
-  grayIcon: string;
-  percent: number;
-  steamID: string;
-  unlocked: boolean;
-  unlockedDate: Date;
-  language: string;
-  description: string;
-  displayName: string;
-}
-
 function logging (appid: number, backWindow: string) {
   const root = ReactDOM.createRoot(document.getElementById('root'));
   root.render(<GamePage appid={appid} backWindow={backWindow} />);
 }
 
-export function GameCard ({ game, backWindow }: any) {
+const GameCard: React.FC < GamePageProps > = ({ appid, backWindow }) => {
   const [percent, setPercent] = useState(0.0);
   const [lastLaunchTime, setLastLaunchTime] = useState('');
   const [playtime, setPlaytime] = useState(0.0);
@@ -47,7 +33,7 @@ export function GameCard ({ game, backWindow }: any) {
   const [isProgressBarAnimated, setIsProgressBarAnimated] = useState(false);
   const updateGame = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${game}/data?language=${i18n.language}`);
+    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`);
     const gameData = await gameResponse.json();
     setPercent(gameData.userDatas[0].percent);
     setAll(gameData.achievmentsFromView.length);
@@ -97,14 +83,14 @@ export function GameCard ({ game, backWindow }: any) {
         non-gained-ach={all - gained}
         game-percent={percent}
         game-playtime={`${playtime} ${t('Hours')}`}
-        key={game}
-        onClick={() => { if (all)logging(game, backWindow); }}
+        key={appid}
+        onClick={() => { if (all)logging(appid, backWindow); }}
       >
         <div className="name-preview">
           <p className="name">{gameName}</p>
           <img
             className="preview"
-            src={`https://steamcdn-a.akamaihd.net/steam/apps/${game}/capsule_sm_120.jpg`}
+            src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
             alt={gameName}
           />
         </div>
@@ -182,4 +168,5 @@ export function GameCard ({ game, backWindow }: any) {
       </div>
     </I18nextProvider>
   );
-}
+};
+export default GameCard;

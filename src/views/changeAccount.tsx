@@ -4,7 +4,7 @@ import i18n from 'i18next';
 import GameButton from './GameButton';
 import IdKeyInput from './IdKeyInput';
 
-export default function ChangeAccount ({ update }) {
+export default function ChangeAccount () {
   const [isOpen,
     setIsOpen] = useState(false);
   const [addingAcc,
@@ -42,20 +42,14 @@ export default function ChangeAccount ({ update }) {
       }
     };
     const storedIdSet = new Set(JSON.parse(localStorage.getItem('idArray')) || []);
-    console.log(storedIdSet);
     if (storedIdSet.size > 0 && isOpen) {
-      const dataKey = localStorage.getItem('api-key');
-
       const steamIdsArray = Array.from(storedIdSet);
       const steamIdsString = JSON
         .stringify(steamIdsArray)
         .replace(/"/g, '');
 
-      // Используйте steamIdsString в вашем запросе или где-либо еще по вашему
-      // усмотрению
       console.log(`http://localhost:4500/player_sum?key=${dataKey}&id=${steamIdsString}`);
 
-      // Пример использования в fetch запросе
       fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${steamIdsString}`)
         .then(response => response.json())
         .then(result => {

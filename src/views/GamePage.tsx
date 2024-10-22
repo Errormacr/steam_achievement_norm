@@ -10,6 +10,7 @@ import i18n from 'i18next';
 import ScrollToTopButton from './ScrollToTopButton';
 import GameButton from './GameButton';
 import './scss/GamePage.scss';
+import { GamePageProps } from '../interfaces';
 interface Game {
     appid : number;
     last_launch_time : string;
@@ -19,10 +20,7 @@ interface Game {
     gained : number;
     percent : number;
 }
-interface GamePageProps {
-  appid: number;
-  backWindow: string;
-}
+
 const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
   const [game,
     setGame] = useState < Game >({

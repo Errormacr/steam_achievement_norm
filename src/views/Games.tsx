@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './main_window';
-import { GameCard } from './GameCard';
+import GameCard from './GameCard';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import ScrollToTopButton from './ScrollToTopButton';
@@ -367,12 +367,12 @@ export default function Games () {
               // Attach the ref to the last game element for lazy loading
               return (
                 <div ref={lastGameObserver} key={game.appid}>
-                  <GameCard window="games" game={game.appid} />
+                  <GameCard backWindow="games" appid={game.appid} />
                 </div>
               );
             } else {
               return (
-                <GameCard key={game.appid} window="games" game={game.appid} />
+                <GameCard key={game.appid} backWindow="games" appid={game.appid} />
               );
             }
           })}
