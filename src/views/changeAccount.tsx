@@ -54,12 +54,12 @@ export default function ChangeAccount () {
   }, [isOpen]);
 
   const update = (steamId: string) => {
-    ApiService.put()
+    ApiService.put(`user/${steamId}/all`);
   };
 
-  const fetchData = async () => {
+  const fetchData = async (steamId:string) => {
     try {
-      const { user } = await ApiService.get<UserData>(`user/${SteamId}/data`);
+      const { user } = await ApiService.get<UserData>(`user/${steamId}/data`);
       const personalName = user.nickname;
       const avaUrl = user.avatarMedium;
       setNewAccName(personalName);
@@ -120,7 +120,7 @@ export default function ChangeAccount () {
                               const regex = /^[0-9]+$/;
                               if (value !== '' && regex.test(value)) {
                                 setSteamId(value);
-                                fetchData();
+                                fetchData(value);
                                 setSteamIdError('');
                               } else if (value === '') {
                                 setSteamIdError(t('SteamIdRequired'));
