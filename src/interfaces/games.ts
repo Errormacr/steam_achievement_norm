@@ -44,12 +44,12 @@ export interface gameDataWithAch {
     appid: number;
     gamename: string;
     lowerGamename: string;
-    userDatas: UserData[];
+    userDatas: GameUserData[];
     achievmentsFromView: AchievmentsFromView[];
     achievementCount: number;
 }
 
-export interface UserData {
+export interface GameUserData {
     steamID: string;
     appid: number;
     gainedAch: number;

@@ -3,6 +3,8 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import GameButton from './GameButton';
 import IdKeyInput from './IdKeyInput';
+import { ApiService } from '../services/api.services';
+import { User, UserData } from '../interfaces';
 
 export default function ChangeAccount () {
   const [isOpen,
@@ -22,7 +24,7 @@ export default function ChangeAccount () {
   const [newAccAva,
     setNewAccAva] = useState('');
   const [accounts,
-    setAccounts] = useState([]);
+    setAccounts] = useState<User[]>([]);
   const openModal = () => {
     setIsOpen(true);
   };
@@ -32,7 +34,10 @@ export default function ChangeAccount () {
   };
 
   const { t } = useTranslation();
-
+  const getExistingUser = async () => {
+    const users = await ApiService.get<User[]>('user');
+    setAccounts(users);
+  };
   useEffect(() => {
     const handleOutsideClick = (event : MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -41,43 +46,22 @@ export default function ChangeAccount () {
         setAddingAcc(false);
       }
     };
-    const storedIdSet = new Set(JSON.parse(localStorage.getItem('idArray')) || []);
-    if (storedIdSet.size > 0 && isOpen) {
-      const steamIdsArray = Array.from(storedIdSet);
-      const steamIdsString = JSON
-        .stringify(steamIdsArray)
-        .replace(/"/g, '');
-
-      console.log(`http://localhost:4500/player_sum?key=${dataKey}&id=${steamIdsString}`);
-
-      fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${steamIdsString}`)
-        .then(response => response.json())
-        .then(result => {
-          console.log(result);
-          const playersArray = result
-            .response
-            .players
-            .map((player : any) => ({ nickname: player.personaname, ava: player.avatarfull, steamId: player.steamid }));
-          setAccounts(playersArray);
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
-    }
+    getExistingUser();
     document.addEventListener('mousedown', handleOutsideClick);
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, [isOpen]);
 
+  const update = (steamId: string) => {
+    ApiService.put()
+  };
+
   const fetchData = async () => {
     try {
-      const dataKey = localStorage.getItem('api-key');
-      const response = await fetch(`http://localhost:4500/player_sum?key=${dataKey}&id=${SteamId}`);
-      const newData = await response.json();
-
-      const personalName = newData.response.players[0].personaname;
-      const avaUrl = newData.response.players[0].avatarfull;
+      const { user } = await ApiService.get<UserData>(`user/${SteamId}/data`);
+      const personalName = user.nickname;
+      const avaUrl = user.avatarMedium;
       setNewAccName(personalName);
       setNewAccAva(avaUrl);
       setAccFound(true);
@@ -103,12 +87,12 @@ export default function ChangeAccount () {
                     <div className="modal-content">
                         <h2 className='settingsHeader'>{t('chAccHeading')}</h2>
                         <div className='accContainer'>
-                            {accounts.sort((a, b) => a.steamId - b.steamId).map(account => <div
+                            {accounts.sort((a, b) => +a.steamID - +b.steamID).map(account => <div
                                 className="userContainer"
 
                                 onClick={() => {
-                                  localStorage.setItem('steamId', account.steamId);
-                                  update();
+                                  localStorage.setItem('steamId', account.steamID);
+                                  update(account.steamID);
                                   closeModal();
                                 }}>
                                 <img
@@ -116,7 +100,7 @@ export default function ChangeAccount () {
                                       width: '4.5rem',
                                       height: '4.5rem'
                                     }}
-                                    src={account.ava}/>
+                                    src={account.avatarMedium}/>
                                 <p
                                     style={{
                                       marginBlock: '0'

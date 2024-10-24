@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import './scss/Table.scss';
+import { ApiService } from '../services/api.services';
+import { AchievmentsFromView, Pagination } from '../interfaces';
 interface AchBoxProps {
   appid?: number;
   all: boolean;
@@ -30,8 +32,7 @@ const Table: React.FC < AchBoxProps > = ({
       queryParams.append('unlocked', '1');
     }
     const dataSteamId = localStorage.getItem('steamId');
-    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?${queryParams.toString()}`);
-    const achData = await achResponse.json();
+    const achData = await ApiService.get<Pagination<AchievmentsFromView>>(`user/${dataSteamId}/achievements?${queryParams.toString()}`);
     setAch(achData.rows);
   };
 

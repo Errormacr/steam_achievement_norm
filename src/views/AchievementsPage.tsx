@@ -7,6 +7,8 @@ import i18n from 'i18next';
 import ScrollToTopButton from './ScrollToTopButton';
 import GameButton from './GameButton';
 import AchBox from './AchContainer';
+import { AchievmentsFromView, Pagination } from '../interfaces';
+import { ApiService } from '../services/api.services';
 
 export default function AchPage () {
   const [tableOrBox,
@@ -19,8 +21,15 @@ export default function AchPage () {
     try {
       const boxView = Boolean(localStorage.getItem('boxView'));
       const steamId = localStorage.getItem('steamId');
-      const baseUrl = `http://localhost:8888/api/user/${steamId}/achievements?orderBy=unlockedDate&desc=1&language=${i18n.language}&unlocked=1&page=1&pageSize=0&`;
-      fetch(baseUrl).then(resp => { resp.json().then(data => { setAchCount(data.count); }); });
+      const queryParams = new URLSearchParams({
+        orderBy: 'unlockedDate',
+        desc: '1',
+        language: i18n.language,
+        unlocked: '1',
+        page: '1',
+        pageSize: '0'
+      });
+      ApiService.get<Pagination<AchievmentsFromView>>(`user/${steamId}/achievements?${queryParams.toString()}`).then((data) => { setAchCount(data.count); });
       if (!boxView) {
         setTable(false);
       }

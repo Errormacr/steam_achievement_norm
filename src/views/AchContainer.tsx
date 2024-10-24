@@ -4,6 +4,8 @@ import i18n from 'i18next';
 import './scss/AchConteiner.scss';
 import './scss/FilterSort.scss';
 import IdKeyInput from './IdKeyInput';
+import { Pagination, AchievmentsFromView } from '../interfaces';
+import { ApiService } from '../services/api.services';
 interface AchBoxProps {
   appid?: number;
   all: boolean;
@@ -71,8 +73,7 @@ const AchBox : React.FC < AchBoxProps > = ({
       queryParams.append('gameName', searchQueryGameName);
     }
     const dataSteamId = localStorage.getItem('steamId');
-    const achResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?${queryParams.toString()}`);
-    const achData = await achResponse.json();
+    const achData = await ApiService.get<Pagination<AchievmentsFromView>>(`user/${dataSteamId}/achievements?${queryParams.toString()}`);
     setAch(achData.rows);
   };
   useEffect(() => {
