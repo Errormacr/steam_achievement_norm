@@ -54,7 +54,7 @@ export default function ChangeAccount () {
   }, [isOpen]);
 
   const update = (steamId: string) => {
-    ApiService.put(`user/${steamId}/all`);
+    ApiService.put(`user/${steamId}/all-force?lang=${i18n.language}`);
   };
 
   const fetchData = async (steamId:string) => {
@@ -75,11 +75,6 @@ export default function ChangeAccount () {
     }
   };
 
-  const handleAddAccount = (steamId : string) => {
-    const storedIdSet = new Set(JSON.parse(localStorage.getItem('idArray')) || new Set());
-    storedIdSet.add(steamId);
-    localStorage.setItem('idArray', JSON.stringify(Array.from(storedIdSet)));
-  };
   return (
         <I18nextProvider i18n={i18n}>
             <GameButton id='' additionalClass='' onClick={openModal} text={t('changeAcc')}/> {isOpen && (
@@ -92,7 +87,6 @@ export default function ChangeAccount () {
 
                                 onClick={() => {
                                   localStorage.setItem('steamId', account.steamID);
-                                  update(account.steamID);
                                   closeModal();
                                 }}>
                                 <img
@@ -132,16 +126,17 @@ export default function ChangeAccount () {
                             placeholder="Steam id"/>}
                         {steamIdError && addingAcc && <div className="input-error">{steamIdError}</div>}
                         {accFound && addingAcc && <div>
-                            <div className="userContainer">
+              <div className="userContainer"
+               onClick={() => {
+                 localStorage.setItem('steamId', SteamId);
+                 update(SteamId);
+                 closeModal();
+               }}>
                                 <img src={newAccAva}/>
                                 <p >{newAccName}</p>
 
                             </div>
-                            <GameButton
-                                id=''
-                                additionalClass='addAccButton'
-                                onClick={() => handleAddAccount(SteamId)}
-                                text={t('addAcc')}/></div>}
+                        </div>}
                     </div>
                 </div>
             )}
