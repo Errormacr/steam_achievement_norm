@@ -38,6 +38,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
   const handleSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
     setSearchQueryGameName(e.target.value);
   };
+  const intervalRef = useRef<number | null>(null);
   const [isLoading,
     setIsLoading] = useState(false);
   const [page,
@@ -68,7 +69,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
         : '0',
       language: i18n.language,
       page: hasMore ? page.toString() : (page - 1).toString(),
-      pageSize: '200'
+      pageSize: '250'
 
     });
     if (selectedCompletionFilterValue) {
@@ -104,13 +105,21 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
     setIsLoading(false);
   };
   useEffect(() => {
-    try {
-      setPage(1);
-      updateAchievements(true);
-    } catch (error) {
-      window.alert(error.message);
+    setPage(1);
+    if (intervalRef.current) {
+      window.clearTimeout(intervalRef.current);
     }
+
+    intervalRef.current = window.setTimeout(() => {
+      updateAchievements(true);
+    }, 1000);
+    return () => {
+      if (intervalRef.current) {
+        window.clearTimeout(intervalRef.current);
+      }
+    };
   }, [desc, selectedCompletionFilterValue, selectedValue, searchQueryAch, searchQueryGameName]);
+
   useEffect(() => {
     if (page > 1) { updateAchievements(); }
   }
