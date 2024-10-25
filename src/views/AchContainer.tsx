@@ -7,20 +7,19 @@ import IdKeyInput from './IdKeyInput';
 import { Pagination, AchievmentsFromView } from '../interfaces';
 import { ApiService } from '../services/api.services';
 interface AchBoxProps {
-  appid?: number;
-  all: boolean;
+    appid?: number;
+    all : boolean;
 }
-const AchBox : React.FC < AchBoxProps > = ({
-  appid
-  , all
-}) => {
-  const [ach, setAch] = useState([]);
+const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
+  const [ach,
+    setAch] = useState<AchievmentsFromView[]>([]);
 
   const [isDropdownOpen,
     setDropdownOpen] = useState(false);
   const [selectedValue,
     setSelectedValue] = useState < string | null >('unlockedDate');
-  const [desc, setDesc] = useState(true);
+  const [desc,
+    setDesc] = useState(true);
   const [isArrowUpOpen,
     setIsArrowUpOpen] = useState(false);
   const [isArrowDownOpen,
@@ -39,6 +38,13 @@ const AchBox : React.FC < AchBoxProps > = ({
   const handleSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
     setSearchQueryGameName(e.target.value);
   };
+  const [isLoading,
+    setIsLoading] = useState(false);
+  const [page,
+    setPage] = useState(1);
+  const [hasMore,
+    setHasMore] = useState(true);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const [searchQueryAch,
     setSearchQueryAch] = useState('');
@@ -50,14 +56,26 @@ const AchBox : React.FC < AchBoxProps > = ({
     setDropdownOpen(false);
   };
   const { t } = useTranslation();
-  const updateAchievements = async () => {
+  const updateAchievements = async (reset = false) => {
+    setIsLoading(true);
+    if (reset) {
+      setAch([]);
+    }
     const queryParams = new URLSearchParams({
       orderBy: selectedValue,
-      desc: desc ? '1' : '0',
-      language: i18n.language
+      desc: desc
+        ? '1'
+        : '0',
+      language: i18n.language,
+      page: hasMore ? page.toString() : (page - 1).toString(),
+      pageSize: '200'
+
     });
     if (selectedCompletionFilterValue) {
-      const [min, max] = selectedCompletionFilterValue.slice(7).split('-');
+      const [min,
+        max] = selectedCompletionFilterValue
+        .slice(7)
+        .split('-');
       queryParams.append('percentMin', min);
       queryParams.append('percentMax', max);
     }
@@ -73,16 +91,30 @@ const AchBox : React.FC < AchBoxProps > = ({
       queryParams.append('gameName', searchQueryGameName);
     }
     const dataSteamId = localStorage.getItem('steamId');
-    const achData = await ApiService.get<Pagination<AchievmentsFromView>>(`user/${dataSteamId}/achievements?${queryParams.toString()}`);
-    setAch(achData.rows);
+    const achData = await ApiService.get < Pagination < AchievmentsFromView >>(`user/${dataSteamId}/achievements?${queryParams.toString()}`);
+    if (reset) {
+      setAch(achData.rows);
+    } else {
+      setAch((prev) => [
+        ...prev,
+        ...achData.rows
+      ]);
+    }
+    setHasMore(achData.rows.length > 0);
+    setIsLoading(false);
   };
   useEffect(() => {
     try {
-      updateAchievements();
+      setPage(1);
+      updateAchievements(true);
     } catch (error) {
       window.alert(error.message);
     }
   }, [desc, selectedCompletionFilterValue, selectedValue, searchQueryAch, searchQueryGameName]);
+  useEffect(() => {
+    if (page > 1) { updateAchievements(); }
+  }
+  , [page]);
   const handleCompletionFilterItemClick = (value : string) => {
     if (selectedCompletionFilterValue === value) {
       setSelectedCompletionFilterValue(null);
@@ -134,6 +166,29 @@ const AchBox : React.FC < AchBoxProps > = ({
   if (!all) {
     sortingOptions.push({ value: 'unlocked', label: 'Gained' });
   }
+
+  const lastAchievementRef =
+    (node: HTMLDivElement) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    };
+
+  const getAchievementClass = (achievement:AchievmentsFromView) => {
+    const percent = achievement.percent;
+
+    if (percent <= 5) return 'rare1';
+    if (percent <= 20) return 'rare2';
+    if (percent <= 45) return 'rare3';
+    if (percent <= 60) return 'rare4';
+    return 'rare5';
+  };
+
   return (
         <I18nextProvider i18n={i18n}>
             <div className="AchSet">
@@ -233,21 +288,23 @@ const AchBox : React.FC < AchBoxProps > = ({
                 </div>
                 <div className="AchCont">
 
-                    {ach.map((achievement) => (<img
-                        className={achievement.percent <= 5
-                          ? 'rare1'
-                          : achievement.percent <= 20
-                            ? 'rare2'
-                            : achievement.percent <= 45
-                              ? 'rare3'
-                              : achievement.percent <= 60
-                                ? 'rare4'
-                                : 'rare5'}
+          {ach.map((achievement, index, arr) => {
+            let last = false;
+            if (index === arr.length - 1) {
+              last = true;
+            }
+
+            return <img
+              className={
+                getAchievementClass(achievement)
+             }
+              ref={last ? lastAchievementRef : undefined}
                         key={(all
                           ? achievement.game.gamename
                           : '') + achievement.displayName + achievement.percent + achievement.name}
-                        src={ achievement.unlocked ? achievement.icon : achievement.grayIcon
-                          }
+                        src={achievement.unlocked
+                          ? achievement.icon
+                          : achievement.grayIcon}
                         alt={achievement.displayName}
                         title={`${all
                         ? achievement.game.gamename + '\n'
@@ -255,7 +312,9 @@ const AchBox : React.FC < AchBoxProps > = ({
                             .displayName}\n${achievement
                             .description}\n${achievement
                             .percent
-                            .toFixed(2)}\n${achievement.unlockedDate ?? ''}`}/>))}
+                            .toFixed(2)}\n${achievement
+                            .unlockedDate ?? ''}`}/>;
+          })}
                 </div>
             </div>
         </I18nextProvider>
