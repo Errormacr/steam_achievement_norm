@@ -154,7 +154,7 @@ export default function App () {
                                     <GameButton text={t('Update')} onClick={handleUpdate} id=''/>
                                 </div>
                                 <div>
-                <ChangeAccount/>
+                <ChangeAccount updatePage={updateUserData }/>
                                 <Settings/></div>
                             </div>
                             <div className="MainCont">

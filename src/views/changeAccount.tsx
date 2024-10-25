@@ -5,8 +5,8 @@ import GameButton from './GameButton';
 import IdKeyInput from './IdKeyInput';
 import { ApiService } from '../services/api.services';
 import { User, UserData } from '../interfaces';
-
-export default function ChangeAccount () {
+import { FaTrash } from 'react-icons/fa';
+export default function ChangeAccount ({ updatePage }) : React.JSX.Element {
   const [isOpen,
     setIsOpen] = useState(false);
   const [addingAcc,
@@ -24,7 +24,7 @@ export default function ChangeAccount () {
   const [newAccAva,
     setNewAccAva] = useState('');
   const [accounts,
-    setAccounts] = useState<User[]>([]);
+    setAccounts] = useState < User[] >([]);
   const openModal = () => {
     setIsOpen(true);
   };
@@ -35,7 +35,7 @@ export default function ChangeAccount () {
 
   const { t } = useTranslation();
   const getExistingUser = async () => {
-    const users = await ApiService.get<User[]>('user');
+    const users = await ApiService.get < User[] >('user');
     setAccounts(users);
   };
   useEffect(() => {
@@ -53,13 +53,13 @@ export default function ChangeAccount () {
     };
   }, [isOpen]);
 
-  const update = (steamId: string) => {
+  const update = (steamId : string) => {
     ApiService.put(`user/${steamId}/all-force?lang=${i18n.language}`);
   };
 
-  const fetchData = async (steamId:string) => {
+  const fetchData = async (steamId : string) => {
     try {
-      const { user } = await ApiService.get<UserData>(`user/${steamId}/data`);
+      const { user } = await ApiService.get < UserData >(`user/${steamId}/data`);
       const personalName = user.nickname;
       const avaUrl = user.avatarMedium;
       setNewAccName(personalName);
@@ -74,7 +74,10 @@ export default function ChangeAccount () {
       console.error('Ошибка при получении данных:', error);
     }
   };
-
+  const deleteUser = (userId:string) => {
+    ApiService.delete(`user/${userId}`);
+    setAccounts((prev) => prev.filter((acc) => acc.steamID !== userId));
+  };
   return (
         <I18nextProvider i18n={i18n}>
             <GameButton id='' additionalClass='' onClick={openModal} text={t('changeAcc')}/> {isOpen && (
@@ -84,23 +87,23 @@ export default function ChangeAccount () {
                         <div className='accContainer'>
                             {accounts.sort((a, b) => +a.steamID - +b.steamID).map(account => <div
                                 className="userContainer"
-
                                 onClick={() => {
                                   localStorage.setItem('steamId', account.steamID);
+                                  updatePage();
                                   closeModal();
                                 }}>
-                                <img
-                                    style={{
-                                      width: '4.5rem',
-                                      height: '4.5rem'
-                                    }}
-                                    src={account.avatarMedium}/>
+                                <img src={account.avatarMedium}/>
                                 <p
                                     style={{
                                       marginBlock: '0'
                                     }}>{account.nickname}</p>
+                                <FaTrash
+                                    className="deleteIcon"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      deleteUser(account.steamID);
+                                    }}/>
                             </div>)}
-
                         </div>
                         {!addingAcc && <GameButton
                             id=''
@@ -126,12 +129,14 @@ export default function ChangeAccount () {
                             placeholder="Steam id"/>}
                         {steamIdError && addingAcc && <div className="input-error">{steamIdError}</div>}
                         {accFound && addingAcc && <div>
-              <div className="userContainer"
-               onClick={() => {
-                 localStorage.setItem('steamId', SteamId);
-                 update(SteamId);
-                 closeModal();
-               }}>
+                            <div
+                                className="userContainer"
+                                onClick={() => {
+                                  localStorage.setItem('steamId', SteamId);
+                                  update(SteamId);
+                                  updatePage();
+                                  closeModal();
+                                }}>
                                 <img src={newAccAva}/>
                                 <p >{newAccName}</p>
 

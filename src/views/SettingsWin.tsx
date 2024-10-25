@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './scss/Settings.scss';
 type ModalProps = {
@@ -10,10 +10,15 @@ const SettingsWin : React.FC < ModalProps > = ({ isOpen, onClose }) => {
   if (!isOpen) {
     return null;
   }
+  const [changeKey,
+    setChangeKey] = useState(false);
   const { i18n } = useTranslation();
   const { t } = useTranslation();
   const changeLanguage = (language : string) => {
     i18n.changeLanguage(language);
+  };
+  const revealChangeKey = () => {
+    setChangeKey(true);
   };
   return (
         <div className="modal">
@@ -26,6 +31,8 @@ const SettingsWin : React.FC < ModalProps > = ({ isOpen, onClose }) => {
                     <option value="english">{t('English')}</option>
                     <option value="russian">{t('Russian')}</option>
                 </select>
+                <button className='settingsButton' onClick={revealChangeKey}>Change key</button>
+                {changeKey && <div>test</div>}
                 <button className='settingsButton' onClick={onClose}>OK</button>
             </div>
         </div>
