@@ -57,7 +57,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
     setDropdownOpen(false);
   };
   const { t } = useTranslation();
-  const updateAchievements = async (reset = false) => {
+  const updateAchievements = async (reset = false, page = 1) => {
     setIsLoading(true);
     if (reset) {
       setAch([]);
@@ -111,8 +111,8 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
     }
 
     intervalRef.current = window.setTimeout(() => {
-      updateAchievements(true);
-    }, 1000);
+      updateAchievements(true, 1);
+    }, 500);
     return () => {
       if (intervalRef.current) {
         window.clearTimeout(intervalRef.current);
@@ -121,7 +121,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
   }, [desc, selectedCompletionFilterValue, selectedValue, searchQueryAch, searchQueryGameName]);
 
   useEffect(() => {
-    if (page > 1) { updateAchievements(); }
+    if (page > 1) { updateAchievements(false, page); }
   }
   , [page]);
   const handleCompletionFilterItemClick = (value : string) => {
