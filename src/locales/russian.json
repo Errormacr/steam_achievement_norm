@@ -73,5 +73,7 @@
     "SteamIdError": "SteamID неправильный",
     "addAcc": "Добавить аккаунт",
     "changeAcc": "Выбрать аккаунт",
-    "chAccHeading":"Управление аккаунтами"
+    "chAccHeading":"Управление аккаунтами",
+    "changeKey": "Ввести Steam Web Api Key",
+    "chKeyHeading":"Управление Steam Web Api Key"
 }

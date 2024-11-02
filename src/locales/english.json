@@ -73,5 +73,7 @@
     "SteamIdError": "SteamID incorrect",
     "addAcc": "Add account",
     "changeAcc": "Choose account",
-    "chAccHeading":"Account manager"
+    "chAccHeading":"Account manager",
+    "changeKey": "Change Steam Web Api Key",
+    "chKeyHeading":"Steam Web Api Key manager"
 }
