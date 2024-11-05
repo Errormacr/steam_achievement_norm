@@ -2,6 +2,8 @@
     "Ach": "Achievements",
     "changeIdKeyButton": "Change SteamId or SteamKey",
     "ChangeKey": "Change SteamKey",
+    "changeKeyError":"Invalid SteamKey",
+    "changeKeySuccess":"SteamKey changed",
     "ClearKey": "Clear SteamKey",
     "ChangeSteamID": "Change SteamID",
     "ClearId": "Clear SteamID",
@@ -75,5 +77,8 @@
     "changeAcc": "Choose account",
     "chAccHeading":"Account manager",
     "changeKey": "Change Steam Web Api Key",
-    "chKeyHeading":"Steam Web Api Key manager"
+    "chKeyHeading":"Steam Web Api Key manager",
+    "GameUpdateSuccess":"Game updated",
+    "UpdateGame":"Update game data"
+
 }

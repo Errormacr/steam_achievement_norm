@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import Games from './Games';
 import ProgressRad from './rad_progress';
@@ -10,7 +10,9 @@ import i18n from 'i18next';
 import ScrollToTopButton from './ScrollToTopButton';
 import GameButton from './GameButton';
 import './scss/GamePage.scss';
-import { GamePageProps } from '../interfaces';
+import { gameDataWithAch, GamePageProps } from '../interfaces';
+import { ApiService } from '../services/api.services';
+import { toast, ToastContainer } from 'react-toastify';
 interface Game {
     appid : number;
     last_launch_time : string;
@@ -37,10 +39,9 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
   const [tableOrBox,
     setTableOrBox] = useState(true);
   const { t } = useTranslation();
-  const renderComponent = useCallback(async () => {
+  const renderComponent = async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const gameResponse = await fetch(`http://localhost:8888/api/user/${dataSteamId}/game/${appid}/data?language=${i18n.language}&achievements=false`);
-    const gameData = await gameResponse.json();
+    const gameData = await ApiService.get < gameDataWithAch >(`user/${dataSteamId}/game/${appid}/data?language=${i18n.language}&achievements=false`);
     const newGameData = {
       appid: appid,
       last_launch_time: gameData.userDatas[0].lastLaunchTime,
@@ -51,7 +52,16 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
       percent: gameData.userDatas[0].percent
     };
     setGame(newGameData);
-  }, []);
+  };
+
+  const updateGameData = async () => {
+    const dataSteamId = localStorage.getItem('steamId');
+    const updated = await ApiService.get<any>(`steam-api/all-user-ach-data/${dataSteamId}/game/${game.appid}?lang=${i18n.language}`);
+    const changed = updated.achievments.filter((a:{unlocked:boolean}) => a.unlocked).length;
+    toast.success(t('GameUpdateSuccess') + '\n' + t('Gained') + ' ' + (changed - game.gained));
+    renderComponent();
+  };
+
   useEffect(() => {
     try {
       renderComponent();
@@ -68,6 +78,7 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
   return (
         <I18nextProvider i18n={i18n}>
             <div>
+                <ToastContainer/>
                 <ScrollToTopButton/>
                 <GameButton
                     id=""
@@ -96,17 +107,18 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
                         {game.gained}/{game.all}
                     </label>
                 </div>
-                <GameButton
-                    id=""
-                    text={t('SwitchTable')}
-                    onClick={() => {
-                      setTableOrBox(!tableOrBox);
-                      localStorage.setItem('boxView', String(!tableOrBox));
-                    }}
-                    additionalClass="switchTable"/>
+                <div className='switchTable'>
+                    <GameButton text={t('UpdateGame')} onClick={updateGameData} id='updateGame'/>
+                    <GameButton
+                        id=""
+                        text={t('SwitchTable')}
+                        onClick={() => {
+                          setTableOrBox(!tableOrBox);
+                          localStorage.setItem('boxView', String(!tableOrBox));
+                        }}/></div>
                 <div className="table-container">
                     {loaded && (tableOrBox
-                      ? (<Table appid={appid} all={false} />)
+                      ? (<Table appid={appid} all={false}/>)
                       : (<AchBox appid={appid} all={false}/>))}
                 </div>
             </div>

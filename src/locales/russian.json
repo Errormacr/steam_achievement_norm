@@ -2,6 +2,8 @@
     "Ach": "Достижения",
     "changeIdKeyButton": "Сменить SteamId или SteamKey",
     "ChangeKey": "Сменить SteamKey",
+    "changeKeyError":"Невалидный SteamKey",
+    "changeKeySuccess":"SteamKey изменен",
     "ClearKey": "Очистить SteamKey",
     "ChangeSteamID": "Сменить SteamID",
     "ClearId": "Очистить SteamID",
@@ -75,5 +77,8 @@
     "changeAcc": "Выбрать аккаунт",
     "chAccHeading":"Управление аккаунтами",
     "changeKey": "Ввести Steam Web Api Key",
-    "chKeyHeading":"Управление Steam Web Api Key"
+    "chKeyHeading":"Управление Steam Web Api Key",
+    "GameUpdateSuccess":"Игра обновлена",
+    "UpdateGame":"Обновить игру"
+
 }

@@ -5,6 +5,8 @@ import GameButton from './GameButton';
 import IdKeyInput from './IdKeyInput';
 import { ApiService } from '../services/api.services';
 import './scss/ChangeKey.scss';
+import { KeyResponse } from '../interfaces';
+import { toast } from 'react-toastify';
 export default function ChangeKey (): React.JSX.Element {
   const [isOpen,
     setIsOpen] = useState(false);
@@ -35,11 +37,21 @@ export default function ChangeKey (): React.JSX.Element {
     setApiKey(val.target.value);
     console.log(val.target.value);
   };
+
   const changeApiKey = async () => {
     if (apiKey) {
-      await ApiService.post(apiKey);
+      try {
+        const res = await ApiService.post<KeyResponse>(`steam-api/api-token?token=${apiKey}`, {});
+        console.log(res);
+        toast.success(t('changeKeySuccess'));
+        closeModal();
+      } catch (error) {
+        console.log(error);
+        toast.error(t('changeKeyError'));
+      }
     }
   };
+
   return (
         <I18nextProvider i18n={i18n}>
             <GameButton id='' additionalClass='' onClick={openModal} text={t('changeKey')}/> {isOpen && (
@@ -47,7 +59,7 @@ export default function ChangeKey (): React.JSX.Element {
                     <div className="modal-content">
                         <h2 className='settingsHeader'>{t('chKeyHeading')}</h2>
                       <IdKeyInput onChange={OnUpdateKeyField} placeholder={'steam web api key'} />
-                      {apiKey && <GameButton id='changeKeyButton' additionalClass='change-key-button' onClick={closeModal} text={t('ChangeKey')}/>
+                      {apiKey && <GameButton id='changeKeyButton' additionalClass='change-key-button' onClick={changeApiKey } text={t('ChangeKey')}/>
                     }</div>
                 </div>
             )}

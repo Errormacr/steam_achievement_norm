@@ -45,7 +45,7 @@ export interface gameDataWithAch {
     gamename: string;
     lowerGamename: string;
     userDatas: GameUserData[];
-    achievmentsFromView: AchievmentsFromView[];
+    achievmentsFromView?: AchievmentsFromView[];
     achievementCount: number;
 }
 
@@ -53,7 +53,7 @@ export interface GameUserData {
     steamID: string;
     appid: number;
     gainedAch: number;
-    lastLaunchTime: Date;
+    lastLaunchTime: string;
     percent: number;
     playtime: number;
 }
