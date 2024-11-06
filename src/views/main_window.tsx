@@ -17,6 +17,7 @@ import GameCard from './GameCard';
 import { ApiService } from '../services/api.services';
 import { UpdatedGame, UserData } from '../interfaces';
 import ChangeKey from './ChangeKey';
+import UpdateUserData from './UpdateUserData';
 
 export default function App () {
   const [personalName,
@@ -63,9 +64,6 @@ export default function App () {
     }
   }, []);
 
-  const handleUpdate = () => {
-    updateUserData();
-  };
   useEffect(useCallback(() => {
     try {
       updateUserData();
@@ -81,7 +79,7 @@ export default function App () {
                 <div id="header key" className="header">
                     <div>
                         <div id="clearDiv" className="clearDiv">
-                            <GameButton additionalClass='update-button' text={t('Update')} onClick={handleUpdate} id='updateDate'/>
+                            <UpdateUserData rerender={() => updateUserData()}/>
                             <ChangeAccount updatePage={updateUserData}/>
                             <ChangeKey/>
                             <Settings/></div>

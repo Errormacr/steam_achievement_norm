@@ -109,7 +109,7 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
                     </label>
                 </div>
                 <div className='switchTable'>
-                    <GameButton text={t('UpdateGame')} onClick={fetchUpdatedGameData  } id='updateGame'/>
+                    <GameButton text={t('UpdateGame')} onClick={fetchUpdatedGameData } id='updateGame'/>
                     <GameButton
                         id=""
                         text={t('SwitchTable')}
