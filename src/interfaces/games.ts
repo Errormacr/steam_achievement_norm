@@ -33,7 +33,7 @@ export interface GameDataRow extends Omit<GameData, 'gainedAch'>{
     lastLaunchTime: Date;
     percent: number;
     playtime: number;
-    game: Game;
+    game?: Game;
 }
 
 export interface Game {

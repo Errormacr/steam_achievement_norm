@@ -10,7 +10,7 @@ import i18n from 'i18next';
 import ScrollToTopButton from './ScrollToTopButton';
 import GameButton from './GameButton';
 import './scss/GamePage.scss';
-import { gameDataWithAch, GamePageProps } from '../interfaces';
+import { GameDataRow, gameDataWithAch, GamePageProps } from '../interfaces';
 import { ApiService } from '../services/api.services';
 import { toast, ToastContainer } from 'react-toastify';
 interface Game {
@@ -54,11 +54,12 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
     setGame(newGameData);
   };
 
-  const updateGameData = async () => {
-    const dataSteamId = localStorage.getItem('steamId');
-    const updated = await ApiService.get<any>(`steam-api/all-user-ach-data/${dataSteamId}/game/${game.appid}?lang=${i18n.language}`);
-    const changed = updated.achievments.filter((a:{unlocked:boolean}) => a.unlocked).length;
-    toast.success(t('GameUpdateSuccess') + '\n' + t('Gained') + ' ' + (changed - game.gained));
+  const fetchUpdatedGameData = async () => {
+    const steamId = localStorage.getItem('steamId');
+    const { unlockedCount: gained } = await ApiService.get<GameDataRow>(
+      `steam-api/all-user-ach-data/${steamId}/game/${game.appid}?lang=${i18n.language}`
+    );
+    toast.success(`${t('GameUpdateSuccess')}\n${t('Gained')} ${gained - game.gained}`);
     renderComponent();
   };
 
@@ -108,7 +109,7 @@ const GamePage : React.FC < GamePageProps > = ({ appid, backWindow }) => {
                     </label>
                 </div>
                 <div className='switchTable'>
-                    <GameButton text={t('UpdateGame')} onClick={updateGameData} id='updateGame'/>
+                    <GameButton text={t('UpdateGame')} onClick={fetchUpdatedGameData  } id='updateGame'/>
                     <GameButton
                         id=""
                         text={t('SwitchTable')}

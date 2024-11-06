@@ -33,7 +33,7 @@ const createWindow = () => {
 app.on('ready', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const nestAppDirectory = path.join(__dirname, '../../server');
-  nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/main'], { cwd: nestAppDirectory });
+  nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/server/src/main'], { cwd: nestAppDirectory });
 
   // Capture NestJS app output for logging
   nestAppProcess.stdout.on('data', (data) => {

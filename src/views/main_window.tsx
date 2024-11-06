@@ -81,7 +81,7 @@ export default function App () {
                 <div id="header key" className="header">
                     <div>
                         <div id="clearDiv" className="clearDiv">
-                            <GameButton text={t('Update')} onClick={handleUpdate} id=''/>
+                            <GameButton additionalClass='update-button' text={t('Update')} onClick={handleUpdate} id='updateDate'/>
                             <ChangeAccount updatePage={updateUserData}/>
                             <ChangeKey/>
                             <Settings/></div>
