@@ -85,6 +85,9 @@
     "updateRecent":"Обновить последние",
     "updateAll":"Обновить все",
     "updateAllForce":"Обновить все принудительно",
-    "updatePercentAch":"Обновить процент достижений"
+    "updatePercentAch":"Обновить процент достижений",
+    "AddGame":"Добавить игру",
+    "addGameHeading":"Добавить игру по App id"
+
 
 }

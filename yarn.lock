@@ -6097,6 +6097,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+use-debouncy@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/use-debouncy/-/use-debouncy-5.0.1.tgz#68f6951890b5b178802bd1746292ed3b300b6346"
+  integrity sha512-Y67Ms+feWonusFVKm/AgajoyHHTmtjpC6lBaNAAK65oe1dB59G3JoQzKedFzb6DCeJm71epHBrTsNTev37YO3g==
+
 username@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/username/-/username-5.1.0.tgz#a7f9325adce2d0166448cdd55d4985b1360f2508"

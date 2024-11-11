@@ -146,11 +146,9 @@ td {
 }
 
 .return {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 1rem;
     position: absolute;
-    width: 120px;
-    left: 0;
+        left: 0;
     top: 1%;
 }
 

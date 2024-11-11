@@ -76,7 +76,7 @@ const GameCard: React.FC < GamePageProps > = ({ appid, backWindow }) => {
         game-percent={percent}
         game-playtime={`${playtime} ${t('Hours')}`}
         key={appid}
-        onClick={() => { if (all)logging(appid, backWindow); }}
+        onClick={() => { logging(appid, backWindow); }}
       >
         <div className="name-preview">
           <p className="name">{gameName}</p>

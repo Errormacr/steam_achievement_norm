@@ -10,6 +10,7 @@ import './scss/FilterSort.scss';
 import IdKeyInput from './IdKeyInput';
 import { ApiService } from '../services/api.services';
 import { GameDataRow, Pagination } from '../interfaces';
+import GameButton from './GameButton';
 
 let root = ReactDOM.createRoot(document.getElementById('root'));
 function rendApp () {
@@ -353,9 +354,7 @@ export default function Games () {
           </div>
         </div>
       </div>
-      <button className="gameButton return" onClick={rendApp}>
-        {t('Return')}
-      </button>
+      <GameButton additionalClass='return' onClick={rendApp} id="return" text={t('Return')} />
       <div id="header key">
         <ScrollToTopButton />
 

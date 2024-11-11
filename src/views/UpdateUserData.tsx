@@ -4,6 +4,7 @@ import i18n from 'i18next';
 import GameButton from './GameButton';
 import { ApiService } from '../services/api.services';
 import { toast } from 'react-toastify';
+import { UpdatedGame } from '../interfaces';
 export default function UpdateUserData ({ rerender } : {
     rerender: () => void
 }) : React.JSX.Element {
@@ -34,9 +35,9 @@ export default function UpdateUserData ({ rerender } : {
   const update = async (type : string) => {
     try {
       const steamId = localStorage.getItem('steamId');
-      await ApiService.put(`user/${steamId}/${type}`);
+      const userData = await ApiService.put<UpdatedGame>(`user/${steamId}/${type}?lang=${i18n.language}`);
       rerender();
-      toast.success(t('updateUserDa taSuccess'));
+      if (!userData.success) { toast.success('+ ' + userData.percent.change.toFixed(2) + '% ' + t('averageUp')); }
       closeModal();
     } catch (error) {
       console.log(error);

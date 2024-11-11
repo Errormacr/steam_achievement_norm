@@ -2,6 +2,7 @@ import { AchievmentsFromView } from '.';
 
 export interface UpdatedGame {
     updatet: Updated[];
+    success?: boolean;
     percent: Percent;
 }
 

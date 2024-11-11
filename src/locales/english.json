@@ -85,6 +85,8 @@
     "updateRecent":"Update recent",
     "updateAll":"Update all",
     "updateAllForce":"Update all force",
-    "updatePercentAch":"Update achievement percentage"
+    "updatePercentAch":"Update achievement percentage",
+    "AddGame":"Add game",
+    "addGameHeading":"Add game by App id"
 
 }
