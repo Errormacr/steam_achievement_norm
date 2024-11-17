@@ -74,7 +74,7 @@
     "SteamIdRequired": "SteamID required",
     "SteamIdError": "SteamID incorrect",
     "addAcc": "Add account",
-    "changeAcc": "Choose account",
+    "changeAcc": "Change account",
     "chAccHeading":"Account manager",
     "changeKey": "Change Steam Web Api Key",
     "chKeyHeading":"Steam Web Api Key manager",
@@ -82,10 +82,10 @@
     "UpdateGame":"Update game data",
     "updateUserDataHeading":"Update user data",
     "updatePlayedOwned":"Update played owned",
-    "updateRecent":"Update recent",
-    "updateAll":"Update all",
-    "updateAllForce":"Update all force",
-    "updatePercentAch":"Update achievement percentage",
+    "updateRecent":"recent",
+    "updateAll":"all",
+    "updateAllForce":"all force",
+    "updatePercentAch":"achievement percentage",
     "AddGame":"Add game",
     "addGameHeading":"Add game by App id"
 

@@ -33,7 +33,6 @@ const GameCard: React.FC < GamePageProps > = ({ appid, backWindow }) => {
     setPlaytime(+gameData.userDatas[0].playtime.toFixed(2));
     setGamename(gameData.gamename);
     setLastLaunchTime(`${gameData.userDatas[0].lastLaunchTime}`);
-    console.log(i18n.language);
     setAches(gameData.achievmentsFromView.sort((a:Achievements, b:Achievements) => new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()).slice(0, 7));
   }, []);
   useEffect(() => {
@@ -69,7 +68,7 @@ const GameCard: React.FC < GamePageProps > = ({ appid, backWindow }) => {
     <I18nextProvider i18n={i18n}>
       <div
         ref={cardRef}
-        className={`card ${percent === 100 ? 'full' : 'not_full'}`}
+        className={`card ${percent === 100 ? ' full' : ' not_full'}`}
         all-ach={all}
         gained-ach={gained}
         non-gained-ach={all - gained}

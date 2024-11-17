@@ -11,6 +11,7 @@ import IdKeyInput from './IdKeyInput';
 import { ApiService } from '../services/api.services';
 import { GameDataRow, Pagination } from '../interfaces';
 import GameButton from './GameButton';
+import AddGame from './AddGame';
 
 let root = ReactDOM.createRoot(document.getElementById('root'));
 function rendApp () {
@@ -124,7 +125,9 @@ export default function Games () {
       queryParams.append('playtime', selectedTimeFilterValue);
     }
     const dataSteamId = localStorage.getItem('steamId');
-    const achData = await ApiService.get<Pagination<GameDataRow>>(`user/${dataSteamId}/games?${queryParams.toString()}`);
+    const achData = await ApiService.get<Pagination<GameDataRow>>(
+      `user/${dataSteamId}/games?${queryParams.toString()}`
+    );
     setHasMore(achData.rows.length > 0);
     setGames((prev) => [...prev, ...achData.rows]);
     setIsLoading(false);
@@ -133,15 +136,19 @@ export default function Games () {
   useEffect(() => {
     if (page === prevPage) {
       setGames([]);
-      setPage(1); setPrevPage(1);
-    } else { setPrevPage(page); }
+      setPage(1);
+      setPrevPage(1);
+    } else {
+      setPrevPage(page);
+    }
     updateGames();
   }, [
     selectedTimeFilterValue,
     searchQuery,
     selectedCompletionFilterValue,
     selectedValue,
-    desc, page
+    desc,
+    page
   ]);
 
   const lastGameObserver = useCallback(
@@ -354,7 +361,16 @@ export default function Games () {
           </div>
         </div>
       </div>
-      <GameButton additionalClass='return' onClick={rendApp} id="return" text={t('Return')} />
+
+      <GameButton
+        additionalClass="return"
+        onClick={rendApp}
+        id="return"
+        text={t('Return')}
+      />
+
+      <AddGame />
+
       <div id="header key">
         <ScrollToTopButton />
 
@@ -369,7 +385,11 @@ export default function Games () {
               );
             } else {
               return (
-                <GameCard key={game.appid} backWindow="games" appid={game.appid} />
+                <GameCard
+                  key={game.appid}
+                  backWindow="games"
+                  appid={game.appid}
+                />
               );
             }
           })}

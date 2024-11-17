@@ -38,7 +38,9 @@ export interface GameDataRow extends Omit<GameData, 'gainedAch'>{
 }
 
 export interface Game {
+    appid: number;
     gamename: string;
+    lowerGamename: string;
 }
 
 export interface gameDataWithAch {

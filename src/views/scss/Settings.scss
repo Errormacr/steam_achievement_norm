@@ -1,112 +1,117 @@
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+
+  .modal-content {
+    background-color: #304865;
+    padding: 20px;
+    border-radius: 1rem;
+    border: 3px solid #1b2838;
+    width: fit-content;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-
-    .modal-content {
-        background-color: #304865;
-        padding: 20px;
-        border-radius: 4px;
-        border: 3px solid #1b2838;
-        width: fit-content;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        .settingsHeader {
-            margin-bottom: 20px;
-            color: white;
-        }
-        .settingsSelect {
-            /* Стили для элемента select */
-            padding: 0.5rem;
-            margin: 0 2rem;
-            font-size: 1rem;
-            background-color: #475e7b;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            color: white;
-
-            &option {
-                color: white;
-            }
-        }
-        .addAccButton {
-            margin-right: 0;
-        }
-        .accContainer {
-            height: fit-content;
-            width: fit-content;
-            max-width: 45rem;
-            max-height: 15rem;
-            justify-content: center;
-            overflow: auto;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            .userContainer {
-                height: fit-content;
-                width: fit-content;
-                border-radius: 0.5rem;
-                background-color: #56749a;
-                padding: 0.5rem;
-                img {
-                    width: 4.5rem;
-                    height: 4.5rem;
-                }
-                p {
-                    margin-block: 0;
-                }
-            }
-        }
-        .userContainer {
-            margin: 1rem;
-            height: fit-content;
-            width: fit-content;
-            border-radius: 0.5rem;
-            background-color: #56749a;
-            padding: 0.5rem;
-            position: relative; 
-            cursor: pointer;
-            img {
-                width: 4.5rem;
-                height: 4.5rem;
-            }
-            p {
-                margin-block: 0;
-            }
-            .deleteIcon {
-                position: absolute;
-                top: 0.5rem;
-                right: 0.5rem;
-                cursor: pointer;
-                color: white;
-            }
-        }
-        .settingsButton {
-            /* Стили для кнопки */
-            padding: 8px 16px;
-            font-size: 16px;
-            background-color: rgb(164, 164, 164);
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            &:hover {
-                /* Стили для кнопки при наведении */
-                background-color: #0056b3;
-            }
-        }
+    text-align: center;
+    .update-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
+    .settingsHeader {
+      margin-bottom: 20px;
+      color: white;
+    }
+    .settingsSelect {
+      /* Стили для элемента select */
+      padding: 0.5rem;
+      margin: 0 2rem;
+      font-size: 1rem;
+      background-color: #475e7b;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      color: white;
+
+      &option {
+        color: white;
+      }
+    }
+    .addAccButton {
+      margin-right: 0;
+    }
+    .accContainer {
+      height: fit-content;
+      width: fit-content;
+      max-width: 45rem;
+      max-height: 15rem;
+      justify-content: center;
+      overflow: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      .userContainer {
+        height: fit-content;
+        width: fit-content;
+        border-radius: 0.5rem;
+        background-color: #56749a;
+        padding: 0.5rem;
+        img {
+          width: 4.5rem;
+          height: 4.5rem;
+        }
+        p {
+          margin-block: 0;
+        }
+      }
+    }
+    .userContainer {
+      margin: 1rem;
+      height: fit-content;
+      width: fit-content;
+      border-radius: 0.5rem;
+      background-color: #56749a;
+      padding: 0.5rem;
+      position: relative;
+      cursor: pointer;
+      img {
+        width: 4.5rem;
+        height: 4.5rem;
+      }
+      p {
+        margin-block: 0;
+      }
+      .deleteIcon {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        cursor: pointer;
+        color: white;
+      }
+    }
+    .settingsButton {
+      /* Стили для кнопки */
+      padding: 8px 16px;
+      font-size: 16px;
+      background-color: rgb(164, 164, 164);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      &:hover {
+        /* Стили для кнопки при наведении */
+        background-color: #0056b3;
+      }
+    }
+  }
 }

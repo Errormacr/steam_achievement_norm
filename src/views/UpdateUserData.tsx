@@ -55,7 +55,7 @@ export default function UpdateUserData ({ rerender } : {
                 <div className="modal">
                     <div className="modal-content">
                         <h2 className='settingsHeader'>{t('updateUserDataHeading')}</h2>
-                        <div>
+                        <div className='update-buttons'>
                             <GameButton
                                 id='update-recent'
                                 onClick={() => update('recent')}

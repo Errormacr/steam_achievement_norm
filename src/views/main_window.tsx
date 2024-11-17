@@ -74,7 +74,6 @@ export default function App () {
 
   return (
         <I18nextProvider i18n={i18n}>
-            <div>
 
                 <div id="header key" className="header">
                     <div>
@@ -88,7 +87,7 @@ export default function App () {
                                 <div className="nickname-container">
                                     <label className="nickname">{personalName}</label>
                                     <br></br>
-                                    <img src={avaUrl}></img>
+                                    <img className='avatar' src={avaUrl}></img>
                                     <br ></br>
                                     <div className="stats-container">
                                         <label className="nickname">{t('Ach')}: {AchCount}</label>
@@ -132,14 +131,13 @@ export default function App () {
 
                             </div>
                         </div>
-                        <div className='diagramCont'>
+                        {/* <div className='diagramCont'>
                             <Diagram></Diagram>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <br></br>
                 <ToastContainer/>
-            </div>
         </I18nextProvider>
   );
 }
