@@ -6,7 +6,7 @@ import ProgressRad from './rad_progress';
 import AchPage from './AchievementsPage';
 import ChangeAccount from './changeAccount';
 import Settings from './Settings';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import GameButton from './GameButton';
@@ -15,7 +15,7 @@ import './scss/MainWindow.scss';
 import Diagram from './AchDiagram';
 import GameCard from './GameCard';
 import { ApiService } from '../services/api.services';
-import { UpdatedGame, UserData } from '../interfaces';
+import { UserData } from '../interfaces';
 import ChangeKey from './ChangeKey';
 import UpdateUserData from './UpdateUserData';
 
@@ -33,23 +33,12 @@ export default function App () {
   const [recentGames,
     setRecentGames] = useState([]);
   const { t } = useTranslation();
-  const updateRecent = useCallback(async () => {
-    const dataSteamId = localStorage.getItem('steamId');
-    const userData = await ApiService.put < UpdatedGame >(`user/${dataSteamId}/recent?lang=${i18n.language}`);
-    toast.success('+ ' + userData.percent.change.toFixed(2) + '% ' + t('averageUp'));
-  }, []);
   const updateUserData = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
     const achContainer = ReactDOM.createRoot(document.getElementById('container'));
 
     if (dataSteamId) {
       try {
-        const needToUpdate = !sessionStorage.getItem('updatet');
-        if (needToUpdate) {
-          await updateRecent();
-          sessionStorage.setItem('updatet', 'true');
-        }
-
         const userData = await ApiService.get < UserData >(`user/${dataSteamId}/data`);
         setPersonalName(userData.user.nickname);
         setAvaUrl(userData.user.avatarLarge);
@@ -131,9 +120,9 @@ export default function App () {
 
                             </div>
                         </div>
-                        {/* <div className='diagramCont'>
+                        <div className='diagramCont'>
                             <Diagram></Diagram>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
                 <br></br>
