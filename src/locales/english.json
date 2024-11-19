@@ -87,6 +87,7 @@
     "updateAllForce":"all force",
     "updatePercentAch":"achievement percentage",
     "AddGame":"Add game",
-    "addGameHeading":"Add game by App id"
+    "addGameHeading":"Add game by App id",
+    "noGames":"No games to update"
 
 }

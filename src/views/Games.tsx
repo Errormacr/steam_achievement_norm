@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './main_window';
 import GameCard from './GameCard';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
@@ -12,13 +10,15 @@ import { ApiService } from '../services/api.services';
 import { GameDataRow, Pagination } from '../interfaces';
 import GameButton from './GameButton';
 import AddGame from './AddGame';
-
-let root = ReactDOM.createRoot(document.getElementById('root'));
-function rendApp () {
-  root.render(<App />);
-}
+import { useNavigate } from 'react-router-dom';
 
 export default function Games () {
+  const navigate = useNavigate();
+
+  function rendApp () {
+    navigate('/');
+  }
+
   const [games, setGames] = useState([]);
   const [desc, setDesc] = useState(true);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -169,12 +169,11 @@ export default function Games () {
   useEffect(
     useCallback(() => {
       try {
-        root = ReactDOM.createRoot(document.getElementById('root'));
-
         return () => {
           document.removeEventListener('click', handleOutsideClick);
           document.removeEventListener('click', handleFilterOutsideClick);
         };
+      // eslint-disable-next-line no-unreachable
       } catch (error) {
         window.alert(error.message);
       }

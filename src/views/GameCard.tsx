@@ -1,18 +1,16 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import ReactDOM from 'react-dom/client';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
-import GamePage from './GamePage';
 import './scss/GameCard.scss';
 import { Achievements, gameDataWithAch, GamePageProps } from '../interfaces';
 import { ApiService } from '../services/api.services';
+import { useNavigate } from 'react-router-dom';
 
-function logging (appid: number, backWindow: string) {
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render(<GamePage appid={appid} backWindow={backWindow} />);
-}
-
-const GameCard: React.FC < GamePageProps > = ({ appid, backWindow }) => {
+const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
+  const navigate = useNavigate();
+  function logging (appid: number, backWindow: string) {
+    navigate(`/GamePage/${appid}/${backWindow}`);
+  }
   const [percent, setPercent] = useState(0.0);
   const [lastLaunchTime, setLastLaunchTime] = useState('');
   const [playtime, setPlaytime] = useState(0.0);

@@ -87,7 +87,7 @@
     "updateAllForce":"все принудительно",
     "updatePercentAch":"процент достижений",
     "AddGame":"Добавить игру",
-    "addGameHeading":"Добавить игру по App id"
-
+    "addGameHeading":"Добавить игру по App id",
+    "noGames":"Нет игр для обновления"
 
 }
