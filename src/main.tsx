@@ -7,6 +7,7 @@ import { SocketProvider } from './views/SocketProvider';
 import GamePage from './views/GamePage';
 import Games from './views/Games';
 import AchPage from './views/AchievementsPage';
+import StatsPage from './views/StatsPage';
 
 ReactDOM.createRoot(document.getElementById('app') as HTMLElement).render(
   <SocketProvider>
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('app') as HTMLElement).render(
         <Route path="/GamePage/:appid/:backWindow" element={<GamePage />} />
         <Route path="/Games" element={<Games />} />
         <Route path="/Achievements" element={<AchPage />} />
+        <Route path="/Stats" element={<StatsPage />} />
       </Routes>
     </Router>
   </SocketProvider>

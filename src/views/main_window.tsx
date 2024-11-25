@@ -10,7 +10,6 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import GameButton from './GameButton';
 import i18n from '../transate';
 import './scss/MainWindow.scss';
-import Diagram from './AchDiagram';
 import GameCard from './GameCard';
 import { ApiService } from '../services/api.services';
 import { UserData } from '../interfaces';
@@ -91,7 +90,7 @@ export default function App () {
                     {t('Games')}: {gamesCount}
                   </label>
                 </div>
-                <br></br>
+                <br/>
                 <GameButton
                   id=""
                   additionalClass="gamesAchButtons"
@@ -110,7 +109,16 @@ export default function App () {
                   }}
                   text={t('AllAch')}
                 />
-                <br></br>
+                <br />
+                <GameButton
+                  id=""
+                  additionalClass="gamesAchButtons"
+                  onClick={() => {
+                    navigate('/Stats');
+                  }}
+                  text={t('Stats')}
+                />
+                <br/>
                 <div className="gain-nonGainMain">
                   <ProgressRad
                     title={t('AveragePercent')}
@@ -133,9 +141,6 @@ export default function App () {
             <div className="with-friends">
               <div className="last-ach-main" id="container"></div>
             </div>
-          </div>
-          <div className="diagramCont">
-            <Diagram></Diagram>
           </div>
         </div>
       </div>

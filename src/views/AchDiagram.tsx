@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import i18n from '../transate';
 import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
+import { useTranslation } from 'react-i18next';
 interface Ach {
   id: string;
   name: string;
@@ -23,6 +24,8 @@ interface shapeProps {
 }
 
 export default function Diagram () {
+  const { t } = useTranslation();
+
   const renderActiveShape = (props: shapeProps) => {
     const RADIAN = Math.PI / 180;
     const {
@@ -89,7 +92,7 @@ export default function Diagram () {
           y={ey}
           textAnchor={textAnchor}
           fill="white"
-        >{`Count: ${value}`}</text>
+        >{`${t('count')}: ${value}`}</text>
         <text
           x={ex + (cos >= 0 ? 1 : -1) * 12}
           y={ey}
@@ -113,25 +116,14 @@ export default function Diagram () {
   const renderComponent = useCallback(async () => {
     try {
       const steamId = localStorage.getItem('steamId');
-      const baseUrl = `http://localhost:8888/api/user/${steamId}/achievements?orderBy=unlockedDate&desc=1&language=${i18n.language}&unlocked=1&page=1&pageSize=0&`;
-      const urls = [
-        `${baseUrl}percentMin=0&percentMax=5`,
-        `${baseUrl}percentMin=5&percentMax=20`,
-        `${baseUrl}percentMin=20&percentMax=45`,
-        `${baseUrl}percentMin=45&percentMax=60`,
-        `${baseUrl}percentMin=60&percentMax=100`
-      ];
 
-      const responses = await Promise.all(urls.map((url) => fetch(url)));
-      const dataFromApi = await Promise.all(
-        responses.map((response) => response.json())
-      );
-      const achievementCounts = dataFromApi.map((data) => data.count);
+      const response = await fetch(`http://localhost:8888/api/user/achievements-rare-count/${steamId}?percents=5&percents=20&percents=45&percents=60`);
+      const dataFromApi = await response.json();
 
       // Update dataToShow with the counts
       const updatedDataToShow = dataToShow.map((item, index) => ({
         ...item,
-        value: achievementCounts[index] || 0
+        value: Object.values(dataFromApi)[index] || 0
       }));
 
       setDataToShow(updatedDataToShow);
