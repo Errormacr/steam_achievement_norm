@@ -8,73 +8,69 @@ import AchBox from './AchContainer';
 import { AchievmentsFromView, Pagination } from '../interfaces';
 import { ApiService } from '../services/api.services';
 import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
 export default function AchPage () {
   const navigate = useNavigate();
 
-  const [tableOrBox, setTable] = useState(true);
-  const [loaded, setLoaded] = useState(false);
-  const [achCount, setAchCount] = useState(0);
+  const [tableOrBox,
+    setTable] = useState(true);
+  const [loaded,
+    setLoaded] = useState(false);
+  const [achCount,
+    setAchCount] = useState(0);
   const { t } = useTranslation();
-  useEffect(
-    useCallback(() => {
-      try {
-        const boxView = Boolean(localStorage.getItem('boxView'));
-        const steamId = localStorage.getItem('steamId');
-        const queryParams = new URLSearchParams({
-          orderBy: 'unlockedDate',
-          desc: '1',
-          language: i18n.language,
-          unlocked: '1',
-          page: '1',
-          pageSize: '0'
-        });
-        ApiService.get<Pagination<AchievmentsFromView>>(
-          `user/${steamId}/achievements?${queryParams.toString()}`
-        ).then((data) => {
-          setAchCount(data.count);
-        });
-        if (!boxView) {
-          setTable(false);
-        }
-        setLoaded(true);
-      } catch (error) {
-        window.alert(error.message);
+  useEffect(useCallback(() => {
+    try {
+      const boxView = Boolean(localStorage.getItem('boxView'));
+      const steamId = localStorage.getItem('steamId');
+      const queryParams = new URLSearchParams({
+        orderBy: 'unlockedDate',
+        desc: '1',
+        language: i18n.language,
+        unlocked: '1',
+        page: '1',
+        pageSize: '0'
+      });
+      ApiService.get < Pagination < AchievmentsFromView >>(`user/${steamId}/achievements?${queryParams.toString()}`).then((data) => {
+        setAchCount(data.count);
+      });
+      if (!boxView) {
+        setTable(false);
       }
-    }, []),
-    []
-  );
+      setLoaded(true);
+    } catch (error) {
+      window.alert(error.message);
+    }
+  }, []), []);
   return (
-    <I18nextProvider i18n={i18n}>
-      <div>
-        <ScrollToTopButton />
-        <div className="label-container">
-          <GameButton
-            id=""
-            onClick={() => {
-              navigate('/');
-            }}
-            additionalClass="return"
-            text={t('Return')}
-          />
-          <label className="game-label">
-            {achCount} {t('Ach')}
-          </label>
-          <GameButton
-            id=""
-            onClick={() => {
-              setTable(!tableOrBox);
-              localStorage.setItem('boxView', String(!tableOrBox));
-            }}
-            additionalClass="switchTable"
-            text={t('SwitchTable')}
-          />
-        </div>
-        <div className="details-container table-container">
-          {loaded &&
-            (tableOrBox ? <Table all={true} /> : <AchBox all={true} />)}
-        </div>
-      </div>
-    </I18nextProvider>
+        <I18nextProvider i18n={i18n}>
+            <div>
+                <ScrollToTopButton/>
+                <div className="label-container">
+                    <FaArrowLeft
+                        className="button-icon return"
+                        onClick={() => navigate('/')}
+                        id="return"/>
+                    <label className="game-label">
+                        {achCount}
+                        {t('Ach')}
+                    </label>
+                    <GameButton
+                        id=""
+                        onClick={() => {
+                          setTable(!tableOrBox);
+                          localStorage.setItem('boxView', String(!tableOrBox));
+                        }}
+                        additionalClass="switchTable"
+                        text={t('SwitchTable')}/>
+                </div>
+                <div className="details-container table-container">
+                    {loaded && (tableOrBox
+                      ? <Table all={true}/>
+                      : <AchBox all={true}/>)}
+                </div>
+            </div>
+        </I18nextProvider>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import i18n from '../transate';
-import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from 'recharts';
+import { PieChart, Pie, Sector, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { useTranslation } from 'react-i18next';
+import { ApiService } from '../services/api.services';
+import { RareAchievementCount } from '../interfaces';
 interface Ach {
   id: string;
   name: string;
@@ -23,7 +24,7 @@ interface shapeProps {
   value: number;
 }
 
-export default function Diagram () {
+export default function AchRareDiagram () {
   const { t } = useTranslation();
 
   const renderActiveShape = (props: shapeProps) => {
@@ -37,7 +38,6 @@ export default function Diagram () {
       startAngle,
       endAngle,
       fill,
-      payload,
       percent,
       value
     } = props;
@@ -53,16 +53,6 @@ export default function Diagram () {
 
     return (
       <g>
-        <text
-          color="white"
-          x={cx}
-          y={cy}
-          dy={8}
-          textAnchor="middle"
-          fill={fill}
-        >
-          {payload.name}
-        </text>
         <Sector
           cx={cx}
           cy={cy}
@@ -106,24 +96,22 @@ export default function Diagram () {
     );
   };
   const [dataToShow, setDataToShow] = useState<Ach[]>([
-    { id: '0-5%', name: '0-5%', value: 0, color: 'rgb(255,184,78)' },
-    { id: '5-20%', name: '5-20%', value: 0, color: '#800080' },
-    { id: '20-45%', name: '20-45%', value: 0, color: '#0000FF' },
-    { id: '45-60%', name: '45-60%', value: 0, color: '#4DDD4D' },
-    { id: '60-100%', name: '60-100%', value: 0, color: '#00b500' }
+    { id: '60-100%', name: t('Common'), value: 0, color: '#00b500' },
+    { id: '45-60%', name: t('Uncommon'), value: 0, color: '#4DDD4D' },
+    { id: '20-45%', name: t('Rare'), value: 0, color: '#0000FF' },
+    { id: '5-20%', name: t('Epic'), value: 0, color: '#800080' },
+    { id: '0-5%', name: t('Legendary'), value: 0, color: 'rgb(255,184,78)' }
   ]);
   const [activeIndex, setActiveIndex] = useState(0);
   const renderComponent = useCallback(async () => {
     try {
       const steamId = localStorage.getItem('steamId');
 
-      const response = await fetch(`http://localhost:8888/api/user/achievements-rare-count/${steamId}?percents=5&percents=20&percents=45&percents=60`);
-      const dataFromApi = await response.json();
+      const dataFromApi = await ApiService.get<RareAchievementCount>(`user/achievements-rare-count/${steamId}?percents=5&percents=20&percents=45&percents=60`);
 
-      // Update dataToShow with the counts
       const updatedDataToShow = dataToShow.map((item, index) => ({
         ...item,
-        value: Object.values(dataFromApi)[index] || 0
+        value: Object.values(dataFromApi)[4 - index] || 0
       }));
 
       setDataToShow(updatedDataToShow);
@@ -140,7 +128,7 @@ export default function Diagram () {
     setActiveIndex(index);
   };
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width={600} height={300}>
       <PieChart width={400} height={400}>
         <Pie
           activeIndex={activeIndex}
@@ -158,6 +146,7 @@ export default function Diagram () {
             <Cell key={`cell-${index}`} fill={dataToShow[index].color} />
           ))}
         </Pie>
+        <Legend align='left' verticalAlign='middle' layout='vertical' />
       </PieChart>
     </ResponsiveContainer>
   );

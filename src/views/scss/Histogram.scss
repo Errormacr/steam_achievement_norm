@@ -1,0 +1,20 @@
+.histogram {
+    width: 99%;
+    margin-top: 3rem;
+    height: 30rem;
+    .histogram-slider {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        .histogram-slider-left-value,
+        .histogram-slider-right-value {
+            margin: 0 1rem;
+            color: white;
+        }
+        .histogram-slider-range {
+            width: 80%;
+        }
+    }
+}

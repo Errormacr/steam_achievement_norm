@@ -1,29 +1,37 @@
-import React from 'react';
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import React, { useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
-import GameButton from './GameButton';
 import { useNavigate } from 'react-router-dom';
 import './scss/StatsPage.scss';
 import ReactDOM from 'react-dom/client';
-import RareAchStats from './RareAchStats';
+import StatsRareAch from './StatsRareAch';
+import StatsTimeAch from './StatsTImeAch';
+import { FaArrowLeft } from 'react-icons/fa';
 
-const ComponentTwo: React.FC = () => <div>Content for Component Two</div>;
-const ComponentThree: React.FC = () => <div>Content for Component Three</div>;
-const ComponentFour: React.FC = () => <div>Content for Component Four</div>;
+const ComponentThree : React.FC = () => <div>Content for Component Three</div>;
+const ComponentFour : React.FC = () => <div>Content for Component Four</div>;
 const StatsPage : React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const componentMap : Record < string,
         React.FC > = {
-          Rare: RareAchStats,
-          type2: ComponentTwo,
+          Rare: StatsRareAch,
+          Time: StatsTimeAch,
           type3: ComponentThree,
           type4: ComponentFour
         };
 
+  useEffect(() => {
+    const type = sessionStorage.getItem('type');
+    if (type) {
+      renderComponent(type);
+    }
+  }, []);
+
   const renderComponent = (type : string) => {
     const statsContainer = document.querySelector('.stats-container');
+    sessionStorage.setItem('type', type);
+
     if (statsContainer) {
       const root = ReactDOM.createRoot(statsContainer);
       const ComponentToRender = componentMap[type];
@@ -40,11 +48,10 @@ const StatsPage : React.FC = () => {
   return (
         <I18nextProvider i18n={i18n}>
 
-            <GameButton
-                additionalClass="return"
+            <FaArrowLeft
+                className="button-icon return"
                 onClick={() => navigate('/')}
-                id="return"
-                text={t('Return')}/>
+                id="return"/>
             <div className='stats-page'>
                 <div className='stats-type-holder'>
                     {Object

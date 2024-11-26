@@ -2,7 +2,7 @@ import React from 'react';
 import './scss/IdKeyInput.scss';
 
 type InputProps = {
-    onChange: (event : any) => void;
+    onChange: (event : unknown) => void;
     placeholder: string;
     value?: string;
 };

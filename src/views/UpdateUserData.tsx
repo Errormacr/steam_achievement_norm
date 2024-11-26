@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import ProgressRad from './rad_progress';
 import { Percent } from '../interfaces/games';
 import { useSocket } from './SocketProvider';
+import { GrUpdate } from 'react-icons/gr';
 export default function UpdateUserData ({
   rerender
 }: {
@@ -123,11 +124,10 @@ export default function UpdateUserData ({
 
   return (
     <I18nextProvider i18n={i18n}>
-      <GameButton
+      <GrUpdate
         id=""
-        additionalClass="update-button"
+        className="button-icon update-button"
         onClick={openModal}
-        text={t('Update')}
       />
       {isOpen && (
         <div className="modal">

@@ -8,9 +8,9 @@ import './scss/FilterSort.scss';
 import IdKeyInput from './IdKeyInput';
 import { ApiService } from '../services/api.services';
 import { GameDataRow, Pagination } from '../interfaces';
-import GameButton from './GameButton';
 import AddGame from './AddGame';
 import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
 export default function Games () {
   const navigate = useNavigate();
@@ -361,12 +361,10 @@ export default function Games () {
         </div>
       </div>
 
-      <GameButton
-        additionalClass="return"
-        onClick={rendApp}
-        id="return"
-        text={t('Return')}
-      />
+      <FaArrowLeft
+                className="button-icon return"
+                onClick={rendApp}
+                id="return"/>
 
       <AddGame />
 

@@ -11,6 +11,7 @@ import { GameDataRow, gameDataWithAch } from '../interfaces';
 import { ApiService } from '../services/api.services';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 interface Game {
   appid: number;
   last_launch_time: string;
@@ -87,17 +88,15 @@ const GamePage: React.FC = () => {
       <div>
         <ToastContainer />
         <ScrollToTopButton />
-        <GameButton
-          id=""
-          text={t('Return')}
-          onClick={() => {
-            if (backWindow === 'main') {
-              navigate('/');
-            } else {
-              navigate('/Games');
-            }
-          }}
-        />
+        <FaArrowLeft
+                className="button-icon return" onClick={() => {
+                  if (backWindow === 'main') {
+                    navigate('/');
+                  } else {
+                    navigate('/Games');
+                  }
+                }}
+                id="return"/>
         <div className="label-container">
           <label className="game-label">{game.gameName}</label>
         </div>

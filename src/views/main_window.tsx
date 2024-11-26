@@ -66,7 +66,7 @@ export default function App () {
         <div>
           <div id="clearDiv" className="clearDiv">
             <UpdateUserData
-              key={'updateUserData' + Math.random()}
+              key='updateUserData'
               rerender={() => updateUserData()}
             />
             <ChangeAccount updatePage={updateUserData} />

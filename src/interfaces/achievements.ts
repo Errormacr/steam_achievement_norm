@@ -32,3 +32,19 @@ export interface AchievmentsFromView {
 interface achGame {
     gamename : string
 }
+
+export interface RareAchievementCount {
+    [key : string] : number
+}
+
+export interface TimeAchievementCount {
+    date : string
+    count : number
+}
+
+export interface RareAchievementCountStats {
+    _count : {
+        percent: number
+    }
+    percent : number
+}
