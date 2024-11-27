@@ -164,6 +164,8 @@ td {
     background-color: gray;
     max-height: 2rem;
     color: #fff;
+    height: 1.5rem;
+    width: 1.5rem;
     border: none;
     margin-right: 1.5rem;
     padding: 5px 10px;
