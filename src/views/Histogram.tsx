@@ -41,7 +41,7 @@ const Histogram : React.FC < HistogramProps > = ({ data }) => {
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    const calculatedWindowSize = Math.floor(width / 50);
+    const calculatedWindowSize = Math.floor(width / 15);
     setWindowSize(calculatedWindowSize > 10
       ? calculatedWindowSize
       : 10);
@@ -86,7 +86,7 @@ const Histogram : React.FC < HistogramProps > = ({ data }) => {
                         dataKey="count"
                         stroke="#8884d8"
                         activeDot={{
-                          r: 8
+                          r: 4
                         }}
                         animationDuration={500}/>
                 </LineChart>

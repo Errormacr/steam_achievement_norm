@@ -36,7 +36,9 @@ interface achGame {
 export interface RareAchievementCount {
     [key : string] : number
 }
-
+export interface TimeAveragePercent {
+    [key : string] : number
+}
 export interface TimeAchievementCount {
     date : string
     count : number

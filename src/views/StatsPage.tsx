@@ -8,17 +8,13 @@ import StatsRareAch from './StatsRareAch';
 import StatsTimeAch from './StatsTImeAch';
 import { FaArrowLeft } from 'react-icons/fa';
 
-const ComponentThree : React.FC = () => <div>Content for Component Three</div>;
-const ComponentFour : React.FC = () => <div>Content for Component Four</div>;
 const StatsPage : React.FC = () => {
   const navigate = useNavigate();
 
   const componentMap : Record < string,
         React.FC > = {
           Rare: StatsRareAch,
-          Time: StatsTimeAch,
-          type3: ComponentThree,
-          type4: ComponentFour
+          Time: StatsTimeAch
         };
 
   useEffect(() => {
