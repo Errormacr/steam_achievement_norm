@@ -1,5 +1,6 @@
 export interface HistogramProps {
-    data : HistogramValue[]
+    data: HistogramValue[]
+    onClick?: any
 }
 export interface HistogramValue {
     count : number;

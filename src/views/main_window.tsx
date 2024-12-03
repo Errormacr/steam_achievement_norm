@@ -105,7 +105,7 @@ export default function App () {
                   id=""
                   additionalClass="gamesAchButtons"
                   onClick={() => {
-                    navigate('/Achievements');
+                    navigate('/Achievements/0/100/undefined/main');
                   }}
                   text={t('AllAch')}
                 />
@@ -132,7 +132,6 @@ export default function App () {
             <div className="main-game-cards">
               {recentGames.map((game) => (
                 <GameCard
-                  key={game.appid}
                   appid={game.appid}
                   backWindow="main"
                 />

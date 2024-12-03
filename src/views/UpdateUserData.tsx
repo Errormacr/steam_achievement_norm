@@ -109,7 +109,6 @@ export default function UpdateUserData ({
   }, [isConnected]);
 
   const update = async (type: string) => {
-    console.log(socket);
     if (socket) {
       const steamId = localStorage.getItem('steamId');
       const language = i18n.language;

@@ -3,8 +3,10 @@ import Histogram from './Histogram';
 import { HistogramValue } from '../interfaces/sharedProps';
 import { ApiService } from '../services/api.services';
 import { TimeAveragePercent } from '../interfaces';
+import { useNavigate } from 'react-router-dom';
 
 const AchAccPercentHistogram : React.FC = () => {
+  const navigate = useNavigate();
   const [data,
     setData] = useState < HistogramValue[] >([]);
 
@@ -14,8 +16,16 @@ const AchAccPercentHistogram : React.FC = () => {
       setData(Object.entries(data).map(([key, item]) => ({ count: +item.toFixed(2), name: key })));
     });
   }, []);
-  return (<> <Histogram
-        data={data}/> </>
+  return (<>
+        <>
+            <Histogram
+                onClick={(el : {
+                activeLabel: string
+            }) => {
+                  navigate(`/achievements/0/100/${el.activeLabel}/stats`);
+                }}
+                data={data}/>
+        </> </>
   );
 };
 

@@ -9,10 +9,13 @@ import { ApiService } from '../services/api.services';
 interface AchBoxProps {
     appid?: number;
     all : boolean;
+    minPercent?: number;
+    maxPercent?: number;
+    date?: string;
 }
-const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
+const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date }) => {
   const [ach,
-    setAch] = useState<AchievmentsFromView[]>([]);
+    setAch] = useState < AchievmentsFromView[] >([]);
 
   const [isDropdownOpen,
     setDropdownOpen] = useState(false);
@@ -38,14 +41,14 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
   const handleSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
     setSearchQueryGameName(e.target.value);
   };
-  const intervalRef = useRef<number | null>(null);
+  const intervalRef = useRef < number | null >(null);
   const [isLoading,
     setIsLoading] = useState(false);
   const [page,
     setPage] = useState(1);
   const [hasMore,
     setHasMore] = useState(true);
-  const observer = useRef<IntersectionObserver | null>(null);
+  const observer = useRef < IntersectionObserver | null >(null);
 
   const [searchQueryAch,
     setSearchQueryAch] = useState('');
@@ -68,17 +71,32 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
         ? '1'
         : '0',
       language: i18n.language,
-      page: hasMore ? page.toString() : (page - 1).toString(),
+      page: hasMore
+        ? page.toString()
+        : (page - 1).toString(),
       pageSize: '250'
 
     });
+
+    if (minPercent) {
+      queryParams.set('percentMin', minPercent.toString());
+    }
+
+    if (maxPercent) {
+      queryParams.set('percentMax', maxPercent.toString());
+    }
+
+    if (date) {
+      queryParams.set('unlockedDate', date);
+    }
+
     if (selectedCompletionFilterValue) {
       const [min,
         max] = selectedCompletionFilterValue
         .slice(7)
         .split('-');
-      queryParams.append('percentMin', min);
-      queryParams.append('percentMax', max);
+      queryParams.set('percentMin', min);
+      queryParams.set('percentMax', max);
     }
     if (!all) {
       queryParams.append('appid', '' + appid);
@@ -121,9 +139,10 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
   }, [desc, selectedCompletionFilterValue, selectedValue, searchQueryAch, searchQueryGameName]);
 
   useEffect(() => {
-    if (page > 1) { updateAchievements(false, page); }
-  }
-  , [page]);
+    if (page > 1) {
+      updateAchievements(false, page);
+    }
+  }, [page]);
   const handleCompletionFilterItemClick = (value : string) => {
     if (selectedCompletionFilterValue === value) {
       setSelectedCompletionFilterValue(null);
@@ -176,25 +195,42 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
     sortingOptions.push({ value: 'unlocked', label: 'Gained' });
   }
 
-  const lastAchievementRef =
-    (node: HTMLDivElement) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    };
+  const lastAchievementRef = (node : HTMLDivElement) => {
+    if (isLoading) {
+      return;
+    }
+    if (observer.current) {
+      observer
+        .current
+        .disconnect();
+    }
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    });
+    if (node) {
+      observer
+        .current
+        .observe(node);
+    }
+  };
 
-  const getAchievementClass = (achievement:AchievmentsFromView) => {
+  const getAchievementClass = (achievement : AchievmentsFromView) => {
     const percent = achievement.percent;
 
-    if (percent <= 5) return 'rare1';
-    if (percent <= 20) return 'rare2';
-    if (percent <= 45) return 'rare3';
-    if (percent <= 60) return 'rare4';
+    if (percent <= 5) {
+      return 'rare1';
+    }
+    if (percent <= 20) {
+      return 'rare2';
+    }
+    if (percent <= 45) {
+      return 'rare3';
+    }
+    if (percent <= 60) {
+      return 'rare4';
+    }
     return 'rare5';
   };
 
@@ -266,7 +302,13 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
                                       'percent10-20',
                                       'percent5-10',
                                       'percent0-5'
-                                    ].map((filterValue) => (
+                                    ].filter((filterValue) => {
+                                      const [min,
+                                        max] = filterValue
+                                        .slice(7)
+                                        .split('-');
+                                      return minPercent <= Number(min) && maxPercent >= Number(max);
+                                    }).map((filterValue) => (
                                         <li
                                             key={filterValue}
                                             className={selectedCompletionFilterValue === filterValue
@@ -297,33 +339,33 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all }) => {
                 </div>
                 <div className="AchCont">
 
-          {ach.map((achievement, index, arr) => {
-            let last = false;
-            if (index === arr.length - 1) {
-              last = true;
-            }
+                    {ach.map((achievement, index, arr) => {
+                      let last = false;
+                      if (index === arr.length - 1) {
+                        last = true;
+                      }
 
-            return <img
-              className={
-                getAchievementClass(achievement)
-             }
-              ref={last ? lastAchievementRef : undefined}
-                        key={(all
-                          ? achievement.game.gamename
-                          : '') + achievement.displayName + achievement.percent + achievement.name}
-                        src={achievement.unlocked
-                          ? achievement.icon
-                          : achievement.grayIcon}
-                        alt={achievement.displayName}
-                        title={`${all
-                        ? achievement.game.gamename + '\n'
-                        : ''}${achievement
-                            .displayName}\n${achievement
-                            .description}\n${achievement
-                            .percent
-                            .toFixed(2)}\n${achievement
-                            .unlockedDate ?? ''}`}/>;
-          })}
+                      return <img
+                            className={getAchievementClass(achievement)}
+                            ref={last
+                              ? lastAchievementRef
+                              : undefined}
+                            key={(all
+                              ? achievement.game.gamename
+                              : '') + achievement.displayName + achievement.percent + achievement.name}
+                            src={achievement.unlocked
+                              ? achievement.icon
+                              : achievement.grayIcon}
+                            alt={achievement.displayName}
+                            title={`${all
+                            ? achievement.game.gamename + '\n'
+                            : ''}${achievement
+                                .displayName}\n${achievement
+                                .description}\n${achievement
+                                .percent
+                                .toFixed(2)}\n${achievement
+                                .unlockedDate ?? ''}`}/>;
+                    })}
                 </div>
             </div>
         </I18nextProvider>

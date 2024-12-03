@@ -12,7 +12,7 @@ import {
 import './scss/Histogram.scss';
 import { HistogramProps } from '../interfaces/sharedProps';
 
-const Histogram : React.FC < HistogramProps > = ({ data }) => {
+const Histogram : React.FC < HistogramProps > = ({ data, onClick }) => {
   const [startIndex,
     setStartIndex] = useState(0);
   const [windowSize,
@@ -75,7 +75,7 @@ const Histogram : React.FC < HistogramProps > = ({ data }) => {
                 </div>
             )}
             <ResponsiveContainer width="100%" height="90%">
-                <LineChart data={visibleData}>
+        <LineChart onClick={onClick} data={visibleData}>
                     <CartesianGrid strokeDasharray="2 2"/>
                     <XAxis dataKey="name"/>
                     <YAxis/>
