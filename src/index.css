@@ -1,3 +1,7 @@
+@font-face {
+    font-family: 'Accid';
+    src: url("./fonts/accid.ttf") format('truetype');
+}
 
 .background {
     background-color: #1b2838;
@@ -31,8 +35,6 @@ label {
 .container p {
     margin-right: 10px;
 }
-
-
 
 .rare1 {
     border: rgba(255,184,78,.6) 2px solid;
@@ -150,7 +152,7 @@ td {
 .return {
     margin-left: 1rem;
     position: absolute;
-        left: 0;
+    left: 0;
     top: 1%;
 }
 
@@ -160,7 +162,7 @@ td {
     font-size: 2rem;
 }
 
-.button-icon{
+.button-icon {
     background-color: gray;
     max-height: 2rem;
     color: #fff;
@@ -193,6 +195,7 @@ td {
     margin-right: 1rem;
 }
 
-body{
+body {
+    font-family: 'Accid',sans-serif;
     overflow-x: hidden;
 }
