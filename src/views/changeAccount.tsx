@@ -6,7 +6,10 @@ import IdKeyInput from './IdKeyInput';
 import { ApiService } from '../services/api.services';
 import { User, UserData } from '../interfaces';
 import { FaTrash } from 'react-icons/fa';
-export default function ChangeAccount ({ updatePage }) : React.JSX.Element {
+
+export default function ChangeAccount ({ updatePage } : {
+    updatePage: () => Promise < void >
+}) : React.JSX.Element {
   const [isOpen,
     setIsOpen] = useState(false);
   const [addingAcc,
@@ -74,7 +77,7 @@ export default function ChangeAccount ({ updatePage }) : React.JSX.Element {
       console.error('Ошибка при получении данных:', error);
     }
   };
-  const deleteUser = (userId:string) => {
+  const deleteUser = (userId : string) => {
     ApiService.delete(`user/${userId}`);
     setAccounts((prev) => prev.filter((acc) => acc.steamID !== userId));
   };
@@ -112,7 +115,11 @@ export default function ChangeAccount ({ updatePage }) : React.JSX.Element {
                             text={t('addAcc')}/>}
                         {addingAcc && <IdKeyInput
                             value={writingSteamId}
-                            onChange={(event) => {
+                            onChange={(event : {
+                            target: {
+                                value: string
+                            }
+                        }) => {
                               const value = event.target.value;
                               const regex = /^[0-9]+$/;
                               if (value !== '' && regex.test(value)) {

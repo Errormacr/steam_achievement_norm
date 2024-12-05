@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import SettingsWin from './SettingsWin';
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
-import GameButton from './GameButton';
+import { FaGear } from 'react-icons/fa6';
 export default function Settings () {
   const [isOpen,
     setIsOpen] = useState(false);
@@ -15,11 +15,10 @@ export default function Settings () {
     setIsOpen(false);
   };
 
-  const { t } = useTranslation();
   return (
         <I18nextProvider i18n={i18n}>
 
-                <GameButton id='' additionalClass='' onClick={openModal} text={t('Settings')}/>
+                <FaGear onClick={openModal} className="button-icon"/>
                 {isOpen && <SettingsWin isOpen={isOpen} onClose={closeModal}/>}
 
         </I18nextProvider>

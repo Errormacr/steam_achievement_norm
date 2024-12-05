@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { I18nextProvider } from 'react-i18next';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { useNavigate } from 'react-router-dom';
 import './scss/StatsPage.scss';
@@ -10,10 +10,11 @@ import StatsTimeAch from './StatsTImeAch';
 const StatsPage: React.FC = () => {
   const navigate = useNavigate();
   const [type, setType] = useState<string | null>(sessionStorage.getItem('type'));
+  const { t } = useTranslation();
 
   const componentMap: Record<string, React.FC> = {
-    Rare: StatsRareAch,
-    Time: StatsTimeAch
+    RareStats: StatsRareAch,
+    TimeStats: StatsTimeAch
   };
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const StatsPage: React.FC = () => {
               key={index}
               onClick={() => setType(type)}
             >
-              {type}
+              {t(type)}
             </div>
           ))}
         </div>
