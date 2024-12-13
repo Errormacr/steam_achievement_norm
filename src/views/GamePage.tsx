@@ -129,7 +129,7 @@ const GamePage : React.FC = () => {
                 <div className="table-container">
                     {loaded && (tableOrBox
                       ? (<Table appid={+appid} all={false}/>)
-                      : (<AchBox appid={+appid} all={false}/>))}
+                      : (<AchBox minPercent={0} maxPercent={100} appid={+appid} all={false}/>))}
                 </div>
             </div>
         </I18nextProvider>
