@@ -47,7 +47,7 @@ export interface gameDataWithAch {
     appid: number;
     gamename: string;
     lowerGamename: string;
-    userDatas: GameUserData[];
+    userData: GameUserData[];
     achievmentsFromView?: AchievmentsFromView[];
     achievementCount: number;
 }

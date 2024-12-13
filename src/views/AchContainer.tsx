@@ -129,6 +129,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
     }
 
     intervalRef.current = window.setTimeout(() => {
+      // noinspection JSIgnoredPromiseFromCall
       updateAchievements(true, 1);
     }, 500);
     return () => {
@@ -140,6 +141,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
 
   useEffect(() => {
     if (page > 1) {
+      // noinspection JSIgnoredPromiseFromCall
       updateAchievements(false, page);
     }
   }, [page]);

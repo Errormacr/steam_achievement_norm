@@ -95,7 +95,7 @@ export default function ChangeAccount ({ updatePage } : {
                                   updatePage();
                                   closeModal();
                                 }}>
-                                <img src={account.avatarMedium}/>
+                                <img alt={'avatar'} src={account.avatarMedium}/>
                                 <p
                                     style={{
                                       marginBlock: '0'
@@ -144,7 +144,7 @@ export default function ChangeAccount ({ updatePage } : {
                                   updatePage();
                                   closeModal();
                                 }}>
-                                <img src={newAccAva}/>
+                                <img alt={'finded user ava'} src={newAccAva}/>
                                 <p >{newAccName}</p>
 
                             </div>

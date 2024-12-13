@@ -4,7 +4,7 @@ import i18n from 'i18next';
 import GameButton from './GameButton';
 import { toast } from 'react-toastify';
 import ProgressRad from './rad_progress';
-import { Percent } from '../interfaces/games';
+import { Percent } from '../interfaces';
 import { useSocket } from './SocketProvider';
 import { GrUpdate } from 'react-icons/gr';
 export default function UpdateUserData ({

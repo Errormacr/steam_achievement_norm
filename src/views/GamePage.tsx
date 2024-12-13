@@ -49,14 +49,15 @@ const GamePage : React.FC = () => {
   const renderComponent = async () => {
     const dataSteamId = localStorage.getItem('steamId');
     const gameData = await ApiService.get < gameDataWithAch >(`user/${dataSteamId}/game/${appid}/data?language=${i18n.language}&achievements=false`);
+    const userData = gameData.userData[0];
     const newGameData = {
       appid: +appid,
-      last_launch_time: gameData.userDatas[0].lastLaunchTime,
-      playtime: gameData.userDatas[0].playtime,
+      last_launch_time: userData.lastLaunchTime,
+      playtime: userData.playtime,
       gameName: gameData.gamename,
       all: gameData.achievementCount,
-      gained: gameData.userDatas[0].gainedAch,
-      percent: gameData.userDatas[0].percent
+      gained: userData.gainedAch,
+      percent: userData.percent
     };
     setGame(newGameData);
   };
@@ -65,7 +66,7 @@ const GamePage : React.FC = () => {
     const steamId = localStorage.getItem('steamId');
     const { unlockedCount: gained } = await ApiService.get < GameDataRow >(`steam-api/all-user-ach-data/${steamId}/game/${game.appid}?lang=${i18n.language}`);
     toast.success(`${t('GameUpdateSuccess')}\n${t('Gained')} ${gained - game.gained}`);
-    renderComponent();
+    await renderComponent();
   };
 
   useEffect(() => {

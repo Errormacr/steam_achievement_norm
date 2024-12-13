@@ -28,6 +28,7 @@
 .MainCont {
     display: flex;
     width: 99vw;
+    height: 99vh;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
@@ -66,7 +67,9 @@
         margin-right: 2rem;
         display: flex;
         flex-direction: column;
+        flex-wrap: wrap;
         gap: 1em;
+        height: 100%;
     }
     .with-friends {
         display: flex;

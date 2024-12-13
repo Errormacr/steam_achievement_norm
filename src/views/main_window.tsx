@@ -76,7 +76,7 @@ export default function App () {
                             <div className="nickname-container">
                                 <label className="nickname">{personalName}</label>
                                 <br></br>
-                                <img className="avatar" src={avaUrl}></img>
+                                <img alt={'avatar'} className="avatar" src={avaUrl}></img>
                                 <br></br>
                                 <div className="stats-container">
                                     <label className="nickname">

@@ -91,6 +91,7 @@ export default function AddGame (): React.JSX.Element {
             {gamename && (
               <div onClick={addGame} className="find-game-card">
                 <img
+                  alt={`${gamename}`}
                   src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
                 ></img>
                 <p>{gamename}</p>

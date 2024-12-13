@@ -11,12 +11,12 @@ export class ApiService {
           'Content-Type': 'application/json'
         }
       });
-      const data: T = await response.json();
-      if (!response.ok) {
-        toast.error(`${data.message}`);
-        throw new Error(`Failed to update: ${response.statusText}`);
+      if (response.ok) {
+        return await response.json();
       }
-      return data;
+      const data = await response.json();
+      toast.error(`${data.message}`);
+      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
     } catch (error) {
       console.error('Error fetching data from API:', error);
       throw error;
@@ -32,12 +32,12 @@ export class ApiService {
         },
         body: JSON.stringify(data)
       });
-      const result: T = await response.json();
-      if (!response.ok) {
-        toast.error(`${result.message}`);
-        throw new Error(`Failed to update: ${response.statusText}`);
+      if (response.ok) {
+        return await response.json();
       }
-      return result;
+      const result = await response.json();
+      toast.error(`${result.message}`);
+      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
     } catch (error) {
       console.error('Error posting data to API:', error);
       throw error;
@@ -54,12 +54,12 @@ export class ApiService {
         body: JSON.stringify(data)
       });
 
-      const result: T = await response.json();
-      if (!response.ok) {
-        toast.error(`${result.message}`);
-        throw new Error(`Failed to update: ${response.statusText}`);
+      if (response.ok) {
+        return await response.json();
       }
-      return result;
+      const result = await response.json();
+      toast.error(`${result.message}`);
+      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
     } catch (error) {
       console.error('Error updating data in API:', error);
       throw error;
@@ -75,12 +75,12 @@ export class ApiService {
           'Content-Type': 'application/json'
         }
       });
-      const result: T = await response.json();
-      if (!response.ok) {
-        toast.error(`${result.message}`);
-        throw new Error(`Failed to update: ${response.statusText}`);
+      if (response.ok) {
+        return await response.json();
       }
-      return result;
+      const result = await response.json();
+      toast.error(`${result.message}`);
+      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
     } catch (error) {
       console.error('Error deleting data from API:', error);
       throw error;

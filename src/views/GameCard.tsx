@@ -25,12 +25,12 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const updateGame = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
     const gameData = await ApiService.get<gameDataWithAch>(`user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`);
-    setPercent(gameData.userDatas[0].percent);
+    setPercent(gameData.userData[0].percent);
     setAll(gameData.achievmentsFromView.length);
-    setGained(gameData.userDatas[0].gainedAch);
-    setPlaytime(+gameData.userDatas[0].playtime.toFixed(2));
+    setGained(gameData.userData[0].gainedAch);
+    setPlaytime(+gameData.userData[0].playtime.toFixed(2));
     setGamename(gameData.gamename);
-    setLastLaunchTime(`${gameData.userDatas[0].lastLaunchTime}`);
+    setLastLaunchTime(`${gameData.userData[0].lastLaunchTime}`);
     setAches(gameData.achievmentsFromView.sort((a:Achievements, b:Achievements) => new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()).slice(0, 7));
   }, []);
   useEffect(() => {
