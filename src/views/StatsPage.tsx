@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './scss/StatsPage.scss';
 import { FaArrowLeft } from 'react-icons/fa';
 import StatsRareAch from './StatsRareAch';
 import StatsTimeAch from './StatsTImeAch';
+import { statsComponentProps } from '../interfaces';
 
 const StatsPage: React.FC = () => {
   const navigate = useNavigate();
+
+  const { gameAppid } = useParams < {
+    gameAppid?: string;
+  } >();
+
   const [type, setType] = useState<string | null>(sessionStorage.getItem('type'));
   const { t } = useTranslation();
 
@@ -23,7 +29,7 @@ const StatsPage: React.FC = () => {
     }
   }, [type]);
 
-  const ComponentToRender = type ? componentMap[type] : null;
+  const ComponentToRender: null | React.FC < statsComponentProps > = type ? componentMap[type] : null;
 
   return (
     <I18nextProvider i18n={i18n}>
@@ -46,7 +52,7 @@ const StatsPage: React.FC = () => {
           ))}
         </div>
         <div className="stats-container">
-          {ComponentToRender ? <ComponentToRender /> : <div>Select a type to view stats</div>}
+          {ComponentToRender ? <ComponentToRender gameAppid={+gameAppid || undefined} /> : <div>Select a type to view stats</div>}
         </div>
       </div>
     </I18nextProvider>

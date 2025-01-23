@@ -97,5 +97,6 @@
     "Epic": "Эпические",
     "Legendary": "Легендарные",
     "RareStats": "По редкости",
-    "TimeStats": "По времени"
+    "TimeStats": "По времени",
+    "GameStats": "Статистика"
 }

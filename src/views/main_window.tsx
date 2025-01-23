@@ -110,7 +110,7 @@ export default function App () {
                                     id=""
                                     additionalClass="gamesAchButtons"
                                     onClick={() => {
-                                      navigate('/Stats');
+                                      navigate('/Stats/0');
                                     }}
                                     text={t('Stats')}/>
                                 <br/>

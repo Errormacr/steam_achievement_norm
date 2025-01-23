@@ -120,6 +120,12 @@ const GamePage : React.FC = () => {
                         onClick={fetchUpdatedGameData}/>
                     <GameButton
                         id=""
+                        text={t('GameStats')}
+                        onClick={() => {
+                          navigate(`/Stats/${game.appid}`);
+                        }}/>
+                    <GameButton
+                        id=""
                         text={t('SwitchTable')}
                         onClick={() => {
                           setTableOrBox(!tableOrBox);

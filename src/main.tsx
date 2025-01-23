@@ -16,8 +16,8 @@ ReactDOM.createRoot(document.getElementById('app') as HTMLElement).render(
         <Route path="/" element={<App />} />
         <Route path="/GamePage/:appid/:backWindow" element={<GamePage />} />
         <Route path="/Games" element={<Games />} />
-        <Route path="/Achievements/:minPercent/:maxPercent/:date/:backWindow" element={<AchPage />} />
-        <Route path="/Stats" element={<StatsPage />} />
+        <Route path="/Achievements/:minPercent/:maxPercent/:date/:backWindow/:gameAppid" element={<AchPage />} />
+        <Route path="/Stats/:gameAppid" element={<StatsPage />} />
       </Routes>
     </Router>
   </SocketProvider>

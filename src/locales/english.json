@@ -90,6 +90,7 @@
     "addGameHeading":"Add game by App id",
     "noGames":"No games to update",
     "RareStats": "By rare",
-    "TimeStats": "By time"
+    "TimeStats": "By time",
+    "GameStats": "Achievement stats of game"
 
 }

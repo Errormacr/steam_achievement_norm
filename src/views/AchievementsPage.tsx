@@ -12,11 +12,12 @@ import { FaArrowLeft } from 'react-icons/fa';
 
 const AchPage : React.FC = () => {
   const navigate = useNavigate();
-  const { minPercent, maxPercent, date, backWindow } = useParams < {
+  const { minPercent, maxPercent, date, backWindow, gameAppid } = useParams < {
         minPercent?: string;
         maxPercent?: string;
         date?: string;
-        backWindow?: string;
+      backWindow?: string;
+      gameAppid?: string;
     } >();
 
   const [tableOrBox,
@@ -28,7 +29,7 @@ const AchPage : React.FC = () => {
   const { t } = useTranslation();
   useEffect(useCallback(() => {
     try {
-      console.log(minPercent, maxPercent, date);
+      console.log(minPercent, maxPercent, backWindow);
       const boxView = Boolean(localStorage.getItem('boxView'));
       const steamId = localStorage.getItem('steamId');
       const queryParams = new URLSearchParams({
@@ -44,7 +45,11 @@ const AchPage : React.FC = () => {
       if (date !== 'undefined') {
         queryParams.set('unlockedDate', date);
       }
-      console.log(queryParams.toString());
+      console.log(gameAppid);
+      if (+gameAppid) {
+        queryParams.set('appid', gameAppid);
+      }
+      console.log(backWindow);
       ApiService.get < Pagination < AchievmentsFromView >>(`user/${steamId}/achievements?${queryParams.toString()}`).then((data) => {
         setAchCount(data.count);
       });
@@ -63,7 +68,10 @@ const AchPage : React.FC = () => {
                 <div className="label-container">
                     <FaArrowLeft
                         className="button-icon return"
-            onClick={() => { if (backWindow === 'stats') { navigate('/Stats'); } else { navigate('/'); } }}
+            onClick={() => {
+              console.log(backWindow);
+              if (backWindow === 'Stats') { navigate(`/${backWindow}${gameAppid ? '/' + gameAppid : ''}`); } else { navigate('/'); }
+            }}
                         id="return"/>
                     <label className="game-label">
                         {achCount} {t('Ach')}
@@ -79,8 +87,8 @@ const AchPage : React.FC = () => {
                 </div>
                 <div className="details-container table-container">
                     {loaded && (!tableOrBox
-                      ? <Table minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} all={true}/>
-                      : <AchBox minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} all={true}/>)}
+                      ? <Table minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} all={!gameAppid}/>
+                      : <AchBox minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} all={!gameAppid}/>)}
                 </div>
             </div>
         </I18nextProvider>

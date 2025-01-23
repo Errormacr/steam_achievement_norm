@@ -12,7 +12,7 @@ const AchAccPercentHistogram : React.FC = () => {
 
   useEffect(() => {
     const steamId = localStorage.getItem('steamId');
-    ApiService.get < TimeAveragePercent>(`user/avg-percent-by-time/${steamId}`).then((data) => {
+    ApiService.get < TimeAveragePercent>(`user/${steamId}/avg-percent-by-time/`).then((data) => {
       setData(Object.entries(data).map(([key, item]) => ({ count: +item.toFixed(2), name: key })));
     });
   }, []);
@@ -22,7 +22,7 @@ const AchAccPercentHistogram : React.FC = () => {
                 onClick={(el : {
                 activeLabel: string
             }) => {
-                  navigate(`/achievements/0/100/${el.activeLabel}/stats`);
+                  navigate(`/achievements/0/100/${el.activeLabel}/Stats`);
                 }}
                 data={data}/>
         </> </>
