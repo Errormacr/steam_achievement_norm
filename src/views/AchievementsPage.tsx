@@ -29,8 +29,8 @@ const AchPage : React.FC = () => {
   const { t } = useTranslation();
   useEffect(useCallback(() => {
     try {
-      console.log(minPercent, maxPercent, backWindow);
-      const boxView = Boolean(localStorage.getItem('boxView'));
+      console.log(minPercent, maxPercent, backWindow, !gameAppid);
+      const boxView = localStorage.getItem('boxView') === 'true';
       const steamId = localStorage.getItem('steamId');
       const queryParams = new URLSearchParams({
         orderBy: 'unlockedDate',
@@ -87,8 +87,8 @@ const AchPage : React.FC = () => {
                 </div>
                 <div className="details-container table-container">
                     {loaded && (!tableOrBox
-                      ? <Table minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} all={!gameAppid}/>
-                      : <AchBox minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} all={!gameAppid}/>)}
+                      ? <Table minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} unlocked={true} all={!gameAppid}/>
+                      : <AchBox minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} unlocked={true} all={!gameAppid}/>)}
                 </div>
             </div>
         </I18nextProvider>

@@ -44,9 +44,11 @@ export interface TimeAchievementCount {
     count : number
 }
 
-export interface RareAchievementCountStats {
-    _count : {
-        percent: number
-    }
-    percent : number
+export interface AchBoxProps {
+    appid?: number;
+    all : boolean;
+    minPercent?: number;
+    maxPercent?: number;
+    date?: string;
+    unlocked?: boolean;
 }

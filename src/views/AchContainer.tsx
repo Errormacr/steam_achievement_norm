@@ -4,16 +4,10 @@ import i18n from 'i18next';
 import './scss/AchConteiner.scss';
 import './scss/FilterSort.scss';
 import IdKeyInput from './IdKeyInput';
-import { Pagination, AchievmentsFromView } from '../interfaces';
+import { Pagination, AchievmentsFromView, AchBoxProps } from '../interfaces';
 import { ApiService } from '../services/api.services';
-interface AchBoxProps {
-    appid?: number;
-    all : boolean;
-    minPercent?: number;
-    maxPercent?: number;
-    date?: string;
-}
-const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date }) => {
+
+const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date, unlocked }) => {
   const [ach,
     setAch] = useState < AchievmentsFromView[] >([]);
 
@@ -98,8 +92,10 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
       queryParams.set('percentMin', min);
       queryParams.set('percentMax', max);
     }
+    console.log(all);
     if (!all) {
       queryParams.append('appid', '' + appid);
+      if (unlocked) { queryParams.append('unlocked', '1'); }
     } else {
       queryParams.append('unlocked', '1');
     }
@@ -141,10 +137,10 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
 
   useEffect(() => {
     if (page > 1) {
-      // noinspection JSIgnoredPromiseFromCall
       updateAchievements(false, page);
     }
-  }, [page]);
+  },
+  [page]);
   const handleCompletionFilterItemClick = (value : string) => {
     if (selectedCompletionFilterValue === value) {
       setSelectedCompletionFilterValue(null);

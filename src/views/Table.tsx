@@ -3,16 +3,9 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import './scss/Table.scss';
 import { ApiService } from '../services/api.services';
-import { AchievmentsFromView, Pagination } from '../interfaces';
-interface AchBoxProps {
-    appid?: number;
-    all : boolean;
-    minPercent?: number;
-    maxPercent?: number;
-    date?: string;
-}
+import { AchBoxProps, AchievmentsFromView, Pagination } from '../interfaces';
 
-const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date }) => {
+const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date, unlocked }) => {
   const [ach,
     setAch] = useState([]);
   const [sortConfig,
@@ -44,6 +37,7 @@ const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, 
     });
     if (!all) {
       queryParams.append('appid', '' + appid);
+      if (unlocked) { queryParams.append('unlocked', '1'); }
     } else {
       queryParams.append('unlocked', '1');
     }
