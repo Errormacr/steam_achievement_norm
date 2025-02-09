@@ -102,7 +102,7 @@ export default function App () {
                                     id=""
                                     additionalClass="gamesAchButtons"
                                     onClick={() => {
-                                      navigate('/Achievements/0/100/undefined/main');
+                                      navigate('/Achievements/0/100/undefined/main/undefined');
                                     }}
                                     text={t('AllAch')}/>
                                 <br/>

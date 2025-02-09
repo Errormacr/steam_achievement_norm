@@ -22,7 +22,7 @@ const AchAccPercentHistogram : React.FC = () => {
                 onClick={(el : {
                 activeLabel: string
             }) => {
-                  navigate(`/achievements/0/100/${el.activeLabel}/Stats`);
+                  navigate(`/Achievements/0/100/${el.activeLabel}/Stats/undefinded`);
                 }}
                 data={data}/>
         </> </>

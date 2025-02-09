@@ -32,7 +32,7 @@ const AchCountTimeHistogram : React.FC <statsComponentProps> = ({ gameAppid }) =
                 onClick={(el : {
                 activeLabel: string
             }) => {
-                  navigate(`/achievements/0/100/${el.activeLabel}/Stats${gameAppid ? `/${gameAppid}` : ''}`);
+                  navigate(`/Achievements/0/100/${el.activeLabel}/Stats${gameAppid ? `/${gameAppid}` : '/undefinded'}`);
                 }}
                 data={data}/>
         </>
