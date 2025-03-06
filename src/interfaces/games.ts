@@ -5,7 +5,10 @@ export interface UpdatedGame {
     success?: boolean;
     percent: Percent;
 }
-
+export interface UpdateGameEvent {
+    appid: number;
+    gamename: string;
+}
 export interface Percent {
     oldPercent: number;
     newPercent: number;

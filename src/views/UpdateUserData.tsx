@@ -3,10 +3,10 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import GameButton from './GameButton';
 import { toast } from 'react-toastify';
-import ProgressRad from './rad_progress';
 import { Percent } from '../interfaces';
 import { useSocket } from './SocketProvider';
 import { GrUpdate } from 'react-icons/gr';
+import UpdateProgress from './UpdateGameProgress';
 export default function UpdateUserData ({
   rerender
 }: {
@@ -14,8 +14,6 @@ export default function UpdateUserData ({
 }): React.JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [gameCount, setGameCount] = useState(0);
-  const [finishedGameCount, setFinishedGameCount] = useState(0);
   const socket = useSocket();
   const { t } = useTranslation();
 
@@ -55,24 +53,10 @@ export default function UpdateUserData ({
       setIsConnected(false);
     };
 
-    const handleGameCount = (data: { count: number }) => {
-      console.log('Game Count:', data);
-      if (data.count === 0) {
-        toast.warn(t('noGames'));
-      }
-      setGameCount(data.count);
-    };
-
-    const handleUpdateGame = (data: number) => {
-      console.log('Update Game:', data);
-      setFinishedGameCount((prev) => prev + 1);
-    };
-
     const handleStatus = (data: string) => {
       console.log('Status:', data);
-      setFinishedGameCount(0);
       rerender();
-      setGameCount(0);
+      document.getElementById('updateProgress').style.display = 'none';
       closeModal();
     };
 
@@ -83,8 +67,6 @@ export default function UpdateUserData ({
 
     socket.on('connect', handleConnect);
     socket.on('disconnect', handleDisconnect);
-    socket.on('gameCount', handleGameCount);
-    socket.on('updateGame', handleUpdateGame);
     socket.on('status', handleStatus);
     socket.on('change', handleChange);
     socket.on('close', handleDisconnect);
@@ -92,8 +74,6 @@ export default function UpdateUserData ({
     return () => {
       socket.off('connect', handleConnect);
       socket.off('disconnect', handleDisconnect);
-      socket.off('gameCount', handleGameCount);
-      socket.off('updateGame', handleUpdateGame);
       socket.off('status', handleStatus);
       socket.off('change', handleChange);
       socket.disconnect();
@@ -110,6 +90,8 @@ export default function UpdateUserData ({
 
   const update = async (type: string) => {
     if (socket) {
+      const modal = document.getElementById('updateProgress');
+      modal.style.display = 'flex';
       const steamId = localStorage.getItem('steamId');
       const language = i18n.language;
       const data = { steamId, language };
@@ -162,16 +144,11 @@ export default function UpdateUserData ({
           </div>
         </div>
       )}
-      {gameCount > 0 && (
-        <div className="modal">
-          <ProgressRad
-            title={t('updateProgress')}
-            data-progress={`${(finishedGameCount / gameCount) * 100}`}
-            SizeVnu="9rem"
-            SizeVne="10rem"
-          />
+
+        <div id={'updateProgress'} className={'modal'} style={{ display: 'none' }}>
+          <UpdateProgress socket={socket}></UpdateProgress>
         </div>
-      )}
+
     </I18nextProvider>
   );
 }
