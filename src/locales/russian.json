@@ -98,5 +98,8 @@
     "Legendary": "Легендарные",
     "RareStats": "По редкости",
     "TimeStats": "По времени",
-    "GameStats": "Статистика"
+    "GameStats": "Статистика",
+    "updateProgressTitle": "Обновление данных из игр",
+    "finishedUpdate": "Обновлено",
+    "ofUpdated": "из"
 }

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSocket } from './SocketProvider';
 import { toast } from 'react-toastify';
-import ProgressRad from './rad_progress';
 import './scss/UpdateGameProgress.scss';
 import { UpdateGameEvent } from '../interfaces'; // Подключаем SCSS файл
 
@@ -26,7 +25,7 @@ export default function UpdateProgress (): React.JSX.Element {
     const handleUpdateGame = ({ appid, gamename }:UpdateGameEvent) => {
       console.log(appid, gamename);
       setFinishedGameCount((prev) => prev + 1);
-      setUpdatedGames((prev) => [gamename, ...prev]);
+      setUpdatedGames((prev) => [gamename, ...prev.slice(0, 19)]);
     };
     const handleStatus = (data: string) => {
       setGameCount(0);
@@ -46,26 +45,39 @@ export default function UpdateProgress (): React.JSX.Element {
       socket.disconnect();
     };
   }, [socket, t]);
+  const progressPercent = gameCount > 0
+    ? Math.round((finishedGameCount / gameCount) * 100)
+    : 0;
 
   return (
     gameCount > 0 && (
+
           <div className="update-progress">
             <h3>{t('updateProgressTitle')}</h3>
 
             <div className="progress-container">
-              <p>
-                {t('gamesUpdated')}: {finishedGameCount}/{gameCount}
-              </p>
+              <div className="progress-header">
+                <p>
+                  {t('finishedUpdate')} {finishedGameCount} {t('ofUpdated')} {gameCount} {progressPercent}%
+                </p>
+              </div>
+              {gameCount > 0 && (
+                  <div className="progress-bar">
+                    <div
+                        className="progress-fill"
+                        style={{ width: `${progressPercent}%` }}
+                    ></div>
+                  </div>
+              )}
               <ul>
-                {updatedGames.length > 0
-                  ? (
-                      updatedGames.map((game, index) => (
-                        <li key={index}>{game}</li>
-                      ))
-                    )
-                  : (
-                    <p className="no-games-updated">{t('noGamesUpdated')}</p>
-                    )}
+                {updatedGames.length > 0 &&
+                  (
+                    updatedGames.map((game, index) => (
+                        <li
+                            key={index}
+                            className="list-item">{game}</li>
+                    ))
+                  )}
               </ul>
             </div>
           </div>
