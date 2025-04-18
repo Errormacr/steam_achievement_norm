@@ -30,7 +30,7 @@ const AchRareHistogram : React.FC<statsComponentProps> = ({ gameAppid = undefine
                 onClick={(el : {
                 activeLabel: string
             }) => {
-                  const addUrl = gameAppid ? `/${gameAppid}` : '';
+                  const addUrl = gameAppid ? `/${gameAppid}` : '/undefined';
                   console.log(addUrl);
                   const [min,
                     max] = el
