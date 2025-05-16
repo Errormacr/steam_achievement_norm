@@ -27,15 +27,13 @@ const AchCountTimeHistogram : React.FC <statsComponentProps> = ({ gameAppid }) =
     });
   }, []);
   return (
-        <>
             <Histogram
                 onClick={(el : {
                 activeLabel: string
             }) => {
-                  navigate(`/Achievements/0/100/${el.activeLabel}/Stats${gameAppid ? `/${gameAppid}` : '/undefinded'}`);
+                  navigate(`/achievements/0/100/${el.activeLabel}/Stats${gameAppid ? `/${gameAppid}` : '/undefinded'}`);
                 }}
                 data={data}/>
-        </>
   );
 };
 

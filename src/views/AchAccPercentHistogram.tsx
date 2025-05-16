@@ -16,8 +16,8 @@ const AchAccPercentHistogram : React.FC = () => {
       setData(Object.entries(data).map(([key, item]) => ({ count: +item.toFixed(2), name: key })));
     });
   }, []);
-  return (<>
-        <>
+  return (
+
             <Histogram
                 onClick={(el : {
                 activeLabel: string
@@ -25,7 +25,7 @@ const AchAccPercentHistogram : React.FC = () => {
                   navigate(`/Achievements/0/100/${el.activeLabel}/Stats/undefinded`);
                 }}
                 data={data}/>
-        </> </>
+
   );
 };
 

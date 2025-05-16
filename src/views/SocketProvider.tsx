@@ -11,9 +11,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     socketRef.current = io('http://localhost:8888');
   }
   useEffect(() => {
-    console.log('connecting socket');
     return () => {
-      console.log('Disconnecting socket');
       socketRef.current?.disconnect();
       socketRef.current = null;
     };

@@ -42,26 +42,21 @@ export default function UpdateUserData ({
     if (!socket) {
       return;
     }
-    console.log('Socket:', socket);
     const handleConnect = () => {
-      console.log('Connected with ID:', socket.id);
       setIsConnected(true);
     };
 
     const handleDisconnect = () => {
-      console.log('Disconnected with ID:', socket.id);
       setIsConnected(false);
     };
 
-    const handleStatus = (data: string) => {
-      console.log('Status:', data);
+    const handleStatus = () => {
       rerender();
       document.getElementById('updateProgress').style.display = 'none';
       closeModal();
     };
 
     const handleChange = (data: Percent) => {
-      console.log('Change:', data);
       toast.success(`+ ${data.change.toFixed(2)}% ${t('averageUp')}`);
     };
 

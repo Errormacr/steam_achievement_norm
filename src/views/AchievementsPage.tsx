@@ -21,7 +21,7 @@ const AchPage : React.FC = () => {
     } >();
 
   const [tableOrBox,
-    setTable] = useState(true);
+    setTableOrBox] = useState(true);
   const [loaded,
     setLoaded] = useState(false);
   const [achCount,
@@ -29,7 +29,6 @@ const AchPage : React.FC = () => {
   const { t } = useTranslation();
   useEffect(useCallback(() => {
     try {
-      console.log(minPercent, maxPercent, backWindow, !gameAppid);
       const boxView = localStorage.getItem('boxView') === 'true';
       const steamId = localStorage.getItem('steamId');
       const queryParams = new URLSearchParams({
@@ -45,16 +44,14 @@ const AchPage : React.FC = () => {
       if (date !== 'undefined') {
         queryParams.set('unlockedDate', date);
       }
-      console.log(gameAppid);
       if (+gameAppid) {
         queryParams.set('appid', gameAppid);
       }
-      console.log(backWindow);
       ApiService.get < Pagination < AchievmentsFromView >>(`user/${steamId}/achievements?${queryParams.toString()}`).then((data) => {
         setAchCount(data.count);
       });
       if (!boxView) {
-        setTable(false);
+        setTableOrBox(false);
       }
       setLoaded(true);
     } catch (error) {
@@ -69,7 +66,6 @@ const AchPage : React.FC = () => {
                     <FaArrowLeft
                         className="button-icon return"
             onClick={() => {
-              console.log(backWindow);
               if (backWindow === 'Stats') { navigate(`/${backWindow}${gameAppid ? '/' + gameAppid : ''}`); } else { navigate('/'); }
             }}
                         id="return"/>
@@ -79,16 +75,16 @@ const AchPage : React.FC = () => {
                     <GameButton
                         id=""
                         onClick={() => {
-                          setTable(!tableOrBox);
+                          setTableOrBox(!tableOrBox);
                           localStorage.setItem('boxView', String(!tableOrBox));
                         }}
                         additionalClass="switchTable"
                         text={t('SwitchTable')}/>
                 </div>
                 <div className="details-container table-container">
-                    {loaded && (!tableOrBox
-                      ? <Table minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} unlocked={true} all={!+gameAppid}/>
-                      : <AchBox minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={+gameAppid ?? undefined} unlocked={true} all={!+gameAppid}/>)}
+                    {loaded && (tableOrBox
+                      ? <Table minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={Number(gameAppid) ?? undefined } unlocked={true} all={!+gameAppid}/>
+                      : <AchBox minPercent={+minPercent} maxPercent={+maxPercent} date={date === 'undefined' ? undefined : date} appid={Number(gameAppid) ?? undefined } unlocked={true} all={!+gameAppid}/>)}
                 </div>
             </div>
         </I18nextProvider>

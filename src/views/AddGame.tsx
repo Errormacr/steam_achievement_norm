@@ -38,7 +38,6 @@ export default function AddGame (): React.JSX.Element {
     target: { value: React.SetStateAction<string> };
   }) => {
     setAppid(val.target.value);
-    console.log(val.target.value);
   };
 
   useDebouncyEffect(() => getGame(appid), 1000, [appid]);
@@ -64,7 +63,6 @@ export default function AddGame (): React.JSX.Element {
           `user/${steamId}/game/${appid}/add-not-shown?lang=${i18n.language}`,
           {}
         );
-        console.log(res);
         toast.success('+ ' + res.change.toFixed(2) + '% ' + t('averageUp'));
         closeModal();
       } catch (error) {

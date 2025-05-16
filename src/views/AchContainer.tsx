@@ -25,9 +25,9 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
   const filterTimeListRef = useRef(null);
   const filterCompletedListRef = useRef(null);
   const [isTimeFilterDropdownOpen,
-    setTimeFilterDropdownOpen] = useState(false);
+    setIsTimeFilterDropdownOpen] = useState(false);
   const [isCompletedFilterDropdownOpen,
-    setCompletedFilterDropdownOpen] = useState(false);
+    setIsCompletedFilterDropdownOpen] = useState(false);
   const [selectedCompletionFilterValue,
     setSelectedCompletionFilterValue] = useState < string | null >(null);
   const [searchQueryGameName,
@@ -92,7 +92,6 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
       queryParams.set('percentMin', min);
       queryParams.set('percentMax', max);
     }
-    console.log(all);
     if (!all) {
       queryParams.append('appid', '' + appid);
       if (unlocked) { queryParams.append('unlocked', '1'); }
@@ -147,7 +146,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
     } else {
       setSelectedCompletionFilterValue(value);
     }
-    setCompletedFilterDropdownOpen(false);
+    setIsCompletedFilterDropdownOpen(false);
   };
 
   const handleToggleArrows = () => {
@@ -164,10 +163,10 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
   document.addEventListener('click', handleOutsideClick);
   const handleFilterOutsideClick = (event : MouseEvent) => {
     if (filterCompletedListRef.current && !filterCompletedListRef.current.contains(event.target as Node) && isCompletedFilterDropdownOpen) {
-      setCompletedFilterDropdownOpen(false);
+      setIsCompletedFilterDropdownOpen(false);
     }
     if (filterTimeListRef.current && !filterTimeListRef.current.contains(event.target as Node) && isTimeFilterDropdownOpen) {
-      setTimeFilterDropdownOpen(false);
+      setIsTimeFilterDropdownOpen(false);
     }
   };
 
@@ -282,7 +281,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
                             )}
                             <button
                                 className="dropdown-button"
-                                onClick={() => setCompletedFilterDropdownOpen(!isCompletedFilterDropdownOpen)}>
+                                onClick={() => setIsCompletedFilterDropdownOpen(!isCompletedFilterDropdownOpen)}>
                                 {t('GainedPercent')}
                             </button>
 
@@ -319,7 +318,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
                                 </ul>
                             )}
                         </div>
-                        <div className="arrows-container" onClick={() => handleToggleArrows()}>
+                        <div className="arrows-container" role="button" onClick={() => handleToggleArrows()}>
                             <div
                                 className={isArrowUpOpen
                                   ? 'arrow activate'

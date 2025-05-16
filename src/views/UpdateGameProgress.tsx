@@ -22,16 +22,14 @@ export default function UpdateProgress (): React.JSX.Element {
       }
     };
 
-    const handleUpdateGame = ({ appid, gamename }:UpdateGameEvent) => {
-      console.log(appid, gamename);
+    const handleUpdateGame = ({ gamename }:UpdateGameEvent) => {
       setFinishedGameCount((prev) => prev + 1);
       setUpdatedGames((prev) => [gamename, ...prev.slice(0, 19)]);
     };
-    const handleStatus = (data: string) => {
+    const handleStatus = () => {
       setGameCount(0);
       setFinishedGameCount(0);
       setUpdatedGames([]);
-      console.log('Status:', data);
     };
     socket.on('gameCount', handleGameCount);
     socket.on('updateGame', handleUpdateGame);

@@ -25,13 +25,11 @@ const AchRareHistogram : React.FC<statsComponentProps> = ({ gameAppid = undefine
     });
   }, []);
   return (
-        <>
             <Histogram
                 onClick={(el : {
                 activeLabel: string
             }) => {
                   const addUrl = gameAppid ? `/${gameAppid}` : '/undefined';
-                  console.log(addUrl);
                   const [min,
                     max] = el
                     .activeLabel
@@ -40,7 +38,6 @@ const AchRareHistogram : React.FC<statsComponentProps> = ({ gameAppid = undefine
                   navigate(`/achievements/${min}/${max}/undefined/Stats${addUrl}`);
                 }}
                 data={data}/>
-        </>
   );
 };
 

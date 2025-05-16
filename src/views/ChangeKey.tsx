@@ -35,14 +35,12 @@ export default function ChangeKey (): React.JSX.Element {
 
   const OnUpdateKeyField = (val: { target: { value: React.SetStateAction<string>; }; }) => {
     setApiKey(val.target.value);
-    console.log(val.target.value);
   };
 
   const changeApiKey = async () => {
     if (apiKey) {
       try {
         const res = await ApiService.post<KeyResponse>(`steam-api/api-token?token=${apiKey}`, {});
-        console.log(res);
         toast.success(t('changeKeySuccess'));
         closeModal();
       } catch (error) {
