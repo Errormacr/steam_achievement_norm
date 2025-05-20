@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import ProgressRad from './rad_progress';
 import ChangeAccount from './changeAccount';
 import Settings from './Settings';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import GameButton from './GameButton';
@@ -46,18 +46,20 @@ export default function App () {
         setRecentGames(userData.user.gameDatas);
         achContainer.render(<AchCont/>);
       } catch (e) {
-        console.error(e);
+        console.error('Error updating user data:', e);
+        toast.error('Failed to update user data. Please try again.');
       }
     }
   }, []);
 
-  useEffect(useCallback(() => {
+  useEffect(() => {
     try {
       updateUserData();
     } catch (error) {
-      window.alert(error.message);
+      console.error('Error in useEffect:', error);
+      toast.error('An error occurred while updating data. Please try again.');
     }
-  }, []), []);
+  }, [updateUserData]);
 
   return (
         <I18nextProvider i18n={i18n}>
@@ -124,7 +126,7 @@ export default function App () {
                             </div>
                         )}
                         <div className="main-game-cards">
-                            {recentGames.map((game) => (<GameCard appid={game.appid} backWindow="main"/>))}
+                            {recentGames.map((game) => (<GameCard key={game.appid} appid={game.appid} backWindow="main"/>))}
                         </div>
                         <div className="with-friends">
                             <div className="last-ach-main" id="container"></div>
