@@ -1,11 +1,21 @@
+@use './variables' as *;
+
 .card {
     width: 400px;
     height: 200px;
-    border-radius: 16px;
+    border-radius: $border-radius-lg;
     position: relative;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: all $transition-normal;
+    background-color: var(--card-bg);
+    margin: $spacing-sm;
+    
+    @media (max-width: $breakpoint-sm) {
+        width: 100%;
+        height: 180px;
+    }
+
     &:hover {
-        background-color: #a9a9a9;
+        background-color: var(--hover-bg);
     }
 
     &.full {
@@ -14,8 +24,8 @@
     }
 
     &.not_full {
-        border:  2px solid #919191;
-        box-shadow: 3px 3px  5px black;
+        border: 2px solid #919191;
+        box-shadow: 3px 3px 5px black;
     }
 
     .name-preview {
@@ -23,10 +33,15 @@
         height: 70px;
         display: flex;
 
+        @media (max-width: $breakpoint-sm) {
+            width: 100%;
+            height: 60px;
+        }
+
         .name {
             color: white;
             text-align: left;
-            margin-left: 10px;
+            margin-left: $spacing-sm;
             overflow: hidden;
             font-weight: bold;
             text-overflow: ellipsis;
@@ -40,10 +55,11 @@
             height: 80%;
             width: 40%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset;
-            margin-right: 20px;
-            margin-top: 6px;
+            margin-right: $spacing-md;
+            margin-top: $spacing-xs;
         }
     }
+
     .progress-bar-container {
         display: flex;
         justify-content: center;
@@ -52,143 +68,106 @@
         .progress {
             padding: 4px;
             background: rgba(0, 0, 0, 0.25);
-            border-radius: 6px;
+            border-radius: $border-radius-sm;
             width: 90%;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
 
             .progress-bar {
                 height: 16px;
-                border-radius: 4px;
+                border-radius: $border-radius-sm;
                 background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
-                transition: width 0.5s ease-in-out;
+                transition: width $transition-normal;
                 box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.1) inset;
-                animation-name: changeWidth;
-                animation-duration: 3s;
-                animation-timing-function: linear;
 
-                &.complete {
-                    background-color: #86e01e;
-                }
-                
-                &.high {
-                    background-color: #9cc31e;
-                }
-                
-                &.medium-high {
-                    background-color: #b6a51e;
-                }
-                
-                &.medium {
-                    background-color: #f2b01e;
-                }
-                
-                &.low {
-                    background-color: #f27011;
-                }
-                
-                &.very-low {
-                    background-color: red;
-                }
-            }
-            @keyframes changeWidth {
-                from {
-                    width: 0;
-                    background-color: #f63a0f;
-                }
-                to {
-                    width: width;
-                    background-color: background-color;
-                }
+                &.complete { background-color: #86e01e; }
+                &.high { background-color: #9cc31e; }
+                &.medium-high { background-color: #b6a51e; }
+                &.medium { background-color: #f2b01e; }
+                &.low { background-color: #f27011; }
+                &.very-low { background-color: red; }
             }
         }
     }
-    .Cont {
-        width: 50px;
-        height: 50px;
-        position: relative;
-        object-fit: cover;
-    }
-    .achievement-images {
-        margin-right: 5px;
-        margin-top: 10px;
-        margin-left: 5px;
-        .achievement-image {
-            width: 40px;
-            margin-left: 5px;
-            object-fit: cover;
-            transition: transform 0.1s ease-in-out;
-            position: relative;
-            margin-right: 5px;
-            height: 40px;
-            &::after {
-                background: linear-gradient(to right, #3b414a 0%, #2c3138 95%);
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                content: "";
-            }
-        }
 
-    }
-
-    .achievement-images,
     .details-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 0.5rem;
-    }
-    .details-container {
+        margin-bottom: $spacing-sm;
 
         .row {
             display: flex;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 0 5px white inset;
             border: 1px solid black;
-            border-radius: 10px;
+            border-radius: $border-radius-md;
+
             .cell {
                 display: inline-block;
                 background-color: whitesmoke;
-                padding: 5px;
+                padding: $spacing-xs $spacing-sm;
                 text-align: center;
 
                 &.left {
-                    border-top-left-radius: 10px;
-                    border-bottom-left-radius: 10px;
-                    border-right: 1px rgb(192, 192, 192) solid;
-
+                    border-top-left-radius: $border-radius-md;
+                    border-bottom-left-radius: $border-radius-md;
+                    border-right: 1px solid rgb(192, 192, 192);
                 }
                 &.middle {
-                    border-right: 1px rgb(192, 192, 192) solid;
-                    border-left: 1px rgb(192, 192, 192) solid;
+                    border-right: 1px solid rgb(192, 192, 192);
+                    border-left: 1px solid rgb(192, 192, 192);
                 }
                 &.right {
-                    border-top-right-radius: 10px;
-                    border-bottom-right-radius: 10px;
-                    border-left: 1px rgb(192, 192, 192) solid;
+                    border-top-right-radius: $border-radius-md;
+                    border-bottom-right-radius: $border-radius-md;
+                    border-left: 1px solid rgb(192, 192, 192);
                 }
             }
-
         }
     }
+
+    .achievement-images {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: $spacing-sm;
+        flex-wrap: wrap;
+        gap: $spacing-xs;
+
+        .achievement-image {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            transition: transform $transition-fast;
+            position: relative;
+            border-radius: $border-radius-sm;
+            cursor: pointer;
+
+            @media (max-width: $breakpoint-sm) {
+                width: 32px;
+                height: 32px;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+                z-index: 1;
+            }
+        }
+    }
+
     .gameCard-background {
-        background-color: gray;
+        background-color: var(--card-bg);
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 15px;
+        border-radius: $border-radius-lg;
         z-index: -1;
         background-size: cover;
     }
 }
+
 @keyframes full_game_anim {
-    from {
-        border: 2px solid #ffa600c2;
-    }
-    to {
-        border: 2px solid #FFA500;
-    }
+    from { border: 2px solid #ffa600c2; }
+    to { border: 2px solid #FFA500; }
 }

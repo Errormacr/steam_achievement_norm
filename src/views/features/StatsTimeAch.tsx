@@ -14,23 +14,7 @@ interface HeatmapData {
 
 const StatsTimeAch: React.FC<statsComponentProps> = ({ gameAppid }) => {
 
-  useEffect(() => {
-    const fetchHeatmapData = async () => {
-      try {
-        const steamId = localStorage.getItem('steamId');
-        if (!steamId) return;
-
-        const response = await ApiService.get<HeatmapData[]>(
-          `steam-api/user/${steamId}/heatmap${gameAppid ? `?appId=${gameAppid}` : ''}`
-        );
-      } catch (error) {
-        console.error('Error fetching heatmap data:', error);
-      }
-    };
-
-    fetchHeatmapData();
-  }, [gameAppid]);
-
+ 
   return (
     <>
       <div className='stats-chart'>

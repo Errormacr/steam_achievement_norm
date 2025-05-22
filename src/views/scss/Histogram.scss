@@ -1,33 +1,116 @@
+@use './variables' as *;
+
 .histogram {
-    width: 99%;
-    margin-top: 3rem;
+    width: 100%;
+    margin-top: $spacing-xl;
     height: 30rem;
+    background-color: var(--histogram-bg);
+    border-radius: $border-radius-lg;
+    padding: $spacing-md;
+    box-shadow: var(--card-shadow);
+
+    @media (max-width: $breakpoint-sm) {
+        height: 25rem;
+        margin-top: $spacing-lg;
+        padding: $spacing-sm;
+    }
+
     .histogram-slider {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
+        gap: $spacing-md;
+        margin-bottom: $spacing-md;
+
+        @media (max-width: $breakpoint-sm) {
+            gap: $spacing-sm;
+            margin-bottom: $spacing-sm;
+        }
 
         .histogram-slider-range {
             flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: $border-radius-sm;
+            outline: none;
+
+            &::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: white;
+                cursor: pointer;
+                transition: all $transition-fast;
+
+                &:hover {
+                    transform: scale(1.2);
+                }
+            }
+
+            &::-moz-range-thumb {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: white;
+                cursor: pointer;
+                transition: all $transition-fast;
+                border: none;
+
+                &:hover {
+                    transform: scale(1.2);
+                }
+            }
         }
 
         .histogram-slider-left-value,
         .histogram-slider-right-value {
             min-width: 3rem;
             text-align: center;
+            color: white;
+            font-size: 0.9rem;
+
+            @media (max-width: $breakpoint-sm) {
+                min-width: 2.5rem;
+                font-size: 0.8rem;
+            }
         }
     }
 
     .recharts-wrapper {
         .recharts-line {
             .recharts-line-curve {
-                stroke: #8884d8;
+                stroke: white;
             }
         }
 
         .recharts-dot {
             r: 4;
+            fill: white;
+            stroke: var(--bg-primary);
+            stroke-width: 2;
+        }
+
+        .recharts-cartesian-grid-horizontal line,
+        .recharts-cartesian-grid-vertical line {
+            stroke: rgba(255, 255, 255, 0.3);
+        }
+
+        .recharts-text {
+            fill: white;
+        }
+
+        .recharts-legend-item-text {
+            color: white !important;
+        }
+
+        .recharts-tooltip-wrapper {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: $border-radius-sm;
+            box-shadow: var(--card-shadow);
         }
     }
 }

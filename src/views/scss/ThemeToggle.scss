@@ -1,0 +1,38 @@
+@use './variables' as *;
+
+.theme-toggle {
+  position: fixed;
+  bottom: $spacing-lg;
+  right: $spacing-lg;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-normal;
+  box-shadow: var(--card-shadow);
+  z-index: $z-index-tooltip;
+
+  &:hover {
+    transform: scale(1.1);
+    background-color: var(--hover-bg);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    bottom: $spacing-md;
+    right: $spacing-md;
+  }
+} 
