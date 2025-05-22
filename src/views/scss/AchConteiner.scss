@@ -1,4 +1,3 @@
-
 .AchSet {
     align-items: center;
     display: flex;
@@ -10,19 +9,133 @@
         height: fit-content;
         margin: 6px;
         display: flex;
-        gap: 1rem;
+        gap: 0.5rem;
         transform: translateZ(0);
         flex-wrap: wrap;
+        padding: 1rem;
 
         img {
-            width: calc(100% / 20);
-            min-width: 3rem;
-            margin-right: 5px;
-            height: calc(100% / 20);
-            object-fit: cover;
+            width: 64px;
+            height: 64px;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border-radius: 8px;
+            position: relative;
+            
             &:hover {
-                transform: scale(1.5,1.5);
-                z-index: 999;
+                transform: scale(1.2);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                z-index: 1;
+            }
+
+            // Легендарные достижения (самые редкие)
+            &.rare1 {
+                &:hover {
+                    animation: legendaryPulse 1.5s infinite;
+                    box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+                    transform: scale(1.25);
+                }
+
+                &:hover::after {
+                    content: '';
+                    position: absolute;
+                    top: -3px;
+                    left: -3px;
+                    right: -3px;
+                    bottom: -3px;
+                    border-radius: 11px;
+                    background: linear-gradient(45deg, #ff0000, #ff6b6b);
+                    z-index: -1;
+                    animation: legendaryGlow 1.5s infinite;
+                }
+            }
+
+            // Очень редкие достижения
+            &.rare2 {
+                &:hover {
+                    animation: epicFloat 2s infinite;
+                    box-shadow: 0 0 20px rgba(255, 69, 0, 0.7);
+                    transform: scale(1.23);
+                }
+
+                &:hover::after {
+                    content: '';
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    border-radius: 10px;
+                    background: linear-gradient(45deg, #ff4500, #ff8c00);
+                    z-index: -1;
+                    animation: epicShine 2s infinite;
+                }
+            }
+
+            // Редкие достижения
+            &.rare3 {
+                &:hover {
+                    animation: rareSpin 2.5s infinite;
+                    box-shadow: 0 0 18px rgba(255, 165, 0, 0.6);
+                    transform: scale(1.21);
+                }
+
+                &:hover::after {
+                    content: '';
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    border-radius: 9px;
+                    background: linear-gradient(45deg, #ffa500, #ffd700);
+                    z-index: -1;
+                    animation: rareBorder 2.5s infinite;
+                }
+            }
+
+            // Необычные достижения
+            &.rare4 {
+                &:hover {
+                    animation: uncommonBounce 3s infinite;
+                    box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
+                    transform: scale(1.19);
+                }
+
+                &:hover::after {
+                    content: '';
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    border-radius: 8px;
+                    background: linear-gradient(45deg, #ffff00, #90ee90);
+                    z-index: -1;
+                    animation: uncommonSparkle 3s infinite;
+                }
+            }
+
+            // Обычные достижения
+            &.rare5 {
+                &:hover {
+                    animation: commonFade 3.5s infinite;
+                    box-shadow: 0 0 12px rgba(0, 255, 0, 0.4);
+                    transform: scale(1.17);
+                }
+
+                &:hover::after {
+                    content: '';
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    right: -2px;
+                    bottom: -2px;
+                    border-radius: 7px;
+                    background: linear-gradient(45deg, #00ff00, #98fb98);
+                    z-index: -1;
+                    animation: commonPulse 3.5s infinite;
+                }
             }
         }
     }
@@ -35,4 +148,74 @@
         border-radius: 1rem;
         background-color: #445974;
     }
+}
+
+// Легендарные достижения - пульсация с вращением и сильным свечением
+@keyframes legendaryPulse {
+    0% { transform: scale(1.25) rotate(0deg); }
+    25% { transform: scale(1.3) rotate(2deg); }
+    50% { transform: scale(1.25) rotate(0deg); }
+    75% { transform: scale(1.3) rotate(-2deg); }
+    100% { transform: scale(1.25) rotate(0deg); }
+}
+
+@keyframes legendaryGlow {
+    0% { opacity: 0.8; filter: blur(3px); }
+    50% { opacity: 1; filter: blur(5px); }
+    100% { opacity: 0.8; filter: blur(3px); }
+}
+
+// Эпические достижения - плавное парение с мерцанием
+@keyframes epicFloat {
+    0% { transform: translateY(0) scale(1.23); }
+    50% { transform: translateY(-5px) scale(1.25); }
+    100% { transform: translateY(0) scale(1.23); }
+}
+
+@keyframes epicShine {
+    0% { opacity: 0.7; filter: brightness(1); }
+    50% { opacity: 0.9; filter: brightness(1.5); }
+    100% { opacity: 0.7; filter: brightness(1); }
+}
+
+// Редкие достижения - вращение с пульсирующей рамкой
+@keyframes rareSpin {
+    0% { transform: rotate(0deg) scale(1.21); }
+    25% { transform: rotate(5deg) scale(1.23); }
+    75% { transform: rotate(-5deg) scale(1.23); }
+    100% { transform: rotate(0deg) scale(1.21); }
+}
+
+@keyframes rareBorder {
+    0% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 0.6; }
+}
+
+// Необычные достижения - подпрыгивание с искрами
+@keyframes uncommonBounce {
+    0% { transform: translateY(0) scale(1.19); }
+    50% { transform: translateY(-3px) scale(1.21); }
+    100% { transform: translateY(0) scale(1.19); }
+}
+
+@keyframes uncommonSparkle {
+    0% { opacity: 0.5; transform: scale(1); }
+    25% { opacity: 0.7; transform: scale(1.05) rotate(45deg); }
+    50% { opacity: 0.5; transform: scale(1) rotate(90deg); }
+    75% { opacity: 0.7; transform: scale(1.05) rotate(135deg); }
+    100% { opacity: 0.5; transform: scale(1) rotate(180deg); }
+}
+
+// Обычные достижения - плавное затухание
+@keyframes commonFade {
+    0% { opacity: 1; transform: scale(1.17); }
+    50% { opacity: 0.8; transform: scale(1.19); }
+    100% { opacity: 1; transform: scale(1.17); }
+}
+
+@keyframes commonPulse {
+    0% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.05); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 0.4; }
 }

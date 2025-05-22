@@ -101,5 +101,12 @@
     "GameStats": "Статистика",
     "updateProgressTitle": "Обновление данных из игр",
     "finishedUpdate": "Обновлено",
-    "ofUpdated": "из"
+    "ofUpdated": "из",
+    "achievementsHeatmap": "Тепловая карта достижений",
+    "achievementsCount": "Количество достижений",
+    "year": "Год",
+    "loading": "Загрузка...",
+    "noAchievements": "Нет данных о достижениях",
+    "connectionError": "Ошибка подключения",
+    "noSteamId": "Steam ID не найден"
 }

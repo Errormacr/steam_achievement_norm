@@ -94,6 +94,12 @@
     "GameStats": "Achievement stats of game",
     "updateProgressTitle": "Update games data",
     "finishedUpdate": "Finished",
-    "ofUpdated": "of"
-
+    "ofUpdated": "of",
+    "achievementsHeatmap": "Achievements Heatmap",
+    "achievementsCount": "Achievements Count",
+    "year": "Year",
+    "loading": "Loading...",
+    "noAchievements": "No achievement data available",
+    "connectionError": "Connection error",
+    "noSteamId": "Steam ID not found"
 }

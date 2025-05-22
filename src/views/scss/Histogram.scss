@@ -3,18 +3,31 @@
     margin-top: 3rem;
     height: 30rem;
     .histogram-slider {
-        margin-top: 1rem;
-        margin-bottom: 1rem;
         display: flex;
         align-items: center;
-        justify-content: space-evenly;
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .histogram-slider-range {
+            flex: 1;
+        }
+
         .histogram-slider-left-value,
         .histogram-slider-right-value {
-            margin: 0 1rem;
-            color: white;
+            min-width: 3rem;
+            text-align: center;
         }
-        .histogram-slider-range {
-            width: 80%;
+    }
+
+    .recharts-wrapper {
+        .recharts-line {
+            .recharts-line-curve {
+                stroke: #8884d8;
+            }
+        }
+
+        .recharts-dot {
+            r: 4;
         }
     }
 }
