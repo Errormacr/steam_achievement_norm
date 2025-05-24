@@ -3,10 +3,12 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import GameButton from '../components/GameButton';
 import { toast } from 'react-toastify';
-import { Percent } from '../../interfaces';
+import { Percent, ProfileUpdateResponse } from '../../interfaces';
 import { useSocket } from './SocketProvider';
 import { GrUpdate } from 'react-icons/gr';
 import UpdateProgress from './UpdateGameProgress';
+import { ApiService } from '../../services/api.services';
+
 export default function UpdateUserData ({
   rerender
 }: {
@@ -90,6 +92,23 @@ export default function UpdateUserData ({
       const steamId = localStorage.getItem('steamId');
       const language = i18n.language;
       const data = { steamId, language };
+
+      // First check for profile updates
+      try {
+        const profileUpdate = await ApiService.put<ProfileUpdateResponse>(`user/${steamId}/profile`);
+        if (profileUpdate.updated) {
+          if (profileUpdate.changes.nickname) {
+            toast.info(t('nicknameUpdated'));
+          }
+          if (profileUpdate.changes.avatar) {
+            toast.info(t('avatarUpdated'));
+          }
+          rerender();
+        }
+      } catch (error) {
+        console.error('Error updating profile:', error);
+      }
+
       if (type === 'ach-percentage') {
         socket.emit(type, { steamId });
       } else {

@@ -21,3 +21,11 @@ export interface KeyResponse {
     statusCode : number;
     message : string
 }
+
+export interface ProfileUpdateResponse {
+    updated: boolean;
+    changes: {
+        nickname: boolean;
+        avatar: boolean;
+    };
+}
