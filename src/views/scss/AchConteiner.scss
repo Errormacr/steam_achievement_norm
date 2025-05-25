@@ -13,6 +13,8 @@
         transform: translateZ(0);
         flex-wrap: wrap;
         padding: 1rem;
+        position: relative;
+        z-index: 1;
 
         img {
             width: 64px;
@@ -21,11 +23,12 @@
             cursor: pointer;
             border-radius: 8px;
             position: relative;
+            z-index: 1;
             
             &:hover {
                 transform: scale(1.2);
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-                z-index: 1;
+                z-index: 2;
             }
 
             // Легендарные достижения (самые редкие)
@@ -34,6 +37,7 @@
                     animation: legendaryPulse 1.5s infinite;
                     box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
                     transform: scale(1.25);
+                    z-index: 2;
                 }
 
                 &:hover::after {
@@ -47,6 +51,7 @@
                     background: linear-gradient(45deg, #ff0000, #ff6b6b);
                     z-index: -1;
                     animation: legendaryGlow 1.5s infinite;
+                    pointer-events: none;
                 }
             }
 
@@ -56,6 +61,7 @@
                     animation: epicFloat 2s infinite;
                     box-shadow: 0 0 20px rgba(255, 69, 0, 0.7);
                     transform: scale(1.23);
+                    z-index: 2;
                 }
 
                 &:hover::after {
@@ -69,6 +75,7 @@
                     background: linear-gradient(45deg, #ff4500, #ff8c00);
                     z-index: -1;
                     animation: epicShine 2s infinite;
+                    pointer-events: none;
                 }
             }
 
@@ -78,6 +85,7 @@
                     animation: rareSpin 2.5s infinite;
                     box-shadow: 0 0 18px rgba(255, 165, 0, 0.6);
                     transform: scale(1.21);
+                    z-index: 2;
                 }
 
                 &:hover::after {
@@ -91,6 +99,7 @@
                     background: linear-gradient(45deg, #ffa500, #ffd700);
                     z-index: -1;
                     animation: rareBorder 2.5s infinite;
+                    pointer-events: none;
                 }
             }
 
@@ -100,6 +109,7 @@
                     animation: uncommonBounce 3s infinite;
                     box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
                     transform: scale(1.19);
+                    z-index: 2;
                 }
 
                 &:hover::after {
@@ -113,6 +123,7 @@
                     background: linear-gradient(45deg, #ffff00, #90ee90);
                     z-index: -1;
                     animation: uncommonSparkle 3s infinite;
+                    pointer-events: none;
                 }
             }
 
@@ -122,6 +133,7 @@
                     animation: commonFade 3.5s infinite;
                     box-shadow: 0 0 12px rgba(0, 255, 0, 0.4);
                     transform: scale(1.17);
+                    z-index: 2;
                 }
 
                 &:hover::after {
@@ -135,6 +147,7 @@
                     background: linear-gradient(45deg, #00ff00, #98fb98);
                     z-index: -1;
                     animation: commonPulse 3.5s infinite;
+                    pointer-events: none;
                 }
             }
         }
@@ -209,13 +222,13 @@
 
 // Обычные достижения - плавное затухание
 @keyframes commonFade {
-    0% { opacity: 1; transform: scale(1.17); }
-    50% { opacity: 0.8; transform: scale(1.19); }
-    100% { opacity: 1; transform: scale(1.17); }
+    0% { transform: scale(1.17); opacity: 1; }
+    50% { transform: scale(1.19); opacity: 0.8; }
+    100% { transform: scale(1.17); opacity: 1; }
 }
 
 @keyframes commonPulse {
-    0% { transform: scale(1); opacity: 0.4; }
-    50% { transform: scale(1.05); opacity: 0.6; }
-    100% { transform: scale(1); opacity: 0.4; }
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 0.5; }
 }

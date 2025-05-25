@@ -6,6 +6,7 @@ import '../scss/FilterSort.scss';
 import IdKeyInput from '../components/IdKeyInput';
 import { Pagination, AchievmentsFromView, AchBoxProps } from '../../interfaces';
 import { ApiService } from '../../services/api.services';
+import AchievementImage from '../components/AchievementImage';
 
 const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date, unlocked }) => {
   const [ach,
@@ -213,24 +214,6 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
     }
   };
 
-  const getAchievementClass = (achievement : AchievmentsFromView) => {
-    const percent = achievement.percent;
-
-    if (percent <= 5) {
-      return 'rare1';
-    }
-    if (percent <= 20) {
-      return 'rare2';
-    }
-    if (percent <= 45) {
-      return 'rare3';
-    }
-    if (percent <= 60) {
-      return 'rare4';
-    }
-    return 'rare5';
-  };
-
   return (
         <I18nextProvider i18n={i18n}>
             <div className="AchSet">
@@ -318,7 +301,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
                                 </ul>
                             )}
                         </div>
-                        <button className="arrows-container"  onClick={() => handleToggleArrows()}>
+                        <button className="arrows-container" onClick={() => handleToggleArrows()}>
                             <div
                                 className={isArrowUpOpen
                                   ? 'arrow activate'
@@ -342,26 +325,16 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
                         last = true;
                       }
 
-                      return <img
-                            className={getAchievementClass(achievement)}
-                            ref={last
-                              ? lastAchievementRef
-                              : undefined}
-                            key={(all
-                              ? achievement.game.gamename
-                              : '') + achievement.displayName + achievement.percent + achievement.name}
-                            src={achievement.unlocked
-                              ? achievement.icon
-                              : achievement.grayIcon}
-                            alt={achievement.displayName}
-                            title={`${all
-                            ? achievement.game.gamename + '\n'
-                            : ''}${achievement
-                                .displayName}\n${achievement
-                                .description}\n${achievement
-                                .percent
-                                .toFixed(2)}\n${achievement
-                                .unlockedDate ?? ''}`}/>;
+                      return <AchievementImage
+                         key={achievement.name}
+            name={achievement.name}
+            icon={achievement.unlocked ? achievement.icon : achievement.grayIcon}
+            displayName={achievement.displayName}
+            description={achievement.description}
+            percent={achievement.percent}
+            unlockedDate={achievement.unlockedDate}
+            gameName={achievement.game?.gamename}
+                           />;
                     })}
                 </div>
             </div>

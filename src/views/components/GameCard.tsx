@@ -5,6 +5,7 @@ import '../scss/GameCard.scss';
 import { Achievements, gameDataWithAch, GamePageProps } from '../../interfaces';
 import { ApiService } from '../../services/api.services';
 import { useNavigate } from 'react-router-dom';
+import AchievementImage from './AchievementImage';
 
 const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const navigate = useNavigate();
@@ -125,27 +126,16 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
         <div className="gameCard-background"></div>
         <div className="achievement-images">
           {aches.map((achievement: Achievements) => (
-            <img
-              key={achievement.name}
-              className={`achievement-image ${
-                achievement.percent <= 5
-                  ? 'rare1'
-                  : achievement.percent <= 20
-                  ? 'rare2'
-                  : achievement.percent <= 45
-                  ? 'rare3'
-                  : achievement.percent <= 60
-                  ? 'rare4'
-                  : 'rare5'
-              }`}
-              src={achievement.unlocked ? achievement.icon : achievement.grayIcon}
-              alt="achievement image"
-              title={`${achievement.displayName}${
-                achievement.description ? '\n' + achievement.description : ''
-              }\n${achievement.percent.toFixed(2)} %\n${
-                achievement.unlockedDate ? achievement.unlockedDate : ''
-              }`}
-            />
+            <AchievementImage
+             key={achievement.name}
+            name={achievement.name}
+            icon={achievement.icon}
+            displayName={achievement.displayName}
+            description={achievement.description}
+            percent={achievement.percent}
+            unlockedDate={achievement.unlockedDate}
+            gameName={achievement.game?.gamename} />
+
           ))}
         </div>
       </div>
