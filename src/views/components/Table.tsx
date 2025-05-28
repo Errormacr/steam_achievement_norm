@@ -7,7 +7,7 @@ import { AchBoxProps, AchievmentsFromView, Pagination } from '../../interfaces';
 
 const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date, unlocked }) => {
   const [ach,
-    setAch] = useState([]);
+    setAch] = useState<AchievmentsFromView[]>([]);
   const [sortConfig,
     setSortConfig] = useState('unlockedDate');
   const [isLoading,
@@ -20,51 +20,58 @@ const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, 
     setDesc] = useState(true);
   const { t } = useTranslation();
   const observer = useRef < IntersectionObserver | null >(null);
+  const PAGE_SIZE = 50; // Increased page size
 
   const fetchAchievements = async (reset = false) => {
-    setIsLoading(true);
-    if (reset) {
-      setAch([]);
-    }
-    const queryParams = new URLSearchParams({
-      orderBy: sortConfig,
-      desc: desc
-        ? '1'
-        : '0',
-      language: i18n.language,
-      page: page.toString(),
-      pageSize: '40'
-    });
-    if (!all) {
-      queryParams.append('appid', '' + appid);
-      if (unlocked) { queryParams.append('unlocked', '1'); }
-    } else {
-      queryParams.append('unlocked', '1');
-    }
-    if (minPercent) {
-      queryParams.append('percentMin', minPercent.toString());
-    }
-    if (maxPercent) {
-      queryParams.append('percentMax', maxPercent.toString());
-    }
-    if (date) {
-      queryParams.append('unlockedDate', date);
-    }
+    try {
+      setIsLoading(true);
+      if (reset) {
+        setAch([]);
+      }
+      const queryParams = new URLSearchParams({
+        orderBy: sortConfig,
+        desc: desc
+          ? '1'
+          : '0',
+        language: i18n.language,
+        page: page.toString(),
+        pageSize: PAGE_SIZE.toString()
+      });
+      if (!all) {
+        queryParams.append('appid', '' + appid);
+        if (unlocked) { queryParams.append('unlocked', '1'); }
+      } else {
+        queryParams.append('unlocked', '1');
+      }
+      if (minPercent) {
+        queryParams.append('percentMin', minPercent.toString());
+      }
+      if (maxPercent) {
+        queryParams.append('percentMax', maxPercent.toString());
+      }
+      if (date) {
+        queryParams.append('unlockedDate', date);
+      }
 
-    const steamId = localStorage.getItem('steamId');
-    const response = await ApiService.get < Pagination < AchievmentsFromView >>(`user/${steamId}/achievements?${queryParams.toString()}`);
+      const steamId = localStorage.getItem('steamId');
+      const response = await ApiService.get < Pagination < AchievmentsFromView >>(`user/${steamId}/achievements?${queryParams.toString()}`);
 
-    if (reset) {
-      setAch(response.rows);
-    } else {
-      setAch((prevAch) => [
-        ...prevAch,
-        ...response.rows
-      ]);
+      if (reset) {
+        setAch(response.rows);
+      } else {
+        setAch((prevAch) => [
+          ...prevAch,
+          ...response.rows
+        ]);
+      }
+
+      setHasMore(response.rows.length === PAGE_SIZE);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching achievements:', error);
+      setIsLoading(false);
+      setHasMore(false);
     }
-
-    setHasMore(response.rows.length > 0);
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -84,6 +91,10 @@ const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, 
       if (entries[0].isIntersecting && hasMore) {
         setPage((prevPage) => prevPage + 1);
       }
+    }, {
+      root: null,
+      rootMargin: '100px', // Start loading before reaching the bottom
+      threshold: 0.1
     });
     if (node) { observer.current.observe(node); }
   };
@@ -118,68 +129,75 @@ const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, 
   }
   return (
         <I18nextProvider i18n={i18n}>
-            <table>
-                <thead>
-                    <tr>
-                        {sortOptions.map((option) => {
-                          return <th
-                                onClick={() => {
-                                  handleSortChange(option.value);
-                                }}>{option.label} {sortConfig === option.value
-                                  ? desc
-                                    ? '\u25BC'
-                                    : '\u25B2'
-                                  : ''}</th>;
+            <div className="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            {sortOptions.map((option) => {
+                              return <th
+                                    onClick={() => {
+                                      handleSortChange(option.value);
+                                    }}>{option.label} {sortConfig === option.value
+                                      ? desc
+                                        ? '\u25BC'
+                                        : '\u25B2'
+                                      : ''}</th>;
+                            })}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {ach.map((achievement, index, arr) => {
+                          const rowClass = achievement.percent <= 5
+                            ? 'rare1'
+                            : '';
+                          const imgClass = () => {
+                            if (achievement.percent <= 5) { return 'rare1 table-ach-img'; }
+                            if (achievement.percent <= 20) { return 'rare2 table-ach-img'; }
+                            if (achievement.percent <= 45) { return 'rare3 table-ach-img'; }
+                            if (achievement.percent <= 60) { return 'rare4 table-ach-img'; }
+                            return 'rare5 table-ach-img';
+                          };
+                          const formattedDate = achievement.unlockedDate
+                            ? new Date(achievement.unlockedDate).toLocaleString()
+                            : '';
+                          let last = false;
+                          if (index === arr.length - 1) {
+                            last = true;
+                          }
+                          return (
+                                <tr
+                                    className={rowClass}
+                                    ref={last
+                                      ? lastAchievementRef
+                                      : undefined}
+                                    key={achievement.displayName}>
+                                    <td>
+                                        <img
+                                            className={imgClass()}
+                                            src={achievement.unlocked
+                                              ? achievement.icon
+                                              : achievement.grayIcon}
+                                            alt={achievement.displayName}/>
+                                    </td>
+                                    <td>{achievement.displayName}</td>
+                                    <td>{achievement.description}</td>
+                                    <td>{achievement
+                                      .percent
+                                      .toFixed(2)}%</td>
+                                    <td>{formattedDate}</td>
+                                </tr>
+                          );
                         })}
-                    </tr>
-                </thead>
-                <tbody>
-                    {ach.map((achievement, index, arr) => {
-                      const rowClass = achievement.percent <= 5
-                        ? 'rare1'
-                        : '';
-                      const imgClass = () => {
-                        if (achievement.percent <= 5) { return 'rare1 table-ach-img'; }
-                        if (achievement.percent <= 20) { return 'rare2 table-ach-img'; }
-                        if (achievement.percent <= 45) { return 'rare3 table-ach-img'; }
-                        if (achievement.percent <= 60) { return 'rare4 table-ach-img'; }
-                        return 'rare5 table-ach-img';
-                      };
-                      const formattedDate = achievement.unlockedDate
-                        ? new Date(achievement.unlockedDate).toLocaleString()
-                        : '';
-                      let last = false;
-                      if (index === arr.length - 1) {
-                        last = true;
-                      }
-                      return (
-                            <tr
-                                className={rowClass}
-                                ref={last
-                                  ? lastAchievementRef
-                                  : undefined}
-                                key={achievement.displayName}>
-                                <td>
-                                    <img
-                                        className={imgClass()}
-                                        src={achievement.unlocked
-                                          ? achievement.icon
-                                          : achievement.grayIcon}
-                                        alt={achievement.displayName}/>
-                                </td>
-                                <td>{achievement.displayName}</td>
-                                <td>{achievement.description}</td>
-                                <td>{achievement
-                                  .percent
-                                  .toFixed(2)}%</td>
-                                <td>{formattedDate}</td>
-                            </tr>
-                      );
-                    })}
 
-                </tbody>
+                    </tbody>
 
-            </table>
+                </table>
+                {isLoading && (
+                  <div className="loading-indicator">
+                    {t('Loading...')}
+                  </div>
+                )}
+            </div>
         </I18nextProvider>
   );
 };
