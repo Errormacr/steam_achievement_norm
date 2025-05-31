@@ -1,0 +1,38 @@
+.header {
+  width: 100%;
+  background-color: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-left {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .header-right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .header-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .account-settings {
+    display: flex;
+    gap: 0.5rem;
+  }
+} 

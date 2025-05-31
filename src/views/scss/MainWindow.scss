@@ -85,3 +85,113 @@
     width: 99vw;
     height: 16.1rem;
 }
+
+.main-window {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.user-profile {
+  background-color: var(--background-color);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .nickname {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      margin: 1rem 0;
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+
+        .stat-label {
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+        }
+
+        .stat-value {
+          font-size: 1.2rem;
+          font-weight: bold;
+          color: var(--text-color);
+        }
+      }
+    }
+
+    .progress-section {
+      margin-top: 1rem;
+    }
+  }
+}
+
+.content-section {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  width: 100%;
+
+  .recent-games {
+    flex: 1;
+    min-width: 300px;
+    max-width: calc(100% - 370px);
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      margin: 0 0 1rem 0;
+      color: var(--text-color);
+      font-size: 1.2rem;
+    }
+  }
+
+  .last-achievements {
+    width: 350px;
+    flex-shrink: 0;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      margin: 0 0 1rem 0;
+      color: var(--text-color);
+      font-size: 1.2rem;
+    }
+  }
+
+  .game-cards {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+        flex-wrap: wrap;
+  }
+}
