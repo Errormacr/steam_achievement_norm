@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import '../scss/GameCard.scss';
-import { Achievements, gameDataWithAch, GamePageProps } from '../../interfaces';
+import { Achievements, AchievmentsFromView, gameDataWithAch, GamePageProps } from '../../interfaces';
 import { ApiService } from '../../services/api.services';
 import { useNavigate } from 'react-router-dom';
 import AchievementImage from './AchievementImage';
@@ -125,11 +125,11 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
         </div>
         <div className="gameCard-background"></div>
         <div className="achievement-images">
-          {aches.map((achievement: Achievements) => (
+          {aches.map((achievement: AchievmentsFromView) => (
             <AchievementImage
              key={achievement.name}
             name={achievement.name}
-            icon={achievement.icon}
+            icon={achievement.unlocked ? achievement.icon : achievement.grayIcon}
             displayName={achievement.displayName}
             description={achievement.description}
             percent={achievement.percent}

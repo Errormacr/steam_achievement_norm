@@ -5,7 +5,7 @@ import '../scss/LastAchContainer.scss';
 import AchievementImage from '../components/AchievementImage';
 import { AchievmentsFromView } from '../../interfaces';
 
-export default function AchCont () {
+const LastAchContainer: React.FC = () => {
   const [allAch, setAllAch] = useState<AchievmentsFromView[]>([]);
 
   const renderWindow = useCallback(async () => {
@@ -17,22 +17,15 @@ export default function AchCont () {
 
   useEffect(() => {
     renderWindow();
-  }, []);
-
-  const getAchievementClass = (percent: number): string => {
-    if (percent <= 5) return 'rare1';
-    if (percent <= 20) return 'rare2';
-    if (percent <= 45) return 'rare3';
-    if (percent <= 60) return 'rare4';
-    return 'rare5';
-  };
+  }, [renderWindow]);
 
   return (
     <I18nextProvider i18n={i18n}>
       <div className="last_ach_container">
-        {allAch.map((ach) => (
-          <AchievementImage
-            key={ach.name}
+        {allAch.map((ach) => {
+          return (
+            <AchievementImage
+              key={ach.name}
             name={ach.name}
             icon={ach.icon}
             displayName={ach.displayName}
@@ -41,8 +34,11 @@ export default function AchCont () {
             unlockedDate={ach.unlockedDate}
             gameName={ach.game?.gamename}
           />
-        ))}
+          );
+        })}
       </div>
     </I18nextProvider>
   );
-}
+};
+
+export default LastAchContainer;
