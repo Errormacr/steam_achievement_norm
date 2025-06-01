@@ -1,3 +1,5 @@
+@use './variables' as *;
+
 .header {
     width: 100%;
     display: flex;
@@ -12,8 +14,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: #304865;
-        border: 1px solid black;
+        background-color: var(--main-background);
+        border: 1px solid var(--border-color);
 
         .account-settings {
             display: flex;
@@ -21,7 +23,7 @@
         }
 
         .update-button {
-            margin-left: 1.5rem;
+            margin-left: $spacing-lg;
         }
     }
 }
@@ -33,50 +35,50 @@
     flex-direction: row;
     justify-content: space-between;
     .avatar {
-        margin-top: 1rem;
+        margin-top: $spacing-md;
     }
     .nickname-container {
-        margin-top: 4rem;
-        margin-left: 1.5rem;
+        margin-top: $spacing-xl;
+        margin-left: $spacing-lg;
 
         .gamesAchButtons {
-            margin-top: 0.3rem;
+            margin-top: $spacing-xs;
             text-transform: lowercase;
         }
 
         .nickname {
-            color: #ffffff;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            padding: $spacing-sm;
+            border-radius: $border-radius-sm;
+            box-shadow: var(--card-shadow);
             font-size: 1.2em;
             font-weight: bold;
         }
 
         .stats-container {
-            margin-top: 1rem;
+            margin-top: $spacing-md;
         }
         .gain-nonGainMain {
-            margin-top: 1em;
-            margin-left: 1em;
+            margin-top: $spacing-md;
+            margin-left: $spacing-md;
         }
     }
     .main-game-cards {
-        margin-top: 4rem;
-        margin-left: 2rem;
-        margin-right: 2rem;
+        margin-top: $spacing-xl;
+        margin-left: $spacing-xl;
+        margin-right: $spacing-xl;
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
-        gap: 1em;
+        gap: $spacing-md;
         height: 100%;
     }
     .with-friends {
         display: flex;
         flex-direction: column;
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-        margin-top: 4rem;
+        margin-left: $spacing-lg;
+        margin-right: $spacing-lg;
+        margin-top: $spacing-xl;
     }
 }
 .diagramCont {
@@ -89,48 +91,46 @@
 .main-window {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 1rem;
-  max-width: 1400px;
+  gap: $spacing-xl;
+  padding: $spacing-md;
   margin: 0 auto;
 }
 
 .user-profile {
-  background-color: var(--background-color);
-  border-radius: 8px;
-  padding: 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: $border-radius-md;
+  padding: $spacing-xl;
+  box-shadow: var(--card-shadow);
 
   .user-info {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: $spacing-md;
 
     .avatar {
       width: 120px;
       height: 120px;
-      border-radius: 12px;
+      border-radius: $border-radius-md;
       object-fit: cover;
     }
 
     .nickname {
       font-size: 1.5rem;
       font-weight: bold;
-      color: var(--text-color);
+      color: var(--text-primary);
       margin: 0;
     }
 
     .stats {
       display: flex;
-      gap: 2rem;
-      margin: 1rem 0;
+      gap: $spacing-xl;
+      margin: $spacing-md 0;
 
       .stat-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: $spacing-sm;
 
         .stat-label {
           color: var(--text-secondary);
@@ -140,20 +140,20 @@
         .stat-value {
           font-size: 1.2rem;
           font-weight: bold;
-          color: var(--text-color);
+          color: var(--text-primary);
         }
       }
     }
 
     .progress-section {
-      margin-top: 1rem;
+      margin-top: $spacing-md;
     }
   }
 }
 
 .content-section {
   display: flex;
-  gap: 2rem;
+  gap: $spacing-xl;
   flex-wrap: wrap;
   width: 100%;
 
@@ -161,37 +161,34 @@
     flex: 1;
     min-width: 300px;
     max-width: calc(100% - 370px);
-    background-color: var(--background-color);
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    box-shadow: var(--card-shadow);
 
     h3 {
-      margin: 0 0 1rem 0;
-      color: var(--text-color);
+      margin: 0 0 $spacing-md 0;
+      color: var(--text-primary);
       font-size: 1.2rem;
     }
   }
 
   .last-achievements {
-    width: 350px;
     flex-shrink: 0;
-    background-color: var(--background-color);
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: $border-radius-md;
+    padding: $spacing-lg;
+    box-shadow: var(--card-shadow);
 
     h3 {
-      margin: 0 0 1rem 0;
-      color: var(--text-color);
+      margin: 0 0 $spacing-md 0;
+      color: var(--text-primary);
       font-size: 1.2rem;
     }
   }
 
   .game-cards {
     display: flex;
-    gap: 1rem;
+    gap: $spacing-md;
     width: 100%;
-        flex-wrap: wrap;
+    flex-wrap: wrap;
   }
 }

@@ -20,10 +20,14 @@ const ThemeToggle: React.FC = () => {
   };
 
   return (
-    <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}>
+    <button
+      className="theme-toggle"
+      onClick={toggleTheme}
+      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+    >
       {theme === 'light' ? '🌙' : '☀️'}
     </button>
   );
 };
 
-export default ThemeToggle; 
+export default ThemeToggle;

@@ -5,22 +5,16 @@ import '../scss/Table.scss';
 import { ApiService } from '../../services/api.services';
 import { AchBoxProps, AchievmentsFromView, Pagination } from '../../interfaces';
 
-const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, date, unlocked }) => {
-  const [ach,
-    setAch] = useState<AchievmentsFromView[]>([]);
-  const [sortConfig,
-    setSortConfig] = useState('unlockedDate');
-  const [isLoading,
-    setIsLoading] = useState(false);
-  const [page,
-    setPage] = useState(1);
-  const [hasMore,
-    setHasMore] = useState(true);
-  const [desc,
-    setDesc] = useState(true);
+const Table: React.FC<AchBoxProps> = ({ appid, all, minPercent, maxPercent, date, unlocked }) => {
+  const [ach, setAch] = useState<AchievmentsFromView[]>([]);
+  const [sortConfig, setSortConfig] = useState('unlockedDate');
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [desc, setDesc] = useState(true);
   const { t } = useTranslation();
-  const observer = useRef < IntersectionObserver | null >(null);
-  const PAGE_SIZE = 50; // Increased page size
+  const observer = useRef<IntersectionObserver | null>(null);
+  const PAGE_SIZE = 50;
 
   const fetchAchievements = async (reset = false) => {
     try {
@@ -28,21 +22,24 @@ const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, 
       if (reset) {
         setAch([]);
       }
+
       const queryParams = new URLSearchParams({
         orderBy: sortConfig,
-        desc: desc
-          ? '1'
-          : '0',
+        desc: desc ? '1' : '0',
         language: i18n.language,
         page: page.toString(),
         pageSize: PAGE_SIZE.toString()
       });
+
       if (!all) {
         queryParams.append('appid', '' + appid);
-        if (unlocked) { queryParams.append('unlocked', '1'); }
+        if (unlocked) {
+          queryParams.append('unlocked', '1');
+        }
       } else {
         queryParams.append('unlocked', '1');
       }
+
       if (minPercent) {
         queryParams.append('percentMin', minPercent.toString());
       }
@@ -54,15 +51,14 @@ const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, 
       }
 
       const steamId = localStorage.getItem('steamId');
-      const response = await ApiService.get < Pagination < AchievmentsFromView >>(`user/${steamId}/achievements?${queryParams.toString()}`);
+      const response = await ApiService.get<Pagination<AchievmentsFromView>>(
+        `user/${steamId}/achievements?${queryParams.toString()}`
+      );
 
       if (reset) {
         setAch(response.rows);
       } else {
-        setAch((prevAch) => [
-          ...prevAch,
-          ...response.rows
-        ]);
+        setAch((prevAch) => [...prevAch, ...response.rows]);
       }
 
       setHasMore(response.rows.length === PAGE_SIZE);
@@ -80,125 +76,128 @@ const Table : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent, 
   }, [sortConfig, desc]);
 
   useEffect(() => {
-    if (page > 1) { fetchAchievements(); }
-  }
-  , [page]);
+    if (page > 1) {
+      fetchAchievements();
+    }
+  }, [page]);
 
-  const lastAchievementRef = (node : HTMLDivElement) => {
-    if (isLoading) { return; }
-    if (observer.current) { observer.current.disconnect(); }
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore) {
-        setPage((prevPage) => prevPage + 1);
+  const lastAchievementRef = (node: HTMLDivElement) => {
+    if (isLoading) return;
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      },
+      {
+        root: null,
+        rootMargin: '100px',
+        threshold: 0.1
       }
-    }, {
-      root: null,
-      rootMargin: '100px', // Start loading before reaching the bottom
-      threshold: 0.1
-    });
-    if (node) { observer.current.observe(node); }
+    );
+
+    if (node) observer.current.observe(node);
   };
 
   const sortOptions = [
-
     {
       value: 'displayName',
       label: t('Name')
-    }, {
+    },
+    {
       value: 'description',
       label: t('Description')
-    }, {
+    },
+    {
       value: 'percent',
       label: t('PercentPlayer')
-    }, {
+    },
+    {
       value: 'unlockedDate',
       label: t('DataGain')
     }
   ];
-  const handleSortChange = (event : string) => {
+
+  const handleSortChange = (event: string) => {
     if (sortConfig === event) {
       setDesc(!desc);
     } else {
       setSortConfig(event);
     }
   };
+
   if (!all) {
     sortOptions.unshift({ value: 'unlocked', label: t('Gained') });
   } else {
     sortOptions.unshift({ value: '', label: '' });
   }
+
   return (
-        <I18nextProvider i18n={i18n}>
-            <div className="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            {sortOptions.map((option) => {
-                              return <th
-                                    onClick={() => {
-                                      handleSortChange(option.value);
-                                    }}>{option.label} {sortConfig === option.value
-                                      ? desc
-                                        ? '\u25BC'
-                                        : '\u25B2'
-                                      : ''}</th>;
-                            })}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {ach.map((achievement, index, arr) => {
-                          const rowClass = achievement.percent <= 5
-                            ? 'rare1'
-                            : '';
-                          const imgClass = () => {
-                            if (achievement.percent <= 5) { return 'rare1 table-ach-img'; }
-                            if (achievement.percent <= 20) { return 'rare2 table-ach-img'; }
-                            if (achievement.percent <= 45) { return 'rare3 table-ach-img'; }
-                            if (achievement.percent <= 60) { return 'rare4 table-ach-img'; }
-                            return 'rare5 table-ach-img';
-                          };
-                          const formattedDate = achievement.unlockedDate
-                            ? new Date(achievement.unlockedDate).toLocaleString()
-                            : '';
-                          let last = false;
-                          if (index === arr.length - 1) {
-                            last = true;
-                          }
-                          return (
-                                <tr
-                                    className={rowClass}
-                                    ref={last
-                                      ? lastAchievementRef
-                                      : undefined}
-                                    key={achievement.displayName}>
-                                    <td>
-                                        <img
-                                            className={imgClass()}
-                                            src={achievement.unlocked
-                                              ? achievement.icon
-                                              : achievement.grayIcon}
-                                            alt={achievement.displayName}/>
-                                    </td>
-                                    <td>{achievement.displayName}</td>
-                                    <td>{achievement.description}</td>
-                                    <td>{achievement
-                                      .percent
-                                      .toFixed(2)}%</td>
-                                    <td>{formattedDate}</td>
-                                </tr>
-                          );
-                        })}
+    <I18nextProvider i18n={i18n}>
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              {sortOptions.map((option) => (
+                <th
+                  key={option.value}
+                  onClick={() => handleSortChange(option.value)}
+                >
+                  {option.label}
+                  {sortConfig === option.value ? (desc ? '\u25BC' : '\u25B2') : ''}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {ach.map((achievement, index, arr) => {
+              const rowClass = achievement.percent <= 5 ? 'rare1' : '';
+              const imgClass = () => {
+                if (achievement.percent <= 5) return 'rare1 table-ach-img';
+                if (achievement.percent <= 20) return 'rare2 table-ach-img';
+                if (achievement.percent <= 45) return 'rare3 table-ach-img';
+                if (achievement.percent <= 60) return 'rare4 table-ach-img';
+                return 'rare5 table-ach-img';
+              };
 
-                    </tbody>
+              const formattedDate = achievement.unlockedDate
+                ? new Date(achievement.unlockedDate).toLocaleString()
+                : '';
 
-                </table>
-                {isLoading && (
-                  <div className="loading-indicator">
-                    {t('Loading...')}
-                  </div>
-                )}
-            </div>
-        </I18nextProvider>
+              const isLast = index === arr.length - 1;
+
+              return (
+                <tr
+                  className={rowClass}
+                  ref={isLast ? lastAchievementRef : undefined}
+                  key={achievement.displayName}
+                >
+                  <td>
+                    <img
+                      className={imgClass()}
+                      src={achievement.unlocked ? achievement.icon : achievement.grayIcon}
+                      alt={achievement.displayName}
+                    />
+                  </td>
+                  <td>{achievement.displayName}</td>
+                  <td>{achievement.description}</td>
+                  <td>{achievement.percent.toFixed(2)}%</td>
+                  <td>{formattedDate}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        {isLoading && (
+          <div className="loading-indicator">
+            {t('Loading...')}
+          </div>
+        )}
+      </div>
+    </I18nextProvider>
   );
 };
+
 export default Table;

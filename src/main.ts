@@ -1,14 +1,16 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
+
 let nestAppProcess: ChildProcess | null = null;
+
 const createWindow = () => {
   // Create the browser window.
-
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -17,21 +19,21 @@ const createWindow = () => {
     }
   });
 
-  // // and load the index.html of the app.
+  // Load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
-
-  // Open the DevTools.
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// This method will be called when Electron has finished initialization
+// and is ready to create browser windows.
 app.on('ready', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const nestAppDirectory = path.join(__dirname, '../../server');
   nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/main'], { cwd: nestAppDirectory });
 
@@ -47,14 +49,11 @@ app.on('ready', () => {
   nestAppProcess.on('close', (code) => {
     console.log(`NestJS process exited with code ${code}`);
   });
+
   sleep(1000).then(() => createWindow());
 });
-function sleep (ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+
+// Quit when all windows are closed, except on macOS.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     if (nestAppProcess) {

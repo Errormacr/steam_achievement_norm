@@ -1,16 +1,18 @@
+@use './variables' as *;
+
 .preview-container {
     height: 10em;
-    margin-top: 1em;
+    margin-top: $spacing-md;
 
     .preview-img {
         float: left;
         height: 90%;
-        box-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 0 5px white inset;
-        margin-right: 20px;
+        box-shadow: var(--card-shadow);
+        margin-right: $spacing-lg;
     }
 
     .gain-nongain {
-        margin-left: 2rem;
+        margin-left: $spacing-xl;
         font-size: 2em;
     }
 }

@@ -1,10 +1,10 @@
 import React from 'react';
-import './scss/ProgressBar.scss';
+
 interface Props {
-    value : number;
+  value: number;
 }
 
-const ProgressBar : React.FC < Props > = ({ value }) => {
+const ProgressBar: React.FC<Props> = ({ value }) => {
   const colors = [
     '#FF0000',
     '#FF4500',
@@ -13,6 +13,7 @@ const ProgressBar : React.FC < Props > = ({ value }) => {
     '#00FF00',
     '#008000'
   ];
+
   const colorIndex = Math.floor(value / 20);
   const color = colors[colorIndex];
 
@@ -23,9 +24,9 @@ const ProgressBar : React.FC < Props > = ({ value }) => {
   };
 
   return (
-        <div className="friends-progress-bar">
-            <div style={progressStyle}></div>
-        </div>
+    <div className="friends-progress-bar">
+      <div style={progressStyle}></div>
+    </div>
   );
 };
 

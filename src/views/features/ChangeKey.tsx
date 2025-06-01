@@ -3,9 +3,7 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
-import { ApiService } from '../../services/api.services';
 import '../scss/ChangeKey.scss';
-import { KeyResponse } from '../../interfaces';
 import { toast } from 'react-toastify';
 export default function ChangeKey (): React.JSX.Element {
   const [isOpen,

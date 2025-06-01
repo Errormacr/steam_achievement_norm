@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 interface AchievementImageProps {
   name: string;
   icon: string;
@@ -53,7 +54,9 @@ const AchievementImage: React.FC<AchievementImageProps> = ({
     description,
     `${percent.toFixed(2)}%`,
     formatDate(unlockedDate)
-  ].filter(Boolean).join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     console.error('Image load error:', {
@@ -74,16 +77,16 @@ const AchievementImage: React.FC<AchievementImageProps> = ({
 
   return (
     <div className="Cont">
-      { imgSrc &&
-      <img
-        className={getAchievementClass(percent)}
-        src={imgSrc}
-        alt={displayName}
-        title={title}
-        onError={handleImageError}
-        onLoad={handleImageLoad}
-      />
-      }
+      {imgSrc && (
+        <img
+          className={getAchievementClass(percent)}
+          src={imgSrc}
+          alt={displayName}
+          title={title}
+          onError={handleImageError}
+          onLoad={handleImageLoad}
+        />
+      )}
     </div>
   );
 };

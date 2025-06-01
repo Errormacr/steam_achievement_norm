@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { I18nextProvider, useTranslation } from 'react-i18next';
-import i18n from 'i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import '../scss/StatsPage.scss';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
+import i18n from 'i18next';
+
 import StatsRareAch from '../features/StatsRareAch';
 import StatsTimeAch from '../features/StatsTimeAch';
 import { statsComponentProps } from '../../interfaces';
 
+import '../scss/StatsPage.scss';
+
 const StatsPage: React.FC = () => {
   const navigate = useNavigate();
-
-  const { gameAppid } = useParams < {
-    gameAppid?: string;
-  } >();
-
-  const [type, setType] = useState<string | null>(sessionStorage.getItem('type'));
   const { t } = useTranslation();
+  const { gameAppid } = useParams<{ gameAppid?: string }>();
+  const [type, setType] = useState<string | null>(sessionStorage.getItem('type'));
 
   const componentMap: Record<string, React.FC> = {
     RareStats: StatsRareAch,
@@ -29,7 +27,7 @@ const StatsPage: React.FC = () => {
     }
   }, [type]);
 
-  const ComponentToRender: null | React.FC < statsComponentProps > = type ? componentMap[type] : null;
+  const ComponentToRender: null | React.FC<statsComponentProps> = type ? componentMap[type] : null;
 
   return (
     <I18nextProvider i18n={i18n}>
@@ -52,7 +50,11 @@ const StatsPage: React.FC = () => {
           ))}
         </div>
         <div className="stats-container">
-          {ComponentToRender ? <ComponentToRender gameAppid={+gameAppid || undefined} /> : <div>Select a type to view stats</div>}
+          {ComponentToRender ? (
+            <ComponentToRender gameAppid={+gameAppid || undefined} />
+          ) : (
+            <div>Select a type to view stats</div>
+          )}
         </div>
       </div>
     </I18nextProvider>

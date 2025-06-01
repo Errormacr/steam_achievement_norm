@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../scss/ScrollToTop.scss';
 
-const ScrollToTopButton : React.FC = () => {
-  const [isVisible,
-    setIsVisible] = useState(false);
+const ScrollToTopButton: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,13 +21,12 @@ const ScrollToTopButton : React.FC = () => {
   };
 
   return (
-        <button
-            className={`scroll-to-top-button ${isVisible
-            ? 'visible'
-            : ''}`}
-            onClick={scrollToTop}>
-            ▲
-        </button>
+    <button
+      className={`scroll-to-top-button ${isVisible ? 'visible' : ''}`}
+      onClick={scrollToTop}
+    >
+      ▲
+    </button>
   );
 };
 

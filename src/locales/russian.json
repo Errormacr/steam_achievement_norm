@@ -10,7 +10,7 @@
     "Update": "Обновить",
     "Games": "Игры",
     "GamesWithAch": "Игры с достижениями",
-    "AllAch": "Все достижения",
+    "AllAch": "Достижения",
     "Success": "Успех",
     "LoadFail": "Ошибка загрузки",
     "English": "Английский",
@@ -108,5 +108,6 @@
     "loading": "Загрузка...",
     "noAchievements": "Нет данных о достижениях",
     "connectionError": "Ошибка подключения",
-    "noSteamId": "Steam ID не найден"
+    "noSteamId": "Steam ID не найден",
+    "Profile": "Профиль"
 }

@@ -1,5 +1,7 @@
+@use './variables' as *;
+
 .main-content {
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: $spacing-xl $spacing-md;
   min-height: calc(100vh - 70px); // Вычитаем высоту header
 } 

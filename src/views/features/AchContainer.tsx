@@ -331,7 +331,7 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
                             </div>
                         </button>
                     </div>
-                    
+
                     <div className="AchCont">
                         {ach.map((achievement, index, arr) => (
                             <div

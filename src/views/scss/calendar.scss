@@ -1,29 +1,31 @@
+@use './variables' as *;
+
 .calendar {
-    border: 1px solid #ccc;
-    padding: 20px;
+    border: 1px solid var(--border-color);
+    padding: $spacing-lg;
     max-width: 600px;
     margin: 0 auto;
-  }
+}
   
-  .calendar-header {
+.calendar-header {
     text-align: center;
-    margin-bottom: 20px;
-  }
+    margin-bottom: $spacing-lg;
+}
   
-  .calendar-grid {
+.calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-  }
+    gap: $spacing-xs;
+}
   
-  .calendar-cell {
+.calendar-cell {
     width: 30px;
     height: 30px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     text-align: center;
     line-height: 30px;
-  }
+}
   
-  .calendar-cell.active {
-    background-color: #79b8ff;
-  }
+.calendar-cell.active {
+    background-color: var(--accent-color);
+}

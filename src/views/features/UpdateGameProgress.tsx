@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import '../scss/UpdateGameProgress.scss';
 import { UpdateGameEvent } from '../../interfaces'; // Подключаем SCSS файл
 
-export default function UpdateProgress(): React.JSX.Element {
+export default function UpdateProgress (): React.JSX.Element {
   const [gameCount, setGameCount] = useState<number | null>(null);
   const [finishedGameCount, setFinishedGameCount] = useState(0);
   const [updatedGames, setUpdatedGames] = useState<string[]>([]);
@@ -15,7 +15,7 @@ export default function UpdateProgress(): React.JSX.Element {
   const socket = useSocket();
 
   useEffect(() => {
-    let reconnectTimer: NodeJS.Timeout;
+    let reconnectTimer: any;
     let isComponentMounted = true;
 
     const connectSocket = () => {
@@ -41,7 +41,7 @@ export default function UpdateProgress(): React.JSX.Element {
 
     const handleGameCount = (data: { count: number }) => {
       if (!isComponentMounted) return;
-      
+
       setGameCount(data.count);
       setIsError(false);
       setIsConnecting(false);
@@ -52,14 +52,14 @@ export default function UpdateProgress(): React.JSX.Element {
 
     const handleUpdateGame = ({ gamename }: UpdateGameEvent) => {
       if (!isComponentMounted) return;
-      
+
       setFinishedGameCount((prev) => prev + 1);
       setUpdatedGames((prev) => [gamename, ...prev.slice(0, 19)]);
     };
 
     const handleStatus = () => {
       if (!isComponentMounted) return;
-      
+
       setGameCount(null);
       setFinishedGameCount(0);
       setUpdatedGames([]);
@@ -68,7 +68,7 @@ export default function UpdateProgress(): React.JSX.Element {
 
     const handleError = () => {
       if (!isComponentMounted) return;
-      
+
       setIsError(true);
       setIsConnecting(false);
       toast.error(t('connectionError'));
@@ -83,7 +83,7 @@ export default function UpdateProgress(): React.JSX.Element {
 
     const handleDisconnect = () => {
       if (!isComponentMounted) return;
-      
+
       setIsConnecting(true);
       // Попытка немедленного переподключения
       connectSocket();

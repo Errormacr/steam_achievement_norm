@@ -1,13 +1,13 @@
 import React from 'react';
 import '../scss/ProgressRad.scss';
 
-interface ProgressProps extends React.HTMLAttributes < HTMLDivElement > {
-    'data-progress' ?: string;
-    'SizeVnu': string;
-    'SizeVne': string;
+interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
+    'data-progress'?: string;
+    SizeVnu: string;
+    SizeVne: string;
 }
 
-const ProgressRad : React.FC < ProgressProps > = ({
+const ProgressRad: React.FC<ProgressProps> = ({
   'data-progress': progress,
   SizeVnu: sizeVNu,
   SizeVne: sizeVN,
@@ -20,11 +20,11 @@ const ProgressRad : React.FC < ProgressProps > = ({
   const rotation = (progressValue / 100) * 360;
   const rotationSec = (progressSec / 100) * 360;
   const parsedProgress = parseFloat(progress);
-  const progressStyle : React.CSSProperties & {
-        '--progress' ?: string;
-        '--progress-float' ?: string;
-        '--length' ?: string;
-        '--heigth' ?: string;
+  const progressStyle: React.CSSProperties & {
+        '--progress'?: string;
+        '--progress-float'?: string;
+        '--length'?: string;
+        '--heigth'?: string;
     } = {
       '--progress': `${rotation}deg`,
       '--progress-float': `${rotationSec}deg`,
@@ -34,11 +34,12 @@ const ProgressRad : React.FC < ProgressProps > = ({
   const string = `${parsedProgress.toFixed(2)}%`;
 
   return (
-        <div
-            className="progress_rad"
-            {...rest}
-            data-progress={string}
-            style={progressStyle}></div>
+    <div
+      className="progress_rad"
+      {...rest}
+      data-progress={string}
+      style={progressStyle}
+    />
   );
 };
 

@@ -1,24 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import AchCont from '../features/last_ach_container';
 import ReactDOM from 'react-dom/client';
-import ProgressRad from '../components/rad_progress';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { I18nextProvider, useTranslation } from 'react-i18next';
-import i18n from '../../transate';
-import '../scss/MainWindow.scss';
+
+import AchCont from '../features/last_ach_container';
+import ProgressRad from '../components/rad_progress';
 import GameCard from '../components/GameCard';
 import { ApiService } from '../../services/api.services';
 import { UserData } from '../../interfaces';
+import i18n from '../../transate';
 
-export default function App () {
+import '../scss/MainWindow.scss';
+
+export default function App() {
+  const { t } = useTranslation();
   const [personalName, setPersonalName] = useState('');
   const [AchCount, setAchCount] = useState(0);
   const [gamesCount, setGamesCount] = useState(0);
   const [avaUrl, setAvaUrl] = useState('');
   const [percent, setPercent] = useState(0);
   const [recentGames, setRecentGames] = useState([]);
-  const { t } = useTranslation();
 
   const updateUserData = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
@@ -72,8 +74,8 @@ export default function App () {
                 <ProgressRad
                   title={t('AveragePercent')}
                   data-progress={`${percent}`}
-                  SizeVnu={'9rem'}
-                  SizeVne={'10rem'}
+                  SizeVnu="9rem"
+                  SizeVne="10rem"
                 />
               </div>
             </div>

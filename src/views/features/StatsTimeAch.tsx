@@ -1,20 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import AchTimeHistogram from './AchTimeHistogram';
 import AchCountTimeHistogram from './AchCountTimeHistogram';
 import AchAccPercentHistogram from './AchAccPercentHistogram';
 import { statsComponentProps } from '../../interfaces';
-import { ApiService } from '../../services/api.services';
-
-interface HeatmapData {
-  row: number;
-  column: number;
-  count: number;
-  date?: string;
-}
 
 const StatsTimeAch: React.FC<statsComponentProps> = ({ gameAppid }) => {
-
- 
   return (
     <>
       <div className='stats-chart'>
@@ -31,7 +21,7 @@ const StatsTimeAch: React.FC<statsComponentProps> = ({ gameAppid }) => {
           <AchAccPercentHistogram/>
         </div>
       )}
-      
+
     </>
   );
 };

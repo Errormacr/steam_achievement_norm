@@ -1,3 +1,5 @@
+@use './variables' as *;
+
 .gameFilterCont {
     display: flex;
     justify-content: center;
@@ -6,20 +8,20 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 2.5rem;
+        margin-top: $spacing-xl;
         width: fit-content;
-        border-radius: 1rem;
-        background-color: #445974;
+        border-radius: $border-radius-lg;
+        background-color: var(--accent-color);
     }
 }
 .game_container {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: $spacing-sm;
     flex-wrap: wrap;
 }
 .add-game-button {
-    margin-right: 1rem;
+    margin-right: $spacing-md;
     position: absolute;
     right: 0;
     top: 1%;
