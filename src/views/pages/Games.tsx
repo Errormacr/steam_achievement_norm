@@ -18,7 +18,7 @@ export default function Games () {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState<GameDataRow[]>([]);
   const [desc, setDesc] = useState(true);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>('lastLaunchTime');
@@ -345,10 +345,10 @@ export default function Games () {
         <div className="games-container">
           {games.map((game, index) => (
             <div
-              key={game.appId}
+              key={game.appid}
               ref={index === games.length - 1 ? lastGameObserver : null}
             >
-              <GameCard game={game} />
+              <GameCard appid={game.appid} backWindow={'Games'} />
             </div>
           ))}
           {isLoading && <div className="loading">Loading...</div>}

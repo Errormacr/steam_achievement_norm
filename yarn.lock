@@ -912,22 +912,6 @@
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
-"@nivo/heatmap@^0.85.1":
-  version "0.85.1"
-  resolved "https://registry.yarnpkg.com/@nivo/heatmap/-/heatmap-0.85.1.tgz#1b2c360c5c3d2f2deb63c8cdae70e124359f8e6c"
-  integrity sha512-/l3hZfgPE6PYa0q9ueQo/st+L/JrJlEUrmKhi4rfENMWokTT+R1a2tx4MHYMnUx3UaPk3oTsBmP/anXPzKv0jQ==
-  dependencies:
-    "@nivo/annotations" "0.85.1"
-    "@nivo/axes" "0.85.1"
-    "@nivo/colors" "0.85.1"
-    "@nivo/core" "0.85.1"
-    "@nivo/legends" "0.85.1"
-    "@nivo/scales" "0.85.1"
-    "@nivo/tooltip" "0.85.1"
-    "@react-spring/web" "9.4.5 || ^9.7.2"
-    "@types/d3-scale" "^4.0.8"
-    d3-scale "^4.0.2"
-
 "@nivo/legends@0.85.1":
   version "0.85.1"
   resolved "https://registry.yarnpkg.com/@nivo/legends/-/legends-0.85.1.tgz#3646ede2f114dd4026b674408d87acfac02bb4e4"
