@@ -16,7 +16,12 @@ const Header: React.FC = () => {
     <div className="header">
       <div className="header-content">
         <div className="header-left">
-
+          <GameButton
+              id=""
+              additionalClass="header-button"
+              onClick={() => navigate('/')}
+              text={t('Profile')}
+          />
           <GameButton
             id=""
             additionalClass="header-button"
@@ -32,14 +37,8 @@ const Header: React.FC = () => {
            <GameButton
             id=""
             additionalClass="header-button"
-            onClick={() => navigate('/Achievements/0/100/undefined/main/undefined')}
+            onClick={() => navigate('/Stats/undefined')}
             text={t('GameStats')}
-          />
-          <GameButton
-            id=""
-            additionalClass="header-button"
-            onClick={() => navigate('/')}
-            text={t('Profile')}
           />
             <ChangeAccount updatePage={() => {}} />
             <ChangeKey />

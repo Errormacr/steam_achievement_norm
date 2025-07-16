@@ -5,7 +5,7 @@ import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
 import '../scss/ChangeKey.scss';
 import { toast } from 'react-toastify';
-import { ApiService } from '../../services/api.services';'' +
+import { ApiService } from '../../services/api.services';
 
 export default function ChangeKey (): React.JSX.Element {
   const [isOpen,

@@ -42,6 +42,7 @@ export default function Games () {
   }
 
   const handleItemClick = (value: string) => {
+    setPage(1)
     setSelectedValue(value);
     setDropdownOpen(false);
   };
@@ -51,6 +52,7 @@ export default function Games () {
   };
 
   const handleTimeFilterItemClick = (value: string) => {
+    setPage(1)
     if (selectedTimeFilterValue === value) {
       setSelectedTimeFilterValue(null);
     } else {
@@ -60,6 +62,7 @@ export default function Games () {
   };
 
   const handleCompletionFilterItemClick = (value: string) => {
+    setPage(1)
     if (selectedCompletionFilterValue === value) {
       setSelectedCompletionFilterValue(null);
     } else {
@@ -141,7 +144,7 @@ export default function Games () {
   };
 
   useEffect(() => {
-    if (page === prevPage) {
+    if (page <=  prevPage) {
       setGames([]);
       setPage(1);
       setPrevPage(1);
