@@ -347,6 +347,7 @@ export default function Games () {
             <div
               key={game.appid}
               ref={index === games.length - 1 ? lastGameObserver : null}
+              style={{width:'fit-content'}}
             >
               <GameCard appid={game.appid} backWindow={'Games'} />
             </div>

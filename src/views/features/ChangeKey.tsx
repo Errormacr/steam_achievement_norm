@@ -5,6 +5,8 @@ import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
 import '../scss/ChangeKey.scss';
 import { toast } from 'react-toastify';
+import { ApiService } from '../../services/api.services';'' +
+
 export default function ChangeKey (): React.JSX.Element {
   const [isOpen,
     setIsOpen] = useState(false);
@@ -38,7 +40,7 @@ export default function ChangeKey (): React.JSX.Element {
   const changeApiKey = async () => {
     if (apiKey) {
       try {
-        // const res = await ApiService.post('user/change-key', { key });
+        await ApiService.post('steam-api/api-token', { token: apiKey });
         toast.success(t('changeKeySuccess'));
         closeModal();
       } catch (error) {
