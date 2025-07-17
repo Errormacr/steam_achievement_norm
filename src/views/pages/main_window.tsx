@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import {I18nextProvider, useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import AchCont from '../features/last_ach_container';
-import ProgressRad from '../components/rad_progress';
+import CircularProgressSVG from '../components/CircularProgressSVG';
 import GameCard from '../components/GameCard';
 import { ApiService } from '../../services/api.services';
 import { UserData } from '../../interfaces';
-import i18n from '../../transate';
 
+import i18n from '../../transate';
 import '../scss/MainWindow.scss';
+import { Box, Typography } from '@mui/material';
 
 export default function App() {
   const { t } = useTranslation();
@@ -53,49 +54,54 @@ export default function App() {
   }, [updateUserData]);
 
   return (
-    <I18nextProvider i18n={i18n}>
-      <div className="main-window">
-        {personalName && (
-          <div className="user-profile">
-            <div className="user-info">
-              <img alt="avatar" className="avatar" src={avaUrl} />
-              <h2 className="nickname">{personalName}</h2>
-              <div className="stats">
-                <div className="stat-item">
-                  <span className="stat-label">{t('Ach')}:</span>
-                  <span className="stat-value">{AchCount}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">{t('Games')}:</span>
-                  <span className="stat-value">{gamesCount}</span>
-                </div>
+
+      <I18nextProvider i18n={i18n}>
+    <div className="main-window">
+      {personalName && (
+        <div className="user-profile">
+          <div className="user-info">
+            <img alt="avatar" className="avatar" src={avaUrl} />
+            <h2 className="nickname">{personalName}</h2>
+            <div className="stats">
+              <div className="stat-item">
+                <span className="stat-label">{t('Ach')}:</span>
+                <span className="stat-value">{AchCount}</span>
               </div>
-              <div className="progress-section">
-                <ProgressRad
-                  title={t('AveragePercent')}
-                  data-progress={`${percent}`}
-                  SizeVnu="9rem"
-                  SizeVne="10rem"
+              <div className="stat-item">
+                <span className="stat-label">{t('Games')}:</span>
+                <span className="stat-value">{gamesCount}</span>
+              </div>
+            </div>
+            <div className="progress-section">
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <CircularProgressSVG
+                  percent={percent}
+                  size={150}
+                  strokeWidth={15}
                 />
-              </div>
+                <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                  {t('AveragePercent')}
+                </Typography>
+              </Box>
             </div>
-          </div>
-        )}
-        <div className="content-section">
-          <div className="recent-games">
-            <h3>{t('RecentGames')}</h3>
-            <div className="game-cards">
-              {recentGames.map((game) => (
-                <GameCard key={game.appid} appid={game.appid} backWindow="main" />
-              ))}
-            </div>
-          </div>
-          <div className="last-achievements">
-            <h3>{t('LastAchievements')}</h3>
-            <div id="container"></div>
           </div>
         </div>
+      )}
+      <div className="content-section">
+        <div className="recent-games">
+          <h3>{t('RecentGames')}</h3>
+          <div className="game-cards">
+            {recentGames.map((game) => (
+              <GameCard key={game.appid} appid={game.appid} backWindow="main" />
+            ))}
+          </div>
+        </div>
+        <div className="last-achievements">
+          <h3>{t('LastAchievements')}</h3>
+          <div id="container"></div>
+        </div>
       </div>
-    </I18nextProvider>
+    </div>
+      </I18nextProvider>
   );
 }

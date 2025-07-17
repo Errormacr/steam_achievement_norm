@@ -6,7 +6,6 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { GrUpdate } from 'react-icons/gr';
 import i18n from 'i18next';
 
-import ProgressRad from '../components/rad_progress';
 import Table from '../components/Table';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import GameButton from '../components/GameButton';
