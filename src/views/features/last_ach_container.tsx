@@ -26,7 +26,6 @@ const LastAchContainer: React.FC = () => {
           return (
             <AchievementImage
               key={ach.name}
-            name={ach.name}
             icon={ach.icon}
             displayName={ach.displayName}
             description={ach.description}

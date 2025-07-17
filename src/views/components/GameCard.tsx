@@ -8,7 +8,19 @@ import { Achievements, AchievmentsFromView, gameDataWithAch, GamePageProps } fro
 import { ApiService } from '../../services/api.services';
 
 import '../scss/GameCard.scss';
-
+const percentToState = (percent:number) => {
+  return percent === 100
+      ? 'complete'
+      : percent >= 87.5
+          ? 'high'
+          : percent >= 75
+              ? 'medium-high'
+              : percent >= 50
+                  ? 'medium'
+                  : percent >= 25
+                      ? 'low'
+                      : 'very-low'
+}
 const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -79,6 +91,8 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   return (
     <I18nextProvider i18n={i18n}>
       <div
+          role={'button'}
+          tabIndex={0}
         ref={cardRef}
         className={`card ${percent === 100 ? 'full' : 'not_full'}`}
         all-ach={all}
@@ -88,6 +102,7 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
         game-playtime={`${playtime} ${t('Hours')}`}
         key={appid}
         onClick={() => logging(appid, backWindow)}
+        onKeyPress={() => logging(appid, backWindow)}
       >
         <div className="name-preview">
           <p className="name">{gameName}</p>
@@ -117,17 +132,7 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
           <div className="progress">
             <div
               className={`progress-bar ${
-                percent === 100
-                  ? 'complete'
-                  : percent >= 87.5
-                  ? 'high'
-                  : percent >= 75
-                  ? 'medium-high'
-                  : percent >= 50
-                  ? 'medium'
-                  : percent >= 25
-                  ? 'low'
-                  : 'very-low'
+                  percentToState(percent)
               }`}
               style={{
                 width: `${isProgressBarAnimated ? percent : 0}%`
@@ -140,7 +145,6 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
           {aches.map((achievement: AchievmentsFromView) => (
             <AchievementImage
               key={achievement.name}
-              name={achievement.name}
               icon={achievement.unlocked ? achievement.icon : achievement.grayIcon}
               displayName={achievement.displayName}
               description={achievement.description}

@@ -347,7 +347,6 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
                                 className={`achievement-item ${newAchievements.includes(index) ? 'new-achievement' : ''}`}
                             >
                                 <AchievementImage
-                                    name={achievement.name}
                                     icon={achievement.unlocked ? achievement.icon : achievement.grayIcon}
                                     displayName={achievement.displayName}
                                     description={achievement.description}
