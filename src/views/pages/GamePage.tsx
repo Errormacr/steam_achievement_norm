@@ -2,18 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { toast, ToastContainer } from 'react-toastify';
-import { FaArrowLeft } from 'react-icons/fa';
-import { GrUpdate } from 'react-icons/gr';
+import { ArrowBack, Update } from '@mui/icons-material';
 import i18n from 'i18next';
+import {
+  Box,
+  Typography,
+  Container,
+  Card,
+  CardMedia,
+  Grid,
+  Button,
+  IconButton
+} from '@mui/material';
 
 import Table from '../components/Table';
 import ScrollToTopButton from '../components/ScrollToTopButton';
-import GameButton from '../components/GameButton';
 import AchBox from '../features/AchContainer';
 import { GameDataRow, gameDataWithAch } from '../../interfaces';
 import { ApiService } from '../../services/api.services';
 
-import '../scss/GamePage.scss';
+
+import CircularProgressSVG from "../components/CircularProgressSVG";
 
 interface Game {
   appid: number;
@@ -87,11 +96,10 @@ const GamePage: React.FC = () => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <div>
+      <Container maxWidth={false}>
         <ToastContainer />
         <ScrollToTopButton />
-        <FaArrowLeft
-          className="button-icon return"
+        <IconButton
           onClick={() => {
             if (backWindow === 'main') {
               navigate('/');
@@ -99,58 +107,76 @@ const GamePage: React.FC = () => {
               navigate('/Games');
             }
           }}
-          id="return"
-        />
-        <div className="label-container">
-          <label className="game-label">{game.gameName}</label>
-        </div>
-        <div className="label-container preview-container">
-          <img
-            src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`}
-            className="preview-img"
-            alt={game.gameName}
-          />
-          <ProgressRad
-            data-progress={`${game.percent}`}
-            SizeVnu="9rem"
-            SizeVne="10rem"
-          />
-          <label title={t('GainedFromAll')} className="gain-nongain">
-            {game.gained}/{game.all}
-          </label>
-        </div>
-        <div className="switchTable">
-          <GrUpdate
-            id=""
-            className="button-icon update-button"
+        >
+          <ArrowBack />
+        </IconButton>
+        <Typography variant="h4" component="h1" gutterBottom align="center">
+          {game.gameName}
+        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Card sx={{ mb: 2, width: 'fit-content' }}>
+          <Grid container>
+            <Grid item xs={12} md={8}>
+              <CardMedia
+                component="img"
+                image={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`}
+                alt={game.gameName}
+                sx={{ objectFit: 'cover' }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+              <CircularProgressSVG
+                  percent={game.percent}
+                  size={150}
+                  strokeWidth={15}
+              />
+              <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                {t('AveragePercent')}
+              </Typography>
+              <Box sx={{ border: '1px solid grey', borderRadius: '4px', p: 1, mt: 2 }}>
+                <Typography variant="h6" title={t('GainedFromAll')}>
+                  {game.gained}/{game.all}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+        </Card>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<Update />}
             onClick={fetchUpdatedGameData}
-          />
-          <GameButton
-            id=""
-            text={t('GameStats')}
+          >
+            {t('Update')}
+          </Button>
+          <Button
+            variant="contained"
             onClick={() => {
               navigate(`/Stats/${game.appid}`);
             }}
-          />
-          <GameButton
-            id=""
-            text={t('SwitchTable')}
+          >
+            {t('GameStats')}
+          </Button>
+          <Button
+            variant="contained"
             onClick={() => {
               setTableOrBox(!tableOrBox);
               localStorage.setItem('boxView', String(!tableOrBox));
             }}
-          />
-        </div>
-        <div className="table-container">
-          {loaded && (
-            tableOrBox ? (
+          >
+            {t('SwitchTable')}
+          </Button>
+        </Box>
+        <Box>
+          {loaded &&
+            (tableOrBox ? (
               <Table appid={+appid} all={false} />
             ) : (
               <AchBox minPercent={0} maxPercent={100} appid={+appid} all={false} />
-            )
-          )}
-        </div>
-      </div>
+            ))}
+        </Box>
+      </Container>
     </I18nextProvider>
   );
 };

@@ -16,8 +16,6 @@ import {
   Chip
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
-import AchievementImage from './AchievementImage';
 import { Achievements, AchievmentsFromView, gameDataWithAch, GamePageProps } from '../../interfaces';
 import { ApiService } from '../../services/api.services';
 
@@ -61,7 +59,7 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const [playtime, setPlaytime] = useState(0.0);
   const [all, setAll] = useState(0);
   const [gained, setGained] = useState(0);
-  const [gameName, setGamename] = useState('');
+  const [gameName, setGameName] = useState('');
   const [aches, setAches] = useState<AchievmentsFromView[]>([]);
   const [isProgressBarAnimated, setIsProgressBarAnimated] = useState(false);
 
@@ -79,11 +77,11 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
     setAll(gameData.achievmentsFromView.length);
     setGained(gameData.userData[0].gainedAch);
     setPlaytime(+gameData.userData[0].playtime.toFixed(2));
-    setGamename(gameData.gamename);
+    setGameName(gameData.gamename);
     setLastLaunchTime(`${gameData.userData[0].lastLaunchTime}`);
     setAches(
       gameData.achievmentsFromView
-        .sort((a: Achievements, b: Achievements) =>
+        .toSorted((a: Achievements, b: Achievements) =>
           new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()
         )
         .slice(0, 7)
@@ -93,19 +91,17 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   useEffect(() => {
     updateGame();
 
-    const options: IntersectionObserverInit = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.5
-    };
-
     const intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setIsProgressBarAnimated(true);
         }
       });
-    }, options);
+    }, {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5
+    });
 
     if (cardRef.current) {
       intersectionObserver.observe(cardRef.current);
@@ -156,7 +152,7 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
 
                     <Grid container spacing={1} justifyContent="center">
                         {aches.map((achievement) => (
-                             <Grid item key={achievement.name}>
+                             <Grid key={achievement.name}>
                                  <Tooltip title={
                                      <React.Fragment>
                                          <Typography color="inherit" variant="subtitle2">{achievement.displayName}</Typography>
