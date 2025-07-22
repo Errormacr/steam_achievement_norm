@@ -276,8 +276,7 @@ export default function Games () {
                   { value: '20', label: 'Above20hour' },
                   { value: '2', label: 'Above2hour' }
                 ].map((filter) => (
-                  <li
-                      tabIndex={0}
+                  <li tabIndex={0}
                     key={filter.value}
                     className={selectedTimeFilterValue === filter.value ? 'active' : ''}
                     onClick={() => handleTimeFilterItemClick(filter.value)}
@@ -323,12 +322,11 @@ export default function Games () {
                   'percent10-20',
                   'percent0-10'
                 ].map((filterValue) => (
-                  <li
-                      tabIndex={0}
-                    key={filterValue}
-                    className={selectedCompletionFilterValue === filterValue ? 'active' : ''}
-                    onClick={() => handleCompletionFilterItemClick(filterValue)}
-                    onKeyPress={() => handleCompletionFilterItemClick(filterValue)}
+                  <li tabIndex={0}
+                      key={filterValue}
+                      className={selectedCompletionFilterValue === filterValue ? 'active' : ''}
+                      onClick={() => handleCompletionFilterItemClick(filterValue)}
+                      onKeyPress={() => handleCompletionFilterItemClick(filterValue)}
                   >
                     {t(filterValue)}
                   </li>
