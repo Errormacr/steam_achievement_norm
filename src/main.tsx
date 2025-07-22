@@ -4,13 +4,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-import App from './views/pages/main_window';
-import GamePage from './views/pages/GamePage';
-import Games from './views/pages/Games';
-import AchPage from './views/pages/AchievementsPage';
-import StatsPage from './views/pages/StatsPage';
-import Layout from './views/components/Layout';
-import { SocketProvider } from './views/features/SocketProvider';
+import App from './pages/main_window';
+import GamePage from './pages/GamePage';
+import Games from './pages/Games';
+import AchPage from './pages/AchievementsPage';
+import StatsPage from './pages/StatsPage';
+import Layout from './components/Layout';
+import { SocketProvider } from './features/SocketProvider';
 
 import './index.css';
 

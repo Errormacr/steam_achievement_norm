@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import i18n from 'i18next';
 import { Percent, ProfileUpdateResponse, UpdateGameEvent } from '../interfaces';
-import { useSocket } from '../views/features/SocketProvider';
+import { useSocket } from '../features/SocketProvider';
 import { ApiService } from '../services/api.services';
 
 export function useUpdateSocket (rerender: () => void) {

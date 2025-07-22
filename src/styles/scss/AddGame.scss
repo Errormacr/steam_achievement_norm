@@ -1,0 +1,15 @@
+@use './variables' as *;
+
+.find-game-card {
+  margin: $spacing-md;
+  height: fit-content;
+  width: fit-content;
+  border-radius: $border-radius-md;
+  background-color: var(--card-bg);
+  padding: $spacing-sm;
+  position: relative;
+  cursor: pointer;
+  p {
+    margin-block: 0;
+  }
+}
