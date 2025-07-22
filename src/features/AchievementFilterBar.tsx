@@ -31,7 +31,7 @@ export const AchievementFilterBar: React.FC<AchievementFilterBarProps> = ({ all,
 
   const sortingOptions = SORTING_OPTIONS;
 
-  if (!all) {
+  if (!all && !sortingOptions.find((option) => option.value === 'unlocked')) {
     sortingOptions.push({ value: 'unlocked', label: 'Gained' });
   }
 
