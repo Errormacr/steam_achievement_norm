@@ -71,7 +71,7 @@ const UpdateProgress: React.FC<UpdateProgressProps> = ({ progress }) => {
         <ul>
           {updatedGames.length > 0 &&
             updatedGames.map((game, index) => (
-              <li key={index} className="list-item">{game}</li>
+              <li key={`${game}_updated_${index}`} className="list-item">{game}</li>
             ))}
         </ul>
       </div>
