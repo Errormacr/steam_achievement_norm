@@ -16,8 +16,8 @@ import './index.css';
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
-  },
+    mode: 'dark'
+  }
 });
 
 const rootElement = document.getElementById('body') as HTMLElement;

@@ -1,120 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import React, { useState } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
-import GameButton from '../components/GameButton';
-import { toast } from 'react-toastify';
-import { Percent, ProfileUpdateResponse } from '../../interfaces';
-import { useSocket } from './SocketProvider';
 import { GrUpdate } from 'react-icons/gr';
 import UpdateProgress from './UpdateGameProgress';
-import { ApiService } from '../../services/api.services';
+import UpdateModal from './UpdateModal';
+import { useUpdateSocket } from '../../hooks/useUpdateSocket';
 
-export default function UpdateUserData ({
-  rerender
-}: {
-  rerender: () => void;
-}): React.JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const socket = useSocket();
-  const { t } = useTranslation();
+export default function UpdateUserData({ rerender }: { rerender: () => void }): React.JSX.Element {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isUpdating, startUpdate, progress } = useUpdateSocket(rerender);
 
-  const openModal = () => {
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (isOpen && !target.closest('.modal-content')) {
-        closeModal();
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!socket) {
-      return;
-    }
-    const handleConnect = () => {
-      setIsConnected(true);
-    };
-
-    const handleDisconnect = () => {
-      setIsConnected(false);
-    };
-
-    const handleStatus = () => {
-      rerender();
-      document.getElementById('updateProgress').style.display = 'none';
-      closeModal();
-    };
-
-    const handleChange = (data: Percent) => {
-      toast.success(`+ ${data.change.toFixed(2)}% ${t('averageUp')}`);
-    };
-
-    socket.on('connect', handleConnect);
-    socket.on('disconnect', handleDisconnect);
-    socket.on('status', handleStatus);
-    socket.on('change', handleChange);
-    socket.on('close', handleDisconnect);
-    socket.connect();
-    return () => {
-      socket.off('connect', handleConnect);
-      socket.off('disconnect', handleDisconnect);
-      socket.off('status', handleStatus);
-      socket.off('change', handleChange);
-      socket.disconnect();
-    };
-  }, [socket, rerender, t]);
-
-  useEffect(() => {
-    const updated = sessionStorage.getItem('updated');
-    if (!updated && isConnected) {
-      sessionStorage.setItem('updated', 'true');
-      update('recent');
-    }
-  }, [isConnected]);
-
-  const update = async (type: string) => {
-    if (socket) {
-      const modal = document.getElementById('updateProgress');
-      modal.style.display = 'flex';
-      const steamId = localStorage.getItem('steamId');
-      const language = i18n.language;
-      const data = { steamId, language };
-
-      // First check for profile updates
-      try {
-        const profileUpdate = await ApiService.put<ProfileUpdateResponse>(`user/${steamId}/profile`);
-        if (profileUpdate.updated) {
-          if (profileUpdate.changes.nickname) {
-            toast.info(t('nicknameUpdated'));
-          }
-          if (profileUpdate.changes.avatar) {
-            toast.info(t('avatarUpdated'));
-          }
-          rerender();
-        }
-      } catch (error) {
-        console.error('Error updating profile:', error);
-      }
-
-      if (type === 'ach-percentage') {
-        socket.emit(type, { steamId });
-      } else {
-        socket.emit(type, data);
-      }
-    }
+  const handleUpdate = (type: string) => {
+    startUpdate(type);
+    setIsModalOpen(false);
   };
 
   return (
@@ -122,47 +20,19 @@ export default function UpdateUserData ({
       <GrUpdate
         id=""
         className="button-icon update-button"
-        onClick={openModal}
+        onClick={() => setIsModalOpen(true)}
       />
-      {isOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2 className="settingsHeader">{t('updateUserDataHeading')}</h2>
-            <div className="update-buttons">
-              <GameButton
-                id="update-recent"
-                onClick={() => update('recent')}
-                text={t('updateRecent')}
-              />
-              <GameButton
-                id="update-played-owned"
-                onClick={() => update('owned-played')}
-                text={t('updatePlayedOwned')}
-              />
-              <GameButton
-                id="update-all"
-                onClick={() => update('all')}
-                text={t('updateAll')}
-              />
-              <GameButton
-                id="update-all-force"
-                onClick={() => update('all-force')}
-                text={t('updateAllForce')}
-              />
-              <GameButton
-                id="update-percent-ach"
-                onClick={() => update('ach-percentage')}
-                text={t('updatePercentAch')}
-              />
-            </div>
-          </div>
+      <UpdateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onUpdate={handleUpdate}
+      />
+
+      {isUpdating && (
+        <div className={'modal'}>
+          <UpdateProgress progress={progress} />
         </div>
       )}
-
-        <div id={'updateProgress'} className={'modal'} style={{ display: 'none' }}>
-          <UpdateProgress socket={socket}></UpdateProgress>
-        </div>
-
     </I18nextProvider>
   );
 }

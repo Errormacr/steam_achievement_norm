@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-export function useInfiniteScroll(callback: () => void, hasMore: boolean, isLoading: boolean) {
+export function useInfiniteScroll (callback: () => void, hasMore: boolean, isLoading: boolean) {
   const observer = useRef<IntersectionObserver | null>(null);
 
   return useCallback(

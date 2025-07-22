@@ -16,7 +16,7 @@ interface Game {
   percent: number;
 }
 
-export function useGameData() {
+export function useGameData () {
   const { t } = useTranslation();
   const { appid } = useParams<{ appid: string }>();
   const [game, setGame] = useState<Game>({

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export function useClickOutside(handler: () => void) {
+export function useClickOutside (handler: () => void) {
   const domNode = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

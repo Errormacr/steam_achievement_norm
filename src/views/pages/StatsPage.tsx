@@ -50,11 +50,13 @@ const StatsPage: React.FC = () => {
           ))}
         </div>
         <div className="stats-container">
-          {ComponentToRender ? (
+          {ComponentToRender
+            ? (
             <ComponentToRender gameAppid={+gameAppid || undefined} />
-          ) : (
+              )
+            : (
             <div>Select a type to view stats</div>
-          )}
+              )}
         </div>
       </div>
     </I18nextProvider>

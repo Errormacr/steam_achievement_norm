@@ -8,7 +8,7 @@ import IdKeyInput from '../components/IdKeyInput';
 import { ApiService } from '../../services/api.services';
 import { User, UserData } from '../../interfaces';
 
-export default function ChangeAccount ({ updatePage }: { updatePage: () => Promise<void> }): React.JSX.Element {
+export default function ChangeAccount ({ updatePage }: { updatePage: () => void }): React.JSX.Element {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [addingAcc, setAddingAcc] = useState(false);

@@ -5,7 +5,7 @@ import i18n from 'i18next';
 
 import SettingsWin from '../features/SettingsWin';
 
-export default function Settings() {
+export default function Settings () {
   const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => {

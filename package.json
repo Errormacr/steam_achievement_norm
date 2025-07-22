@@ -9,7 +9,7 @@
     "package": "electron-forge package --arch=x64 --platform=win32",
     "make": "electron-forge make --platform=win32",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx src"
   },
   "keywords": [],
   "author": "errormacro",

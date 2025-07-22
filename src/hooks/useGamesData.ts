@@ -13,7 +13,7 @@ interface GamesDataFilters {
   selectedCompletionFilterValue: string | null;
 }
 
-export function useGamesData(filters: GamesDataFilters) {
+export function useGamesData (filters: GamesDataFilters) {
   const { orderBy, desc, gameName, playtime, selectedCompletionFilterValue } = filters;
   const [games, setGames] = useState<GameDataRow[]>([]);
   const [page, setPage] = useState(1);

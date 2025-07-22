@@ -47,17 +47,17 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
   const [newAchievements, setNewAchievements] = useState<number[]>([]);
 
   const handleSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
-    setPage(1)
+    setPage(1);
     setSearchQueryGameName(e.target.value);
   };
 
   const handleAchSearchInputChange = (e : React.ChangeEvent < HTMLInputElement >) => {
-    setPage(1)
+    setPage(1);
     setSearchQueryAch(e.target.value);
   };
 
   const handleItemClick = (value : string) => {
-    setPage(1)
+    setPage(1);
     setSelectedValue(value);
     setDropdownOpen(false);
   };
@@ -284,8 +284,8 @@ const AchBox : React.FC < AchBoxProps > = ({ appid, all, minPercent, maxPercent,
                             <button
                                 className="dropdown-button"
                                 onClick={() => {
-                                  setPage(1)
-                                  setIsCompletedFilterDropdownOpen(!isCompletedFilterDropdownOpen)
+                                  setPage(1);
+                                  setIsCompletedFilterDropdownOpen(!isCompletedFilterDropdownOpen);
                                 }}>
                                 {t('GainedPercent')}
                             </button>

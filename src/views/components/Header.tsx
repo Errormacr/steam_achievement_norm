@@ -12,6 +12,10 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const handleRerender = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="header">
       <div className="header-content">
@@ -40,11 +44,11 @@ const Header: React.FC = () => {
             onClick={() => navigate('/Stats/undefined')}
             text={t('GameStats')}
           />
-            <ChangeAccount updatePage={() => {}} />
+            <ChangeAccount updatePage={handleRerender} />
             <ChangeKey />
         </div>
         <div className="header-right">
-            <UpdateUserData key="updateUserData" rerender={() => {}} />
+            <UpdateUserData key="updateUserData" rerender={handleRerender} />
           <Settings />
         </div>
       </div>

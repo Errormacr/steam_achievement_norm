@@ -7,23 +7,23 @@ interface CircularProgressSVGProps {
 }
 
 const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
-    percent,
-    size,
-    strokeWidth,
+  percent,
+  size,
+  strokeWidth
 }) => {
-    const integerPercent = Math.floor(percent);
-    const fractionalPercent = (percent - integerPercent) * 100;
+  const integerPercent = Math.floor(percent);
+  const fractionalPercent = (percent - integerPercent) * 100;
 
-    const outerRadius = (size - strokeWidth) / 2;
-    const innerRadius = (size - strokeWidth) / 2 - strokeWidth * 1.5;
+  const outerRadius = (size - strokeWidth) / 2;
+  const innerRadius = (size - strokeWidth) / 2 - strokeWidth * 1.5;
 
-    const outerCircumference = outerRadius * 2 * Math.PI;
-    const innerCircumference = innerRadius * 2 * Math.PI;
+  const outerCircumference = outerRadius * 2 * Math.PI;
+  const innerCircumference = innerRadius * 2 * Math.PI;
 
-    const outerOffset = outerCircumference - (integerPercent / 100) * outerCircumference;
-    const innerOffset = innerCircumference - (fractionalPercent / 100) * innerCircumference;
+  const outerOffset = outerCircumference - (integerPercent / 100) * outerCircumference;
+  const innerOffset = innerCircumference - (fractionalPercent / 100) * innerCircumference;
 
-    return (
+  return (
         <svg
             height={size}
             width={size}
@@ -34,8 +34,8 @@ const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
                 fill="transparent"
                 strokeWidth={strokeWidth / 2} // Made outer circle background thinner
                 r={outerRadius}
-                cx={size/2}
-                cy={size/2}
+                cx={size / 2}
+                cy={size / 2}
             />
             {/* Foreground for outer circle (integer part) */}
             <circle
@@ -45,12 +45,12 @@ const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
                 strokeDasharray={outerCircumference + ' ' + outerCircumference}
                 strokeDashoffset={outerOffset}
                 r={outerRadius}
-                cx={size/2}
-                cy={size/2}
+                cx={size / 2}
+                cy={size / 2}
                 style={{
-                    transform: 'rotate(-90deg)',
-                    transformOrigin: '50% 50%',
-                    transition: 'stroke-dashoffset 0.35s',
+                  transform: 'rotate(-90deg)',
+                  transformOrigin: '50% 50%',
+                  transition: 'stroke-dashoffset 0.35s'
                 }}
             />
 
@@ -60,8 +60,8 @@ const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
                 fill="transparent"
                 strokeWidth={strokeWidth / 2} // Made inner circle background thinner
                 r={innerRadius}
-                cx={size/2}
-                cy={size/2}
+                cx={size / 2}
+                cy={size / 2}
             />
             {/* Foreground for inner circle (fractional part) */}
             <circle
@@ -71,12 +71,12 @@ const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
                 strokeDasharray={innerCircumference + ' ' + innerCircumference}
                 strokeDashoffset={innerOffset}
                 r={innerRadius}
-                cx={size/2}
-                cy={size/2}
+                cx={size / 2}
+                cy={size / 2}
                 style={{
-                    transform: 'rotate(-90deg)',
-                    transformOrigin: '50% 50%',
-                    transition: 'stroke-dashoffset 0.35s',
+                  transform: 'rotate(-90deg)',
+                  transformOrigin: '50% 50%',
+                  transition: 'stroke-dashoffset 0.35s'
                 }}
             />
 
@@ -92,7 +92,7 @@ const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
                 {`${percent.toFixed(2)}%`}
             </text>
         </svg>
-    );
+  );
 };
 
 export default CircularProgressSVG;

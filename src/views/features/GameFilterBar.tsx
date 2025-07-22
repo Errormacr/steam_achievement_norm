@@ -15,7 +15,7 @@ interface GameFilterBarProps {
   onFilterChange: (filters: any) => void;
 }
 
-export function GameFilterBar({ filters, onFilterChange }: GameFilterBarProps) {
+export function GameFilterBar ({ filters, onFilterChange }: GameFilterBarProps) {
   const { t } = useTranslation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [timeFilterDropdownOpen, setTimeFilterDropdownOpen] = useState(false);

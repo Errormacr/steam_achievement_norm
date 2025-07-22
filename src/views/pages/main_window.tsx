@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import {I18nextProvider, useTranslation } from 'react-i18next';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -14,7 +14,7 @@ import i18n from '../../transate';
 import '../scss/MainWindow.scss';
 import { Box, Typography } from '@mui/material';
 
-export default function App() {
+export default function App () {
   const { t } = useTranslation();
   const [personalName, setPersonalName] = useState('');
   const [AchCount, setAchCount] = useState(0);
@@ -45,12 +45,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    try {
-      updateUserData();
-    } catch (error) {
-      console.error('Error in useEffect:', error);
-      toast.error('An error occurred while updating data. Please try again.');
-    }
+    updateUserData().then();
   }, [updateUserData]);
 
   return (
