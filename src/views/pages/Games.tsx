@@ -1,350 +1,54 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import { I18nextProvider } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
 import i18n from 'i18next';
 
-import GameCard from '../components/GameCard';
 import ScrollToTopButton from '../components/ScrollToTopButton';
-import IdKeyInput from '../components/IdKeyInput';
 import AddGame from '../features/AddGame';
-import { ApiService } from '../../services/api.services';
-import { GameDataRow, Pagination } from '../../interfaces';
+import { useGamesData } from '../../hooks/useGamesData';
+import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
+import { GameFilterBar } from '../features/GameFilterBar';
+import { GameList } from '../components/GameList';
 
 import '../scss/Games.scss';
 import '../scss/FilterSort.scss';
 
 export default function Games () {
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
-  const [games, setGames] = useState<GameDataRow[]>([]);
-  const [desc, setDesc] = useState(true);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string | null>('lastLaunchTime');
-  const [timeFilterDropdownOpen, setTimeFilterDropdownOpen] = useState(false);
-  const [completedFilterDropdownOpen, setCompletedFilterDropdownOpen] = useState(false);
-  const [selectedTimeFilterValue, setSelectedTimeFilterValue] = useState<string | null>(null);
-  const [selectedCompletionFilterValue, setSelectedCompletionFilterValue] = useState<string | null>(null);
-  const [prevPage, setPrevPage] = useState(1);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState({
+    searchQuery: '',
+    selectedValue: 'lastLaunchTime',
+    selectedTimeFilterValue: null,
+    selectedCompletionFilterValue: null,
+    desc: true
+  });
 
-  const listRef = useRef(null);
-  const filterTimeListRef = useRef(null);
-  const filterCompletedListRef = useRef(null);
-  const observer = useRef<IntersectionObserver | null>(null);
+  const { games, isLoading, hasMore, loadMore, setPage } = useGamesData({
+    orderBy: filters.selectedValue,
+    desc: filters.desc,
+    gameName: filters.searchQuery,
+    playtime: filters.selectedTimeFilterValue,
+    selectedCompletionFilterValue: filters.selectedCompletionFilterValue
+  });
+
+  const handleFilterChange = (newFilters: any) => {
+    setPage(1);
+    setFilters(newFilters);
+  };
+
+  const infiniteScrollRef = useInfiniteScroll(loadMore, hasMore, isLoading);
 
   function rendApp () {
     navigate('/');
   }
 
-  const handleItemClick = (value: string) => {
-    setPage(1);
-    setSelectedValue(value);
-    setDropdownOpen(false);
-  };
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleTimeFilterItemClick = (value: string) => {
-    setPage(1);
-    if (selectedTimeFilterValue === value) {
-      setSelectedTimeFilterValue(null);
-    } else {
-      setSelectedTimeFilterValue(value);
-    }
-    setTimeFilterDropdownOpen(false);
-  };
-
-  const handleCompletionFilterItemClick = (value: string) => {
-    setPage(1);
-    if (selectedCompletionFilterValue === value) {
-      setSelectedCompletionFilterValue(null);
-    } else {
-      setSelectedCompletionFilterValue(value);
-    }
-    setCompletedFilterDropdownOpen(false);
-  };
-
-  const handleToggleArrows = () => {
-    setDesc(!desc);
-  };
-
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (
-      listRef.current &&
-      !listRef.current.contains(event.target as Node) &&
-      dropdownOpen
-    ) {
-      setDropdownOpen(false);
-    }
-  };
-
-  const handleFilterOutsideClick = (event: MouseEvent) => {
-    if (
-      filterCompletedListRef.current &&
-      !filterCompletedListRef.current.contains(event.target as Node) &&
-      completedFilterDropdownOpen
-    ) {
-      setCompletedFilterDropdownOpen(false);
-    }
-    if (
-      filterTimeListRef.current &&
-      !filterTimeListRef.current.contains(event.target as Node) &&
-      timeFilterDropdownOpen
-    ) {
-      setTimeFilterDropdownOpen(false);
-    }
-  };
-
-  document.addEventListener('click', handleOutsideClick);
-  document.addEventListener('click', handleFilterOutsideClick);
-
-  const updateGames = async () => {
-    setIsLoading(true);
-    const queryParams = new URLSearchParams({
-      orderBy: selectedValue,
-      desc: desc ? '1' : '0',
-      language: i18n.language,
-      page: page.toString(),
-      pageSize: '30'
-    });
-
-    if (selectedCompletionFilterValue) {
-      if (selectedTimeFilterValue === 'Completed') {
-        queryParams.append('percentMin', '99');
-      } else {
-        const [min, max] = selectedCompletionFilterValue.slice(7).split('-');
-        queryParams.append('percentMin', min);
-        queryParams.append('percentMax', max);
-      }
-    }
-
-    if (searchQuery) {
-      queryParams.append('gameName', searchQuery);
-    }
-
-    if (selectedTimeFilterValue) {
-      queryParams.append('playtime', selectedTimeFilterValue);
-    }
-
-    const dataSteamId = localStorage.getItem('steamId');
-    const achData = await ApiService.get<Pagination<GameDataRow>>(
-      `user/${dataSteamId}/games?${queryParams.toString()}`
-    );
-
-    setHasMore(achData.rows.length > 0);
-    setGames((prev) => [...prev, ...achData.rows]);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    if (page <= prevPage) {
-      setGames([]);
-      setPage(1);
-      setPrevPage(1);
-    } else {
-      setPrevPage(page);
-    }
-    updateGames();
-  }, [
-    selectedTimeFilterValue,
-    searchQuery,
-    selectedCompletionFilterValue,
-    selectedValue,
-    desc,
-    page
-  ]);
-
-  const lastGameObserver = useCallback(
-    (node: Element) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [isLoading, hasMore]
-  );
-
-  useEffect(
-    useCallback(() => {
-      return () => {
-        document.removeEventListener('click', handleOutsideClick);
-        document.removeEventListener('click', handleFilterOutsideClick);
-      };
-    }, []),
-    []
-  );
-
-  const sortingOptions = [
-    {
-      value: 'lastLaunchTime',
-      label: 'LastLaunchSort'
-    },
-    {
-      value: 'percent',
-      label: 'PercentAchSort'
-    },
-    {
-      value: 'allAchCount',
-      label: 'AllAChInGameSort'
-    },
-    {
-      value: 'unlockedCount',
-      label: 'GainedAchSort'
-    },
-    {
-      value: 'notUnlockedCount',
-      label: 'NonGainedAchSort'
-    },
-    {
-      value: 'playtime',
-      label: 'PlayTimeSort'
-    }
-  ];
-
   return (
     <I18nextProvider i18n={i18n}>
-      <div className="gameFilterCont">
-        <div className="inputSortFilterContainerGames">
-          <IdKeyInput
-            placeholder={t('SearchGames')}
-            value={searchQuery}
-            onChange={handleSearchInputChange}
-          />
-          <div ref={listRef} className="dropdown-container">
-            <button
-              className="dropdown-button"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              {t('SortBy')}
-            </button>
+      <GameFilterBar filters={filters} onFilterChange={handleFilterChange} />
 
-            {dropdownOpen && (
-              <ul className="dropdown-list">
-                {sortingOptions.map((option) => (
-                  <li
-                      tabIndex={0}
-                    key={option.value}
-                    className={selectedValue === option.value ? 'active' : ''}
-                    onClick={() => handleItemClick(option.value)}
-                    onKeyPress={() => handleItemClick(option.value)}
-
-                  >
-                    {t(option.label)}
-                  </li >
-                ))}
-              </ul>
-            )}
-          </div>
-          <div ref={filterTimeListRef} className="dropdown-container">
-            {selectedTimeFilterValue != null && (
-              <div
-                  tabIndex={0}
-                  role={'button'}
-                onClick={() => setSelectedTimeFilterValue(null)}
-                onKeyPress={() => setSelectedTimeFilterValue(null)}
-                className="cross"
-              >
-                <div className="horizontal"></div>
-              </div>
-            )}
-            <button
-              className="dropdown-button"
-              onClick={() => setTimeFilterDropdownOpen(!timeFilterDropdownOpen)}
-            >
-              {t('TimeFilter')}
-            </button>
-            {timeFilterDropdownOpen && (
-              <ul className="dropdown-list">
-                {[
-                  { value: '1000', label: 'Above1000hour' },
-                  { value: '500', label: 'Above500hour' },
-                  { value: '100', label: 'Above100hour' },
-                  { value: '50', label: 'Above50hour' },
-                  { value: '20', label: 'Above20hour' },
-                  { value: '2', label: 'Above2hour' }
-                ].map((filter) => (
-                  <li tabIndex={0}
-                    key={filter.value}
-                    className={selectedTimeFilterValue === filter.value ? 'active' : ''}
-                    onClick={() => handleTimeFilterItemClick(filter.value)}
-                    onKeyPress={() => handleTimeFilterItemClick(filter.value)}
-                  >
-                    {t(filter.label)}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div ref={filterCompletedListRef} className="dropdown-container">
-            {selectedCompletionFilterValue != null && (
-              <div
-                  role={'button'}
-                  tabIndex={0}
-                onClick={() => setSelectedCompletionFilterValue(null)}
-                onKeyPress={() => setSelectedCompletionFilterValue(null)}
-                className="cross"
-              >
-                <div className="horizontal"></div>
-                <div className="vertical"></div>
-              </div>
-            )}
-            <button
-              className="dropdown-button"
-              onClick={() => setCompletedFilterDropdownOpen(!completedFilterDropdownOpen)}
-            >
-              {t('CompletedFilter')}
-            </button>
-            {completedFilterDropdownOpen && (
-              <ul className="dropdown-list">
-                {[
-                  'percent99-100',
-                  'percent90-100',
-                  'percent80-90',
-                  'percent70-80',
-                  'percent60-70',
-                  'percent50-60',
-                  'percent40-50',
-                  'percent30-40',
-                  'percent20-30',
-                  'percent10-20',
-                  'percent0-10'
-                ].map((filterValue) => (
-                  <li tabIndex={0}
-                      key={filterValue}
-                      className={selectedCompletionFilterValue === filterValue ? 'active' : ''}
-                      onClick={() => handleCompletionFilterItemClick(filterValue)}
-                      onKeyPress={() => handleCompletionFilterItemClick(filterValue)}
-                  >
-                    {t(filterValue)}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <button className="arrows-container" onClick={handleToggleArrows}>
-            <div className={desc ? 'arrow activate' : 'arrow'}>&#x25B2;</div>
-            <div className={!desc ? 'arrow activate' : 'arrow'}>&#x25BC;</div>
-          </button>
-        </div>
-      </div>
-
-      <FaArrowLeft
-                className="button-icon return"
-                onClick={rendApp}
-                id="return"/>
+      <FaArrowLeft className="button-icon return" onClick={rendApp} id="return" />
 
       <AddGame />
 
@@ -352,18 +56,7 @@ export default function Games () {
         <ScrollToTopButton />
 
         <br />
-        <div className="games-container">
-          {games.map((game, index) => (
-            <div
-              key={game.appid}
-              ref={index === games.length - 1 ? lastGameObserver : null}
-              style={{ width: 'fit-content' }}
-            >
-              <GameCard appid={game.appid} backWindow={'Games'} />
-            </div>
-          ))}
-          {isLoading && <div className="loading">Loading...</div>}
-        </div>
+        <GameList games={games} isLoading={isLoading} lastElementRef={infiniteScrollRef} />
         <ScrollToTopButton />
         <AddGame />
       </div>
