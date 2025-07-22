@@ -21,8 +21,7 @@ import AchBox from '../features/AchContainer';
 import { GameDataRow, gameDataWithAch } from '../../interfaces';
 import { ApiService } from '../../services/api.services';
 
-
-import CircularProgressSVG from "../components/CircularProgressSVG";
+import CircularProgressSVG from '../components/CircularProgressSVG';
 
 interface Game {
   appid: number;
@@ -116,7 +115,7 @@ const GamePage: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
           <Card sx={{ mb: 2, width: 'fit-content' }}>
           <Grid container>
-            <Grid item xs={12} md={8}>
+            <Grid>
               <CardMedia
                 component="img"
                 image={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/header.jpg`}
@@ -124,7 +123,7 @@ const GamePage: React.FC = () => {
                 sx={{ objectFit: 'cover' }}
               />
             </Grid>
-            <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+            <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 2 }}>
               <CircularProgressSVG
                   percent={game.percent}
                   size={150}
@@ -170,11 +169,13 @@ const GamePage: React.FC = () => {
         </Box>
         <Box>
           {loaded &&
-            (tableOrBox ? (
+            (tableOrBox
+              ? (
               <Table appid={+appid} all={false} />
-            ) : (
+                )
+              : (
               <AchBox minPercent={0} maxPercent={100} appid={+appid} all={false} />
-            ))}
+                ))}
         </Box>
       </Container>
     </I18nextProvider>

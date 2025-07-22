@@ -15,11 +15,17 @@
     }
 }
 .games-container {
-    display: flex;
-    justify-content: center;
-    gap: $spacing-sm;
-    flex-wrap: wrap;
+    //display: flex;
+    //justify-content: center;
+    //gap: $spacing-sm;
+    //flex-wrap: wrap;
+    //columns: auto 420px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(416px, 1fr));
+    gap: 10px;
+    padding: 10px;
 }
+
 .add-game-button {
     margin-right: $spacing-md;
     position: absolute;
