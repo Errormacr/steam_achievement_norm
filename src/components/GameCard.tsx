@@ -118,7 +118,7 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
 
   return (
         <CardComponent ref={cardRef}>
-            <CardActionArea onClick={() => logging(appid, backWindow)} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <CardActionArea onClick={() => logging(appid, backWindow)} sx={{ display: 'flex', flexDirection: 'column', height: '230px' }}>
                 <Box sx={{ display: 'flex', width: '100%', padding: 2, flexWrap: 'wrap' }}>
                     <CardMedia
                         component="img"
@@ -126,8 +126,8 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
                         image={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
                         alt={gameName}
                     />
-                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', ml: 2, flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h6" component="div" sx={{ overflow: 'hidden' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', ml: 2, flexGrow: 1, width: '164px' }}>
+                        <Typography gutterBottom variant="h6" component="div" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {gameName}
                         </Typography>
                          <Chip label={`${playtime} ${t('Hours')}`} size="small" />
