@@ -56,15 +56,17 @@ export default function App () {
         <div className="user-profile">
           <div className="user-info">
             <img alt="avatar" className="avatar" src={avaUrl} />
-            <h2 className="nickname">{personalName}</h2>
-            <div className="stats">
-              <div className="stat-item">
-                <span className="stat-label">{t('Ach')}:</span>
-                <span className="stat-value">{AchCount}</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">{t('Games')}:</span>
-                <span className="stat-value">{gamesCount}</span>
+            <div className="user-details">
+              <h2 className="nickname">{personalName}</h2>
+              <div className="stats">
+                <div className="stat-item">
+                  <span className="stat-label">{t('Ach')}:</span>
+                  <span className="stat-value">{AchCount}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">{t('Games')}:</span>
+                  <span className="stat-value">{gamesCount}</span>
+                </div>
               </div>
             </div>
             <div className="progress-section">

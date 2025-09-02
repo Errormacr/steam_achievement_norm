@@ -90,7 +90,7 @@
 
 .main-window {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: $spacing-xl;
   padding: $spacing-md;
   margin: 0 auto;
@@ -148,14 +148,19 @@
     .progress-section {
       margin-top: $spacing-md;
     }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }
 
 .content-section {
   display: flex;
   gap: $spacing-xl;
-  flex-wrap: wrap;
-  width: 100%;
+  flex-wrap: nowrap;
 
   .recent-games {
     flex: 1;
