@@ -16,7 +16,7 @@ import {
   Chip
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Achievements, AchievmentsFromView, gameDataWithAch, GamePageProps } from '../interfaces';
+import { Achievements, AchievmentsFromView, GameDataWithAch, GamePageProps } from '../interfaces';
 import { ApiService } from '../services/api.services';
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -69,7 +69,7 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
 
   const updateGame = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const gameData = await ApiService.get<gameDataWithAch>(
+    const gameData = await ApiService.get<GameDataWithAch>(
             `user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`
     );
 

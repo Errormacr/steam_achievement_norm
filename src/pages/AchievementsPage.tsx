@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
 import i18n from 'i18next';
 
-import Table from '../components/Table';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import GameButton from '../components/GameButton';
-import AchBox from '../features/AchContainer';
-import { AchievmentsFromView, Pagination } from '../interfaces';
-import { ApiService } from '../services/api.services';
+import { useAchievementsPageData } from '../hooks/useAchievementsPageData';
+import AchievementsDisplay from '../features/AchievementsDisplay';
 
 const AchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,50 +20,26 @@ const AchPage: React.FC = () => {
     gameAppid?: string;
   }>();
 
-  const [tableOrBox, setTableOrBox] = useState(true);
-  const [loaded, setLoaded] = useState(false);
-  const [achCount, setAchCount] = useState(0);
+  const { tableOrBox, setTableOrBox, loaded, achCount } = useAchievementsPageData({
+    minPercent,
+    maxPercent,
+    date,
+    gameAppid
+  });
 
-  useEffect(
-    useCallback(() => {
-      try {
-        const boxView = localStorage.getItem('boxView') === 'true';
-        const steamId = localStorage.getItem('steamId');
-        const queryParams = new URLSearchParams({
-          orderBy: 'unlockedDate',
-          desc: '1',
-          language: i18n.language,
-          unlocked: '1',
-          page: '1',
-          pageSize: '0',
-          percentMin: minPercent,
-          percentMax: maxPercent
-        });
+  const handleToggleView = () => {
+    const newTableView = !tableOrBox;
+    setTableOrBox(newTableView);
+    localStorage.setItem('boxView', String(newTableView));
+  };
 
-        if (date !== 'undefined') {
-          queryParams.set('unlockedDate', date);
-        }
-
-        if (+gameAppid) {
-          queryParams.set('appid', gameAppid);
-        }
-
-        ApiService.get<Pagination<AchievmentsFromView>>(
-          `user/${steamId}/achievements?${queryParams.toString()}`
-        ).then((data) => {
-          setAchCount(data.count);
-        });
-
-        if (!boxView) {
-          setTableOrBox(false);
-        }
-        setLoaded(true);
-      } catch (error) {
-        window.alert(error.message);
-      }
-    }, []),
-    []
-  );
+  const handleGoBack = () => {
+    if (backWindow === 'Stats') {
+      navigate(`/${backWindow}${gameAppid ? '/' + gameAppid : ''}`);
+    } else {
+      navigate('/');
+    }
+  };
 
   return (
     <I18nextProvider i18n={i18n}>
@@ -74,13 +48,7 @@ const AchPage: React.FC = () => {
         <div className="label-container">
           <FaArrowLeft
             className="button-icon return"
-            onClick={() => {
-              if (backWindow === 'Stats') {
-                navigate(`/${backWindow}${gameAppid ? '/' + gameAppid : ''}`);
-              } else {
-                navigate('/');
-              }
-            }}
+            onClick={handleGoBack}
             id="return"
           />
           <label className="game-label">
@@ -88,37 +56,22 @@ const AchPage: React.FC = () => {
           </label>
           <GameButton
             id=""
-            onClick={() => {
-              setTableOrBox(!tableOrBox);
-              localStorage.setItem('boxView', String(!tableOrBox));
-            }}
+            onClick={handleToggleView}
             additionalClass="switchTable"
             text={t('SwitchTable')}
           />
         </div>
         <div className="details-container table-container">
           {loaded && (
-            tableOrBox
-              ? (
-              <Table
-                minPercent={+minPercent}
-                maxPercent={+maxPercent}
-                date={date === 'undefined' ? undefined : date}
-                appid={Number(gameAppid) ?? undefined}
-                unlocked={true}
-                all={!+gameAppid}
-              />
-                )
-              : (
-              <AchBox
-                minPercent={+minPercent}
-                maxPercent={+maxPercent}
-                date={date === 'undefined' ? undefined : date}
-                appid={Number(gameAppid) ?? undefined}
-                unlocked={true}
-                all={!+gameAppid}
-              />
-                )
+            <AchievementsDisplay
+              tableOrBox={tableOrBox}
+              minPercent={+minPercent}
+              maxPercent={+maxPercent}
+              date={date === 'undefined' ? undefined : date}
+              appid={Number(gameAppid) || undefined}
+              unlocked={true}
+              all={!+gameAppid}
+            />
           )}
         </div>
       </div>

@@ -46,7 +46,7 @@ export interface Game {
     lowerGamename: string;
 }
 
-export interface gameDataWithAch {
+export interface GameDataWithAch {
     appid: number;
     gamename: string;
     lowerGamename: string;

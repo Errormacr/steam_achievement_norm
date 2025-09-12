@@ -8,7 +8,7 @@ interface GameListProps {
   lastElementRef: (node: Element) => void;
 }
 
-export function GameList ({ games, isLoading, lastElementRef }: GameListProps) {
+export function GameList ({ games, isLoading, lastElementRef }: Readonly<GameListProps>) {
   return (
     <div className="games-container">
       {games.map((game, index) => (

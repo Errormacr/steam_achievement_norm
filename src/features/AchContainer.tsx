@@ -13,6 +13,8 @@ const AchBox: React.FC<AchBoxProps> = ({ appid, all, minPercent, maxPercent, dat
   const { filters, setFilters } = useAchievementFilters();
   const { ach, isLoading, hasMore, newAchievements, setPage } = useAchievements(filters, { appid, all, unlocked, minPercent, maxPercent, date });
   const observer = useRef<IntersectionObserver | null>(null);
+  const isLoadingRef = useRef(isLoading);
+  isLoadingRef.current = isLoading;
 
   const lastAchievementRef = (node: HTMLDivElement) => {
     if (isLoading) return;
@@ -20,7 +22,8 @@ const AchBox: React.FC<AchBoxProps> = ({ appid, all, minPercent, maxPercent, dat
 
     observer.current = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
+          console.log(entries[0].isIntersecting && hasMore && !isLoadingRef.current);
+        if (entries[0].isIntersecting && hasMore && !isLoadingRef.current) {
           setPage((prevPage) => prevPage + 1);
         }
       },

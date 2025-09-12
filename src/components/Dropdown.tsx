@@ -15,6 +15,67 @@ interface DropdownProps {
   onReset?: () => void;
 }
 
+const unstyledButton: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  padding: '0',
+  margin: '0',
+  font: 'inherit',
+  color: 'inherit',
+  cursor: 'pointer'
+};
+
+const dropdownOptionStyles: React.CSSProperties = {
+  ...unstyledButton,
+  width: '100%',
+  padding: '8px 12px',
+  textAlign: 'left'
+};
+
+interface ResetButtonProps {
+  onReset: () => void;
+}
+
+const ResetButton: React.FC<ResetButtonProps> = ({ onReset }) => {
+  const { t } = useTranslation();
+  return (
+    <button
+      onClick={onReset}
+      className="cross"
+      aria-label={t('resetSelection')}
+      style={unstyledButton}
+    >
+      <div className="horizontal"></div>
+      <div className="vertical"></div>
+    </button>
+  );
+};
+
+interface DropdownListProps {
+  options: DropdownOption[];
+  selectedValue: string | null;
+  handleSelect: (value: string) => void;
+}
+
+const DropdownList: React.FC<DropdownListProps> = ({ options, selectedValue, handleSelect }) => {
+  const { t } = useTranslation();
+  return (
+    <ul className="dropdown-list">
+      {options.map((option) => (
+        <li key={option.value} style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          <button
+            className={selectedValue === option.value ? 'active' : ''}
+            onClick={() => handleSelect(option.value)}
+            style={dropdownOptionStyles}
+          >
+            {t(option.label)}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
 export const Dropdown: React.FC<DropdownProps> = ({ options, selectedValue, onSelect, buttonText, onReset }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -27,18 +88,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ options, selectedValue, onSe
 
   return (
     <div ref={dropdownRef} className="dropdown-container">
-      {onReset && selectedValue && (
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={onReset}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { onReset(); } }}
-          className="cross"
-        >
-          <div className="horizontal"></div>
-          <div className="vertical"></div>
-        </div>
-      )}
+      {onReset && selectedValue && <ResetButton onReset={onReset} />}
       <button
         className="dropdown-button"
         onClick={() => setIsOpen(!isOpen)}
@@ -46,21 +96,11 @@ export const Dropdown: React.FC<DropdownProps> = ({ options, selectedValue, onSe
         {t(buttonText)}
       </button>
       {isOpen && (
-        <ul className="dropdown-list">
-          {options.map((option) => (
-            <li
-              tabIndex={0}
-              key={option.value}
-              className={selectedValue === option.value ? 'active' : ''}
-              onClick={() => handleSelect(option.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') { handleSelect(option.value); }
-              }}
-            >
-              {t(option.label)}
-            </li>
-          ))}
-        </ul>
+        <DropdownList
+          options={options}
+          selectedValue={selectedValue}
+          handleSelect={handleSelect}
+        />
       )}
     </div>
   );

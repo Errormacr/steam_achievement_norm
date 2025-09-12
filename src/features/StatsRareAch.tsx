@@ -1,9 +1,9 @@
 import React from 'react';
 import AchRareDiagram from './AchRareDiagram';
 import AchRareHistogram from './AchRareHistogram';
-import { statsComponentProps } from '../interfaces';
+import { StatsComponentProps } from '../interfaces';
 
-const StatsRareAch:React.FC <statsComponentProps> = ({ gameAppid }) => {
+const StatsRareAch:React.FC <StatsComponentProps> = ({ gameAppid }) => {
   return (
     <>
       <div className='stats-chart'>

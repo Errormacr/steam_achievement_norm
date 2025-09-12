@@ -5,17 +5,15 @@ import { ToastContainer } from 'react-toastify';
 import { ArrowBack } from '@mui/icons-material';
 import i18n from 'i18next';
 import { Container, Box, IconButton } from '@mui/material';
-
-import Table from '../components/Table';
 import ScrollToTopButton from '../components/ScrollToTopButton';
-import AchBox from '../features/AchContainer';
 import GameHeader from '../components/GameHeader';
 import ActionBar from '../components/ActionBar';
 import { useGameData } from '../hooks/useGameData';
+import AchievementsDisplay from '../features/AchievementsDisplay';
 
 const GamePage: React.FC = () => {
   const navigate = useNavigate();
-  const { appid, backWindow } = useParams<{ appid: string; backWindow: string }>();
+  const { backWindow } = useParams<{ appid: string; backWindow: string }>();
   const { game, loaded, fetchUpdatedGameData } = useGameData();
   const [tableOrBox, setTableOrBox] = useState(true);
 
@@ -55,13 +53,16 @@ const GamePage: React.FC = () => {
         />
         <Box>
           {loaded &&
-            (tableOrBox
-              ? (
-              <Table appid={+appid} all={false} />
-                )
-              : (
-              <AchBox minPercent={0} maxPercent={100} appid={+appid} all={false} />
-                ))}
+              <AchievementsDisplay
+                  tableOrBox={tableOrBox}
+                  minPercent={0}
+                  maxPercent={100}
+                  date={undefined }
+                  appid={undefined}
+                  unlocked={undefined}
+                  all={false}
+              />
+         }
         </Box>
       </Container>
     </I18nextProvider>

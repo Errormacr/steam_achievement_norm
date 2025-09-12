@@ -1,58 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
 import { ApiService } from '../services/api.services';
 import '../styles/scss/AddGame.scss';
-import { Game, Percent } from '../interfaces';
+import { Percent } from '../interfaces';
 import { toast, ToastContainer } from 'react-toastify';
-import { useDebouncyEffect } from 'use-debouncy';
-export default function AddGame (): React.JSX.Element {
-  const [isOpen, setIsOpen] = useState(false);
-  const [appid, setAppid] = useState('');
-  const [gamename, setGamename] = useState('');
-  const openModal = () => {
-    setIsOpen(true);
-  };
+import { useModal } from '../hooks/useModal';
+import { useGameSearch } from '../hooks/useGameSearch';
 
-  const closeModal = () => {
-    setIsOpen(false);
-  };
+export default function AddGame (): React.JSX.Element {
+  const { isOpen, openModal, closeModal } = useModal();
+  const [appid, setAppid] = useState('');
+  const { gamename } = useGameSearch(appid);
 
   const { t } = useTranslation();
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (isOpen && !target.closest('.modal-content')) {
-        closeModal();
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, [isOpen]);
 
   const OnUpdateKeyField = (val: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setAppid(val.target.value);
-  };
-
-  useDebouncyEffect(() => getGame(appid), 1000, [appid]);
-
-  const getGame = (appid: string) => {
-    ApiService.get<Game>(`steam-api/game-by-appid/${appid}`)
-      .then((game) => {
-        if (game) {
-          setGamename(game.gamename);
-        }
-      })
-      .catch((error) => {
-        setGamename('');
-        toast.error(error.message);
-      });
   };
 
   const addGame = async () => {
@@ -63,11 +31,10 @@ export default function AddGame (): React.JSX.Element {
           `user/${steamId}/game/${appid}/add-not-shown?lang=${i18n.language}`,
           {}
         );
-        toast.success('+ ' + res.change.toFixed(2) + '% ' + t('averageUp'));
+        toast.success(`+${res.change.toFixed(2)}% ${t('averageUp')}`);
         closeModal();
       } catch (error) {
-        console.log(error.message);
-        toast.error(error);
+        toast.error(error.message);
       }
     }
   };
@@ -87,13 +54,13 @@ export default function AddGame (): React.JSX.Element {
             <h2 className="settingsHeader">{t('addGameHeading')}</h2>
             <IdKeyInput onChange={OnUpdateKeyField} placeholder={'appid'} />
             {gamename && (
-              <div onClick={addGame} className="find-game-card">
+              <button onClick={addGame} className="find-game-card">
                 <img
-                  alt={`${gamename}`}
+                  alt={gamename}
                   src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
                 ></img>
                 <p>{gamename}</p>
-              </div>
+              </button>
             )}
           </div>
         </div>

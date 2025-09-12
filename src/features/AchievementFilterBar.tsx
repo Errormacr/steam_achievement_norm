@@ -13,6 +13,39 @@ interface AchievementFilterBarProps {
   maxPercent?: number;
 }
 
+const handleFilterChange = (
+  filters: AchievementFiltersState,
+  onFilterChange: (filters: AchievementFiltersState) => void,
+  updatedFilters: Partial<AchievementFiltersState>
+) => {
+  onFilterChange({ ...filters, ...updatedFilters });
+};
+
+const handleCompletionFilterChange = (
+  filters: AchievementFiltersState,
+  onFilterChange: (filters: AchievementFiltersState) => void,
+  value: string
+) => {
+  handleFilterChange(filters, onFilterChange, {
+    selectedCompletionFilterValue:
+      filters.selectedCompletionFilterValue === value ? null : value
+  });
+};
+
+const getSortingOptions = (all?: boolean) => {
+  const options = [...SORTING_OPTIONS];
+  if (!all && !options.find((option) => option.value === 'unlocked')) {
+    options.push({ value: 'unlocked', label: 'Gained' });
+  }
+  return options;
+};
+
+const getRareFilterOptions = (minPercent: number, maxPercent: number) =>
+  RARE_FILTER_OPTIONS.filter((filterValue) => {
+    const [min, max] = filterValue.slice(7).split('-').map(Number);
+    return minPercent <= min && maxPercent >= max;
+  }).map((value) => ({ value, label: value }));
+
 export const AchievementFilterBar: React.FC<AchievementFilterBarProps> = ({
   all,
   filters,
@@ -29,31 +62,11 @@ export const AchievementFilterBar: React.FC<AchievementFilterBarProps> = ({
     desc
   } = filters;
 
-  const sortingOptions = useMemo(() => {
-    const options = [...SORTING_OPTIONS];
-    if (!all && !options.find((option) => option.value === 'unlocked')) {
-      options.push({ value: 'unlocked', label: 'Gained' });
-    }
-    return options;
-  }, [all]);
-
-  const handleFilterChange = (updatedFilters: Partial<AchievementFiltersState>) => {
-    onFilterChange({ ...filters, ...updatedFilters });
-  };
-
-  const handleCompletionFilterChange = (value: string) => {
-    handleFilterChange({
-      selectedCompletionFilterValue:
-        filters.selectedCompletionFilterValue === value ? null : value
-    });
-  };
-
-  const rareFilterOptions = useMemo(() => RARE_FILTER_OPTIONS
-    .filter((filterValue) => {
-      const [min, max] = filterValue.slice(7).split('-').map(Number);
-      return minPercent <= min && maxPercent >= max;
-    })
-    .map((value) => ({ value, label: value })), [minPercent, maxPercent]);
+  const sortingOptions = useMemo(() => getSortingOptions(all), [all]);
+  const rareFilterOptions = useMemo(
+    () => getRareFilterOptions(minPercent, maxPercent),
+    [minPercent, maxPercent]
+  );
 
   return (
     <div className="inputSortFilterContainerAch">
@@ -62,7 +75,7 @@ export const AchievementFilterBar: React.FC<AchievementFilterBarProps> = ({
           placeholder={t('SearchGames')}
           value={searchQueryGameName}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleFilterChange({ searchQueryGameName: e.target.value })
+            handleFilterChange(filters, onFilterChange, { searchQueryGameName: e.target.value })
           }
         />
       )}
@@ -70,25 +83,27 @@ export const AchievementFilterBar: React.FC<AchievementFilterBarProps> = ({
         placeholder={t('SearchAch')}
         value={searchQueryAch}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handleFilterChange({ searchQueryAch: e.target.value })
+          handleFilterChange(filters, onFilterChange, { searchQueryAch: e.target.value })
         }
       />
       <Dropdown
         options={sortingOptions}
         selectedValue={selectedValue}
-        onSelect={(value) => handleFilterChange({ selectedValue: value })}
+        onSelect={(value) => handleFilterChange(filters, onFilterChange, { selectedValue: value })}
         buttonText="SortBy"
       />
       <Dropdown
         options={rareFilterOptions}
         selectedValue={selectedCompletionFilterValue}
-        onSelect={handleCompletionFilterChange}
+        onSelect={(value) => handleCompletionFilterChange(filters, onFilterChange, value)}
         buttonText="GainedPercent"
-        onReset={() => handleFilterChange({ selectedCompletionFilterValue: null })}
+        onReset={() =>
+          handleFilterChange(filters, onFilterChange, { selectedCompletionFilterValue: null })
+        }
       />
       <button
         className="arrows-container"
-        onClick={() => handleFilterChange({ desc: !desc })}
+        onClick={() => handleFilterChange(filters, onFilterChange, { desc: !desc })}
       >
         <div className={desc ? 'arrow activate' : 'arrow'}>&#x25B2;</div>
         <div className={!desc ? 'arrow activate' : 'arrow'}>&#x25BC;</div>

@@ -6,7 +6,7 @@ import i18n from 'i18next';
 
 import StatsRareAch from '../features/StatsRareAch';
 import StatsTimeAch from '../features/StatsTimeAch';
-import { statsComponentProps } from '../interfaces';
+import { StatsComponentProps } from '../interfaces';
 
 import '../styles/scss/StatsPage.scss';
 
@@ -27,7 +27,7 @@ const StatsPage: React.FC = () => {
     }
   }, [type]);
 
-  const ComponentToRender: null | React.FC<statsComponentProps> = type ? componentMap[type] : null;
+  const ComponentToRender: null | React.FC<StatsComponentProps> = type ? componentMap[type] : null;
 
   return (
     <I18nextProvider i18n={i18n}>
@@ -39,14 +39,14 @@ const StatsPage: React.FC = () => {
       <div className="stats-page">
         <div className="stats-type-holder">
           {Object.keys(componentMap).map((type, index) => (
-            <div
+            <button
               className="stats-type"
               id={index.toString()}
-              key={index}
+              key={type}
               onClick={() => setType(type)}
             >
               {t(type)}
-            </div>
+            </button>
           ))}
         </div>
         <div className="stats-container">

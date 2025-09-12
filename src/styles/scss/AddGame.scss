@@ -1,6 +1,11 @@
 @use './variables' as *;
 
 .find-game-card {
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+
   margin: $spacing-md;
   height: fit-content;
   width: fit-content;
@@ -13,3 +18,4 @@
     margin-block: 0;
   }
 }
+

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import i18n from 'i18next';
-import { GameDataRow, gameDataWithAch } from '../interfaces';
+import { GameDataRow, GameDataWithAch } from '../interfaces';
 import { ApiService } from '../services/api.services';
 
 interface Game {
@@ -32,7 +32,7 @@ export function useGameData () {
 
   const renderComponent = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const gameData = await ApiService.get<gameDataWithAch>(
+    const gameData = await ApiService.get<GameDataWithAch>(
       `user/${dataSteamId}/game/${appid}/data?language=${i18n.language}&achievements=false`
     );
     const userData = gameData.userData[0];

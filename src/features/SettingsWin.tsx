@@ -7,11 +7,10 @@ type ModalProps = {
 };
 
 const SettingsWin: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  const { i18n, t } = useTranslation();
   if (!isOpen) {
     return null;
   }
-  const { i18n } = useTranslation();
-  const { t } = useTranslation();
   const changeLanguage = (language: string) => {
     i18n.changeLanguage(language);
   };

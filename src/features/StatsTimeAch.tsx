@@ -2,9 +2,9 @@ import React from 'react';
 import AchTimeHistogram from './AchTimeHistogram';
 import AchCountTimeHistogram from './AchCountTimeHistogram';
 import AchAccPercentHistogram from './AchAccPercentHistogram';
-import { statsComponentProps } from '../interfaces';
+import { StatsComponentProps } from '../interfaces';
 
-const StatsTimeAch: React.FC<statsComponentProps> = ({ gameAppid }) => {
+const StatsTimeAch: React.FC<StatsComponentProps> = ({ gameAppid }) => {
   return (
     <>
       <div className='stats-chart'>

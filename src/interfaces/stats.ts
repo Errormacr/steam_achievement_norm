@@ -1,3 +1,3 @@
-export interface statsComponentProps {
+export interface StatsComponentProps {
     gameAppid?:number
 }

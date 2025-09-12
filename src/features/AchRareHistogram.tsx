@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Histogram from '../components/Histogram';
 import { HistogramValue } from '../interfaces/sharedProps';
 import { ApiService } from '../services/api.services';
-import { RareAchievementCount, statsComponentProps } from '../interfaces';
+import { RareAchievementCount, StatsComponentProps } from '../interfaces';
 import { useNavigate } from 'react-router-dom';
 
-const AchRareHistogram : React.FC<statsComponentProps> = ({ gameAppid = undefined }) => {
+const AchRareHistogram : React.FC<StatsComponentProps> = ({ gameAppid = undefined }) => {
   const navigate = useNavigate();
   const [data,
     setData] = useState < HistogramValue[] >([]);
