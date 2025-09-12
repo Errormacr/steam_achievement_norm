@@ -13,11 +13,12 @@ import { GameList } from '../components/GameList';
 
 import '../styles/scss/Games.scss';
 import '../styles/scss/FilterSort.scss';
+import { Filters } from '../interfaces';
 
 export default function Games () {
   const navigate = useNavigate();
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     searchQuery: '',
     selectedValue: 'lastLaunchTime',
     selectedTimeFilterValue: null,
@@ -33,7 +34,7 @@ export default function Games () {
     selectedCompletionFilterValue: filters.selectedCompletionFilterValue
   });
 
-  const handleFilterChange = (newFilters: any) => {
+  const handleFilterChange = (newFilters: Filters) => {
     setPage(1);
     setFilters(newFilters);
   };

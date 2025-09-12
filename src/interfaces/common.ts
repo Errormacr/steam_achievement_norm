@@ -3,3 +3,11 @@ export interface Pagination<Row> {
     count: number;
     pages: number;
 }
+
+export interface Filters {
+    searchQuery: string
+    selectedValue: string
+    selectedTimeFilterValue: string | null
+    selectedCompletionFilterValue: string | null
+    desc: boolean
+}

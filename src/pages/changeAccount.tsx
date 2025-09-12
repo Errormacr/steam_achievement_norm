@@ -8,7 +8,7 @@ import IdKeyInput from '../components/IdKeyInput';
 import { ApiService } from '../services/api.services';
 import { User, UserData } from '../interfaces';
 
-export default function ChangeAccount ({ updatePage }: { updatePage: () => void }): React.JSX.Element {
+export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: () => void }>): React.JSX.Element {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [addingAcc, setAddingAcc] = useState(false);
@@ -82,10 +82,10 @@ export default function ChangeAccount ({ updatePage }: { updatePage: () => void 
           <div className="modal-content">
             <h2 className="settingsHeader">{t('chAccHeading')}</h2>
             <div className="accContainer">
-              {accounts
+              {[...accounts]
                 .sort((a, b) => +a.steamID - +b.steamID)
                 .map((account) => (
-                  <div
+                  <button
                     key={account.steamID}
                     className="userContainer"
                     onClick={() => {
@@ -103,7 +103,7 @@ export default function ChangeAccount ({ updatePage }: { updatePage: () => void 
                         deleteUser(account.steamID);
                       }}
                     />
-                  </div>
+                  </button>
                 ))}
             </div>
             {!addingAcc && (
@@ -119,7 +119,7 @@ export default function ChangeAccount ({ updatePage }: { updatePage: () => void 
                 value={writingSteamId}
                 onChange={(event: { target: { value: string } }) => {
                   const value = event.target.value;
-                  const regex = /^[0-9]+$/;
+                  const regex = /^\d+$/;
                   if (value !== '' && regex.test(value)) {
                     setSteamId(value);
                     fetchData(value);
@@ -137,7 +137,7 @@ export default function ChangeAccount ({ updatePage }: { updatePage: () => void 
             {steamIdError && addingAcc && <div className="input-error">{steamIdError}</div>}
             {accFound && addingAcc && (
               <div>
-                <div
+                <button
                   className="userContainer"
                   onClick={() => {
                     localStorage.setItem('steamId', SteamId);
@@ -148,7 +148,7 @@ export default function ChangeAccount ({ updatePage }: { updatePage: () => void 
                 >
                   <img alt="found user avatar" src={newAccAva} />
                   <p>{newAccName}</p>
-                </div>
+                </button>
               </div>
             )}
           </div>

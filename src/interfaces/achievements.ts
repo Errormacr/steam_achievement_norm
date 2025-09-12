@@ -26,10 +26,10 @@ export interface AchievmentsFromView {
     description : string;
     lowerDisplayName : string;
     displayName : string;
-    game?: achGame
+    game?: AchGame
 }
 
-interface achGame {
+interface AchGame {
     gamename : string
 }
 

@@ -6,7 +6,7 @@ import UpdateProgress from './UpdateGameProgress';
 import UpdateModal from './UpdateModal';
 import { useUpdateSocket } from '../hooks/useUpdateSocket';
 
-export default function UpdateUserData ({ rerender }: { rerender: () => void }): React.JSX.Element {
+export default function UpdateUserData ({ rerender }: Readonly<{ rerender: () => void }>): React.JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isUpdating, startUpdate, progress } = useUpdateSocket(rerender);
 

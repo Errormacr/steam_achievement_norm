@@ -13,6 +13,15 @@
         cursor: pointer;
     }
 
+    .dropdown-button-light {
+      background-color: #5D7A9E;
+      color: white;
+      border: none;
+      margin-left: 0.5rem;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
     /* Стили для списка */
     .dropdown-list {
         position: absolute;
@@ -54,6 +63,29 @@
     border: #445974;
     border-radius: 4rem;
     background: #445974;
+    .arrow {
+        color: #111923;
+        /* Общий цвет для стрелок */
+        cursor: pointer;
+        /* Добавляем указатель при наведении */
+        font-size: 24px;
+        /* Размер шрифта */
+
+        &.activate {
+            color: #00ff2f;
+            /* Общий цвет для стрелок */
+            cursor: pointer;
+            /* Добавляем указатель при наведении */
+            font-size: 24px;
+            /* Размер шрифта */
+        }
+    }
+}
+.arrows-container-light {
+    margin-right: 0.5rem;
+    border: #5D7A9E;
+    border-radius: 4rem;
+    background: #5D7A9E;
     .arrow {
         color: #111923;
         /* Общий цвет для стрелок */
