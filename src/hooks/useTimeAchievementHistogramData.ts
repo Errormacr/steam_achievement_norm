@@ -16,7 +16,7 @@ export const useTimeAchievementHistogramData = (gameAppid?: number) => {
         setData(data.map((item) => ({ count: item.count, name: item.date })));
       })
       .catch(error => {
-        console.error("Failed to fetch time achievement data:", error);
+        console.error('Failed to fetch time achievement data:', error);
         setData([]); // Reset data on error
       });
   }, [gameAppid]);
