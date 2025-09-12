@@ -11,12 +11,14 @@ import {
 } from 'recharts';
 import '../styles/scss/Histogram.scss';
 
+type OnClick = Parameters<typeof LineChart>[0]['onClick'];
+
 interface HistogramProps {
   data: Array<{
     name: string | number;
     count: number;
   }>;
-  onClick?: (event: any) => void;
+  onClick?: OnClick;
 }
 
 const Histogram: React.FC<HistogramProps> = ({ data, onClick }) => {
