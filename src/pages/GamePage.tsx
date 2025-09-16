@@ -52,13 +52,13 @@ const GamePage: React.FC = () => {
           onToggleView={handleToggleView}
         />
         <Box>
-          {loaded &&
+          {loaded && (game.appid !== 0) &&
               <AchievementsDisplay
                   tableOrBox={tableOrBox}
                   minPercent={0}
                   maxPercent={100}
                   date={undefined }
-                  appid={undefined}
+                  appid={game.appid}
                   unlocked={undefined}
                   all={false}
               />

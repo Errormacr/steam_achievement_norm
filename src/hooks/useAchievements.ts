@@ -159,7 +159,7 @@ export const useAchievements = (
     };
 
     fetch();
-  }, [debouncedFilters, page, props]);
+  }, [debouncedFilters, page]);
 
   const setPage = (pageUpdater: (prevPage: number) => number) => {
     dispatch({ type: 'SET_PAGE', payload: pageUpdater(page) });

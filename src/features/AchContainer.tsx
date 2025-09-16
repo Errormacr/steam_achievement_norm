@@ -8,34 +8,15 @@ import { useAchievementFilters } from '../hooks/useAchievementFilters';
 import { useAchievements } from '../hooks/useAchievements';
 import { AchievementFilterBar } from './AchievementFilterBar';
 import { AchievementList } from './AchievementList';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 
 const AchBox: React.FC<AchBoxProps> = ({ appid, all, minPercent, maxPercent, date, unlocked }) => {
   const { filters, setFilters } = useAchievementFilters();
   const { ach, isLoading, hasMore, newAchievements, setPage } = useAchievements(filters, { appid, all, unlocked, minPercent, maxPercent, date });
-  const observer = useRef<IntersectionObserver | null>(null);
-  const isLoadingRef = useRef(isLoading);
-  isLoadingRef.current = isLoading;
 
-  const lastAchievementRef = (node: HTMLDivElement) => {
-    if (isLoading) return;
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver(
-      (entries) => {
-          console.log(entries[0].isIntersecting && hasMore && !isLoadingRef.current);
-        if (entries[0].isIntersecting && hasMore && !isLoadingRef.current) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      },
-      {
-        root: null,
-        rootMargin: '200px',
-        threshold: 0.1
-      }
-    );
-
-    if (node) observer.current.observe(node);
-  };
+  const lastElementRef = useInfiniteScroll(() => {
+    setPage((prevPage) => prevPage + 1);
+  }, hasMore, isLoading);
 
   return (
     <I18nextProvider i18n={i18n}>
@@ -51,7 +32,7 @@ const AchBox: React.FC<AchBoxProps> = ({ appid, all, minPercent, maxPercent, dat
           achievements={ach}
           newAchievements={newAchievements}
           isLoading={isLoading}
-          lastAchievementRef={lastAchievementRef}
+          lastAchievementRef={lastElementRef}
         />
       </div>
     </I18nextProvider>
