@@ -3,9 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
 import i18n from 'i18next';
+import { Box, Button, Container, IconButton, Typography } from '@mui/material';
 
 import ScrollToTopButton from '../components/ScrollToTopButton';
-import GameButton from '../components/GameButton';
 import { useAchievementsPageData } from '../hooks/useAchievementsPageData';
 import AchievementsDisplay from '../features/AchievementsDisplay';
 
@@ -43,25 +43,28 @@ const AchPage: React.FC = () => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <div>
+      <Container maxWidth={false}>
         <ScrollToTopButton />
-        <div className="label-container">
-          <FaArrowLeft
-            className="button-icon return"
-            onClick={handleGoBack}
-            id="return"
-          />
-          <label className="game-label">
+        <Box
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 2
+          }}
+        >
+          <IconButton onClick={handleGoBack} sx={{ position: 'absolute', left: 16 }}>
+            <FaArrowLeft />
+          </IconButton>
+          <Typography variant="h6">
             {achCount} {t('Ach')}
-          </label>
-          <GameButton
-            id=""
-            onClick={handleToggleView}
-            additionalClass="switchTable"
-            text={t('SwitchTable')}
-          />
-        </div>
-        <div className="details-container table-container">
+          </Typography>
+          <Button variant="contained" onClick={handleToggleView} sx={{ position: 'absolute', right: 16 }}>
+            {t('SwitchTable')}
+          </Button>
+        </Box>
+        <Box>
           {loaded && (
             <AchievementsDisplay
               tableOrBox={tableOrBox}
@@ -73,8 +76,8 @@ const AchPage: React.FC = () => {
               all={!+gameAppid}
             />
           )}
-        </div>
-      </div>
+        </Box>
+      </Container>
     </I18nextProvider>
   );
 };

@@ -14,8 +14,8 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ isOpen, onClose, onUpdate }) 
   if (!isOpen) return null;
 
   return (
-    <button className="modal" style={{ border: 'none' }} onClick={onClose}>
-      <button className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2 className="settingsHeader">{t('updateUserDataHeading')}</h2>
         <div className="update-buttons">
           <GameButton
@@ -44,8 +44,8 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ isOpen, onClose, onUpdate }) 
             text={t('updatePercentAch')}
           />
         </div>
-      </button>
-    </button>
+      </div>
+    </div>
   );
 };
 

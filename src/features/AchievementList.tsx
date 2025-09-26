@@ -17,7 +17,7 @@ export const AchievementList: React.FC<AchievementListProps> = ({ achievements, 
       <div className="AchCont">
         {achievements.map((achievement, index, arr) => (
           <div
-            key={`${achievement.displayName}-${achievement.game.gamename}`}
+            key={`${achievement.displayName}-${achievement.game.gamename}${index}`}
             ref={index === arr.length - 1 ? lastAchievementRef : undefined}
             className={`achievement-item ${newAchievements.includes(index) ? 'new-achievement' : ''}`}
           >
