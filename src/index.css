@@ -1,3 +1,10 @@
+:root {
+    --background-color: #2a475e;
+    --text-color: #c3c2c2;
+    --primary-color: #66c0f4;
+    --secondary-background-color: #1b2838;
+}
+
 @font-face {
     font-family: 'Accid';
     src: url("./fonts/accid.ttf") format('truetype');

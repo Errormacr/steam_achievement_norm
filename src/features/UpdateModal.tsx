@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GameButton from '../components/GameButton';
+import '../styles/scss/UpdateModal.scss';
 
 interface UpdateModalProps {
   isOpen: boolean;
@@ -14,8 +15,11 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ isOpen, onClose, onUpdate }) 
   if (!isOpen) return null;
 
   return (
-    <div className="modal" onClick={onClose}>
+    <section className="modal" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-button" onClick={onClose}>
+          &times;
+        </button>
         <h2 className="settingsHeader">{t('updateUserDataHeading')}</h2>
         <div className="update-buttons">
           <GameButton
@@ -28,11 +32,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ isOpen, onClose, onUpdate }) 
             onClick={() => onUpdate('owned-played')}
             text={t('updatePlayedOwned')}
           />
-          <GameButton
-            id="update-all"
-            onClick={() => onUpdate('all')}
-            text={t('updateAll')}
-          />
+          <GameButton id="update-all" onClick={() => onUpdate('all')} text={t('updateAll')} />
           <GameButton
             id="update-all-force"
             onClick={() => onUpdate('all-force')}
@@ -45,7 +45,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ isOpen, onClose, onUpdate }) 
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

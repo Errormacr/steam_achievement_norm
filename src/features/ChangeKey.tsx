@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { ApiService } from '../services/api.services';
 import { useModal } from '../hooks/useModal';
 
-export default function ChangeKey(): React.JSX.Element {
+export default function ChangeKey (): React.JSX.Element {
   const { isOpen, openModal, closeModal } = useModal();
   const [apiKey, setApiKey] = useState('');
 

@@ -8,21 +8,21 @@ interface AchievementRowProps {
 }
 
 const getImgClass = (percent: number): string => {
-    if (percent <= 5) return 'rare1 table-ach-img';
-    if (percent <= 20) return 'rare2 table-ach-img';
-    if (percent <= 45) return 'rare3 table-ach-img';
-    if (percent <= 60) return 'rare4 table-ach-img';
-    return 'rare5 table-ach-img';
+  if (percent <= 5) return 'rare1 table-ach-img';
+  if (percent <= 20) return 'rare2 table-ach-img';
+  if (percent <= 45) return 'rare3 table-ach-img';
+  if (percent <= 60) return 'rare4 table-ach-img';
+  return 'rare5 table-ach-img';
 };
 
 export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isLast, lastElementRef }) => {
-    const rowClass = achievement.percent <= 5 ? 'rare1' : '';
-    const imgClass = getImgClass(achievement.percent);
-    const formattedDate = achievement.unlockedDate
-        ? new Date(achievement.unlockedDate).toLocaleString()
-        : '';
+  const rowClass = achievement.percent <= 5 ? 'rare1' : '';
+  const imgClass = getImgClass(achievement.percent);
+  const formattedDate = achievement.unlockedDate
+    ? new Date(achievement.unlockedDate).toLocaleString()
+    : '';
 
-    return (
+  return (
         <tr
             className={rowClass}
             ref={isLast ? lastElementRef : undefined}
@@ -40,5 +40,5 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
             <td>{achievement.percent.toFixed(2)}%</td>
             <td>{formattedDate}</td>
         </tr>
-    );
+  );
 };

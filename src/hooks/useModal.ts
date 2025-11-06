@@ -1,26 +1,26 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export const useModal = (modalContentSelector = '.modal-content') => {
-    const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-    const openModal = useCallback(() => setIsOpen(true), []);
-    const closeModal = useCallback(() => setIsOpen(false), []);
+  const openModal = useCallback(() => setIsOpen(true), []);
+  const closeModal = useCallback(() => setIsOpen(false), []);
 
-    useEffect(() => {
-        if (!isOpen) return;
+  useEffect(() => {
+    if (!isOpen) return;
 
-        const handleOutsideClick = (event: MouseEvent) => {
-            const target = event.target as HTMLElement;
-            if (!target.closest(modalContentSelector)) {
-                closeModal();
-            }
-        };
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(modalContentSelector)) {
+        closeModal();
+      }
+    };
 
-        document.addEventListener('mousedown', handleOutsideClick);
-        return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
-        };
-    }, [isOpen, closeModal, modalContentSelector]);
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isOpen, closeModal, modalContentSelector]);
 
-    return { isOpen, openModal, closeModal };
+  return { isOpen, openModal, closeModal };
 };
