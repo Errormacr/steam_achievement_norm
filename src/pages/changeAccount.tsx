@@ -6,7 +6,7 @@ import { FaTrash } from 'react-icons/fa';
 import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
 import { ApiService } from '../services/api.services';
-import { User, UserData } from '../interfaces';
+import { User, UserData, ApiResponse } from '../types';
 
 export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: () => void }>): React.JSX.Element {
   const { t } = useTranslation();
@@ -51,7 +51,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
   }, [isOpen]);
 
   const update = (steamId: string) => {
-    ApiService.put(`user/${steamId}/all-force?lang=${i18n.language}`);
+    ApiService.put<ApiResponse>(`user/${steamId}/all-force?lang=${i18n.language}`);
   };
 
   const fetchData = async (steamId: string) => {
@@ -70,7 +70,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
   };
 
   const deleteUser = (userId: string) => {
-    ApiService.delete(`user/${userId}`);
+    ApiService.delete<ApiResponse>(`user/${userId}`);
     setAccounts((prev) => prev.filter((acc) => acc.steamID !== userId));
   };
 

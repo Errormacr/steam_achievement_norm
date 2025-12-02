@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ApiService } from '../services/api.services';
-import { AchievmentsFromView, Pagination } from '../interfaces';
+import { AchievmentsFromView, Pagination } from '../types';
 import i18n from 'i18next';
 
 interface AchPageParams {

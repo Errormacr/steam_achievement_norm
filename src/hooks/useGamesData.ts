@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import i18n from 'i18next';
 import { ApiService } from '../services/api.services';
-import { GameDataRow, Pagination } from '../interfaces';
+import { GameDataRow, Pagination } from '../types';
 
 interface GamesDataFilters {
   orderBy: string | null;

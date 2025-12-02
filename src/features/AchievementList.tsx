@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AchievmentsFromView } from '../interfaces';
+import { AchievmentsFromView } from '../types';
 import AchievementImage from '../components/AchievementImage';
 
 interface AchievementListProps {

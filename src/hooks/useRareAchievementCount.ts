@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ApiService } from '../services/api.services';
-import { RareAchievementCount } from '../interfaces';
+import { RareAchievementCount } from '../types';
 
 export const useRareAchievementCount = (gameAppid?: number) => {
   const [counts, setCounts] = useState<RareAchievementCount>({});

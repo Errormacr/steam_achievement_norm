@@ -1,5 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/scss/ScrollToTop.scss';
+import styled from '@emotion/styled';
+
+const ScrollButton = styled.button`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
+
+  &.visible {
+    opacity: 1;
+  }
+`;
 
 const ScrollToTopButton: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -21,12 +42,12 @@ const ScrollToTopButton: React.FC = () => {
   };
 
   return (
-    <button
-      className={`scroll-to-top-button ${isVisible ? 'visible' : ''}`}
+    <ScrollButton
+      className={isVisible ? 'visible' : ''}
       onClick={scrollToTop}
     >
       ▲
-    </button>
+    </ScrollButton>
   );
 };
 

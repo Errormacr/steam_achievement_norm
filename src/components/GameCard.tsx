@@ -16,7 +16,7 @@ import {
   Chip
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Achievements, AchievmentsFromView, GameDataWithAch, GamePageProps } from '../interfaces';
+import { Achievements, AchievmentsFromView, GameDataWithAch, GamePageProps } from '../types';
 import { ApiService } from '../services/api.services';
 
 const StyledCard = styled(Card)(({ theme }) => ({

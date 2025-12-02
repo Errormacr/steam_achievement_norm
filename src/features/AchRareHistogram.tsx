@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Histogram from '../components/Histogram';
-import { HistogramValue } from '../interfaces/sharedProps';
+import { HistogramValue } from '../types/sharedProps';
 import { ApiService } from '../services/api.services';
-import { RareAchievementCount } from '../interfaces';
+import { RareAchievementCount } from '../types';
 import { useNavigate } from 'react-router-dom';
 
 interface AchRareHistogramProps {

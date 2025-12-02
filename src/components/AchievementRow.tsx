@@ -1,5 +1,5 @@
 import React from 'react';
-import { AchievmentsFromView } from '../interfaces';
+import { AchievmentsFromView } from '../types';
 
 interface AchievementRowProps {
     achievement: AchievmentsFromView;

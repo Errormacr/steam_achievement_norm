@@ -8,7 +8,7 @@ import LastAchContainer from '../features/LastAchContainer';
 import CircularProgressSVG from '../components/CircularProgressSVG';
 import GameCard from '../components/GameCard';
 import { ApiService } from '../services/api.services';
-import { UserData } from '../interfaces';
+import { UserData } from '../types';
 
 import i18n from '../utils/translate';
 import '../styles/scss/MainWindow.scss';

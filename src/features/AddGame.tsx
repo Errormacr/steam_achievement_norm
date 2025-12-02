@@ -5,7 +5,7 @@ import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
 import { ApiService } from '../services/api.services';
 import '../styles/scss/AddGame.scss';
-import { Percent } from '../interfaces';
+import { Percent } from '../types';
 import { toast, ToastContainer } from 'react-toastify';
 import { useModal } from '../hooks/useModal';
 import { useGameSearch } from '../hooks/useGameSearch';

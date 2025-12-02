@@ -3,7 +3,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from 'i18next';
 import '../styles/scss/AchConteiner.scss';
 import '../styles/scss/FilterSort.scss';
-import { AchContainerProps } from '../interfaces';
+import { AchContainerProps } from '../types';
 import { useAchievementFilters } from '../hooks/useAchievementFilters';
 import { useAchievements } from '../hooks/useAchievements';
 import { AchievementFilterBar } from './AchievementFilterBar';

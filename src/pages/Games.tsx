@@ -13,7 +13,7 @@ import { GameList } from '../components/GameList';
 
 import '../styles/scss/Games.scss';
 import '../styles/scss/FilterSort.scss';
-import { Filters } from '../interfaces';
+import { Filters } from '../types';
 
 export default function Games () {
   const navigate = useNavigate();

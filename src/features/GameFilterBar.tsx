@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import IdKeyInput from '../components/IdKeyInput';
 import { useClickOutside } from '../hooks/useClickOutside';
 import { COMPLETION_FILTER_OPTIONS, SORTING_OPTIONS, TIME_FILTER_OPTIONS } from '../constants/gameFilters';
-import { Filters } from '../interfaces';
+import { Filters } from '../types';
 
 interface GameFilterBarProps {
   filters: {

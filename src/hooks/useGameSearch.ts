@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDebouncyEffect } from 'use-debouncy';
 import { ApiService } from '../services/api.services';
-import { Game } from '../interfaces';
+import { Game } from '../types';
 import { toast } from 'react-toastify';
 
 export const useGameSearch = (appid: string) => {

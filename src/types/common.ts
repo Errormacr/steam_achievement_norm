@@ -11,3 +11,7 @@ export interface Filters {
     selectedCompletionFilterValue: string | null
     desc: boolean
 }
+
+export interface ApiResponse {
+    message: string;
+}

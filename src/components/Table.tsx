@@ -2,7 +2,7 @@ import React from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import '../styles/scss/Table.scss';
-import { AchContainerProps } from '../interfaces';
+import { AchContainerProps } from '../types';
 import { useTableAchievements } from '../hooks/useTableAchievements';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { AchievementRow } from './AchievementRow';

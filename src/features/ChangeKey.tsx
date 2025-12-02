@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 import { ApiService } from '../services/api.services';
 import { useModal } from '../hooks/useModal';
 
+import { ApiResponse } from '../types';
+
 export default function ChangeKey (): React.JSX.Element {
   const { isOpen, openModal, closeModal } = useModal();
   const [apiKey, setApiKey] = useState('');
@@ -21,7 +23,7 @@ export default function ChangeKey (): React.JSX.Element {
   const changeApiKey = async () => {
     if (apiKey) {
       try {
-        await ApiService.post('steam-api/api-token', { token: apiKey });
+        await ApiService.post<ApiResponse>('steam-api/api-token', { token: apiKey });
         toast.success(t('changeKeySuccess'));
         closeModal();
       } catch (error) {

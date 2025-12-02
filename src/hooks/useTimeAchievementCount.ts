@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ApiService } from '../services/api.services';
-import { HistogramValue } from '../interfaces/sharedProps';
-import { TimeAchievementCount } from '../interfaces';
+import { HistogramValue } from '../types/sharedProps';
+import { TimeAchievementCount } from '../types';
 
 export const useTimeAchievementCount = (gameAppid?: number) => {
   const [data, setData] = useState<HistogramValue[]>([]);

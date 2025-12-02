@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameDataRow } from '../interfaces';
+import { GameDataRow } from '../types';
 import GameCard from './GameCard';
 
 interface GameListProps {

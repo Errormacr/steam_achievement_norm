@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import i18n from 'i18next';
 import { ApiService } from '../services/api.services';
-import { Pagination, AchievmentsFromView } from '../interfaces';
+import { Pagination, AchievmentsFromView } from '../types';
 import { AchievementFiltersState } from './useAchievementFilters';
 import { useDebounce } from './useDebounce';
 const PAGE_SIZE = 100;

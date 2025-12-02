@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useReducer } from 'react';
 import { ApiService } from '../services/api.services';
-import { AchievmentsFromView, Pagination, AchContainerProps } from '../interfaces';
+import { AchievmentsFromView, Pagination, AchContainerProps } from '../types';
 import i18n from 'i18next';
 
 const PAGE_SIZE = 50;
