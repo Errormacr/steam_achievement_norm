@@ -1,63 +1,70 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
 import i18n from 'i18next';
+import { Card, CardContent, Typography } from '@mui/material';
 
-import StatsRareAch from '../features/StatsRareAch';
-import StatsTimeAch from '../features/StatsTimeAch';
-import { StatsComponentProps } from '../interfaces';
+import AchRareDiagram from '../features/AchRareDiagram';
+import AchRareHistogram from '../features/AchRareHistogram';
+import AchTimeHistogram from '../features/AchTimeHistogram';
+import AchCountTimeHistogram from '../features/AchCountTimeHistogram';
+import AchAccPercentHistogram from '../features/AchAccPercentHistogram';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 import '../styles/scss/StatsPage.scss';
 
 const StatsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { gameAppid } = useParams<{ gameAppid?: string }>();
-  const [type, setType] = useState<string | null>(sessionStorage.getItem('type'));
+  const { t } = useTranslation();
 
-  const componentMap: Record<string, React.FC> = {
-    RareStats: StatsRareAch,
-    TimeStats: StatsTimeAch
-  };
-
-  useEffect(() => {
-    if (type) {
-      sessionStorage.setItem('type', type);
+  const charts = [
+    {
+      title: 'achievementsFrequencyByRarity',
+      component: <AchRareDiagram gameAppid={gameAppid ? +gameAppid : undefined} />
+    },
+    {
+      title: 'achievementsDistributionByPlayers',
+      component: <AchRareHistogram gameAppid={gameAppid ? +gameAppid : undefined} />
+    },
+    {
+      title: 'achievementsReceivedPerDay',
+      component: <AchTimeHistogram gameAppid={gameAppid ? +gameAppid : undefined} />
+    },
+    {
+      title: 'totalAchievementsPerDay',
+      component: <AchCountTimeHistogram gameAppid={gameAppid ? +gameAppid : undefined} />
     }
-  }, [type]);
+  ];
 
-  const ComponentToRender: null | React.FC<StatsComponentProps> = type ? componentMap[type] : null;
+  if (!gameAppid) {
+    charts.push({
+      title: 'averageAccountAchievementsByDay',
+      component: <AchAccPercentHistogram />
+    });
+  }
 
   return (
     <I18nextProvider i18n={i18n}>
-      <FaArrowLeft
-        className="button-icon return"
-        onClick={() => navigate('/')}
-        id="return"
-      />
+      <FaArrowLeft className="button-icon return" onClick={() => navigate('/')} id="return" />
       <div className="stats-page">
-        <div className="stats-type-holder">
-          {Object.keys(componentMap).map((type, index) => (
-            <button
-              className="stats-type"
-              id={index.toString()}
-              key={type}
-              onClick={() => setType(type)}
-            >
-              {t(type)}
-            </button>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {t('GameStats')}
+        </Typography>
+        <div className="charts-container">
+          {charts.map((chart) => (
+            <Card key={`card-${chart.title}`} className="chart-card">
+              <CardContent>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  {t(chart.title)}
+                </Typography>
+                {chart.component}
+              </CardContent>
+            </Card>
           ))}
         </div>
-        <div className="stats-container">
-          {ComponentToRender
-            ? (
-            <ComponentToRender gameAppid={+gameAppid || undefined} />
-              )
-            : (
-            <div>Select a type to view stats</div>
-              )}
-        </div>
+        <ScrollToTopButton />
       </div>
     </I18nextProvider>
   );

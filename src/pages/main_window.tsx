@@ -4,7 +4,7 @@ import { I18nextProvider, useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import AchCont from '../features/last_ach_container';
+import LastAchContainer from '../features/LastAchContainer';
 import CircularProgressSVG from '../components/CircularProgressSVG';
 import GameCard from '../components/GameCard';
 import { ApiService } from '../services/api.services';
@@ -36,7 +36,7 @@ export default function App () {
         setGamesCount(userData.gameCount);
         setAchCount(userData.achCount);
         setRecentGames(userData.user.gameDatas);
-        achContainer.render(<AchCont />);
+        achContainer.render(<LastAchContainer />);
       } catch (e) {
         console.error('Error updating user data:', e);
         toast.error('Failed to update user data. Please try again.');

@@ -1,11 +1,11 @@
 import { useEffect, useCallback, useReducer } from 'react';
 import { ApiService } from '../services/api.services';
-import { AchievmentsFromView, Pagination, AchBoxProps } from '../interfaces';
+import { AchievmentsFromView, Pagination, AchContainerProps } from '../interfaces';
 import i18n from 'i18next';
 
 const PAGE_SIZE = 50;
 
-interface BuildAchievementParams extends AchBoxProps {
+interface BuildAchievementParams extends AchContainerProps {
   sortConfig: string;
   desc: boolean;
   page: number;
@@ -93,7 +93,7 @@ const achievementsReducer = (state: AchievementsState, action: AchievementsActio
   }
 };
 
-export const useTableAchievements = (filters: AchBoxProps) => {
+export const useTableAchievements = (filters: AchContainerProps) => {
   const [state, dispatch] = useReducer(achievementsReducer, initialState);
   const { ach, sortConfig, desc, isLoading, page, hasMore } = state;
 

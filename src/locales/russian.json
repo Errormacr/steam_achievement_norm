@@ -109,5 +109,10 @@
     "noAchievements": "Нет данных о достижениях",
     "connectionError": "Ошибка подключения",
     "noSteamId": "Steam ID не найден",
-    "Profile": "Профиль"
+    "Profile": "Профиль",
+    "achievementsFrequencyByRarity": "Частота достижений по уровням редкости",
+    "achievementsDistributionByPlayers": "Распределение достижений по игрокам в процентах",
+    "achievementsReceivedPerDay": "Количество достижений полученных за день",
+    "totalAchievementsPerDay": "Общее количество достижений за день",
+    "averageAccountAchievementsByDay": "Средний процент достижений аккаунта по дням"
 }

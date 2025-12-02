@@ -1,10 +1,13 @@
 import React from 'react';
 import Histogram from '../components/Histogram';
-import { StatsComponentProps } from '../interfaces';
 import { useNavigate } from 'react-router-dom';
 import { useTimeAchievementHistogramData } from '../hooks/useTimeAchievementHistogramData';
 
-const AchTimeHistogram: React.FC<StatsComponentProps> = ({ gameAppid }) => {
+interface AchTimeHistogramProps {
+  gameAppid?: number;
+}
+
+const AchTimeHistogram: React.FC<AchTimeHistogramProps> = ({ gameAppid }) => {
   const navigate = useNavigate();
   const data = useTimeAchievementHistogramData(gameAppid);
 

@@ -1,9 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Sector } from 'recharts';
 import { useTranslation } from 'react-i18next';
-import { StatsComponentProps } from '../interfaces';
 import { useRareAchievementCount } from '../hooks/useRareAchievementCount';
 import { RARE_ACHIEVEMENT_CATEGORIES } from '../constants/achRareDiagram';
+
+interface AchRareDiagramProps {
+  gameAppid?: number;
+}
 
 interface PieData {
     id: string;
@@ -95,7 +98,7 @@ const renderActiveShape = (props: ShapeProps, t: (key: string) => string) => {
   );
 };
 
-export default function AchRareDiagram ({ gameAppid }: Readonly<StatsComponentProps>) {
+export default function AchRareDiagram ({ gameAppid }: Readonly<AchRareDiagramProps>) {
   const { t } = useTranslation();
   const counts = useRareAchievementCount(gameAppid);
   const [activeIndex, setActiveIndex] = useState(0);

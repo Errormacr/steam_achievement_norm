@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Histogram from '../components/Histogram';
 import { HistogramValue } from '../interfaces/sharedProps';
 import { ApiService } from '../services/api.services';
-import { RareAchievementCount, StatsComponentProps } from '../interfaces';
+import { RareAchievementCount } from '../interfaces';
 import { useNavigate } from 'react-router-dom';
 
-const AchRareHistogram : React.FC<StatsComponentProps> = ({ gameAppid = undefined }) => {
+interface AchRareHistogramProps {
+  gameAppid?: number;
+}
+
+const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
   const navigate = useNavigate();
   const [data,
     setData] = useState < HistogramValue[] >([]);
@@ -33,7 +37,7 @@ const AchRareHistogram : React.FC<StatsComponentProps> = ({ gameAppid = undefine
                   const [min,
                     max] = el
                     .activeLabel
-                    .slice(0, el.activeLabel.length - 1)
+                    .slice(0, -1)
                     .split('-');
                   navigate(`/achievements/${min}/${max}/undefined/Stats${addUrl}`);
                 }}

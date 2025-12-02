@@ -2,12 +2,12 @@ import React from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import '../styles/scss/Table.scss';
-import { AchBoxProps } from '../interfaces';
+import { AchContainerProps } from '../interfaces';
 import { useTableAchievements } from '../hooks/useTableAchievements';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { AchievementRow } from './AchievementRow';
 
-const Table: React.FC<AchBoxProps> = (props) => {
+const Table: React.FC<AchContainerProps> = (props) => {
   const { t } = useTranslation();
   const {
     ach,
@@ -32,10 +32,10 @@ const Table: React.FC<AchBoxProps> = (props) => {
     { value: 'unlockedDate', label: t('DataGain') }
   ];
 
-  if (!props.all) {
-    sortOptions.unshift({ value: 'unlocked', label: t('Gained') });
-  } else {
+  if (props.all) {
     sortOptions.unshift({ value: '', label: '' });
+  } else {
+    sortOptions.unshift({ value: 'unlocked', label: t('Gained') });
   }
 
   return (

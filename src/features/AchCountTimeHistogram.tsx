@@ -1,6 +1,5 @@
 import React from 'react';
 import Histogram from '../components/Histogram';
-import { StatsComponentProps } from '../interfaces';
 import { useNavigate } from 'react-router-dom';
 import { useTimeAchievementCount } from '../hooks/useTimeAchievementCount';
 
@@ -8,7 +7,11 @@ interface HistogramClickEvent {
   activeLabel: string;
 }
 
-const AchCountTimeHistogram: React.FC<StatsComponentProps> = ({ gameAppid }) => {
+interface AchCountTimeHistogramProps {
+  gameAppid?: number;
+}
+
+const AchCountTimeHistogram: React.FC<AchCountTimeHistogramProps> = ({ gameAppid }) => {
   const navigate = useNavigate();
   const data = useTimeAchievementCount(gameAppid);
 

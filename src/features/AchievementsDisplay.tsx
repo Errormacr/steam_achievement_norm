@@ -1,6 +1,6 @@
 import React from 'react';
 import Table from '../components/Table';
-import AchBox from './AchContainer';
+import AchContainer from './AchContainer';
 
 interface AchievementsDisplayProps {
     tableOrBox: boolean;
@@ -32,7 +32,7 @@ const AchievementsDisplay: React.FC<AchievementsDisplayProps> = ({
 
   return tableOrBox
     ? <Table {...commonProps} />
-    : <AchBox {...commonProps} />;
+    : <AchContainer {...commonProps} />;
 };
 
 export default AchievementsDisplay;

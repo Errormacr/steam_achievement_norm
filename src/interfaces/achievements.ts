@@ -44,7 +44,7 @@ export interface TimeAchievementCount {
     count : number
 }
 
-export interface AchBoxProps {
+export interface AchContainerProps {
     appid?: number;
     all : boolean;
     minPercent?: number;

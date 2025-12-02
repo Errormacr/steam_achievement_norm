@@ -101,5 +101,10 @@
     "loading": "Loading...",
     "noAchievements": "No achievement data available",
     "connectionError": "Connection error",
-    "noSteamId": "Steam ID not found"
+    "noSteamId": "Steam ID not found",
+    "achievementsFrequencyByRarity": "Frequency of achievements by rarity levels",
+    "achievementsDistributionByPlayers": "Distribution of achievements by players in percent",
+    "achievementsReceivedPerDay": "Number of achievements received per day",
+    "totalAchievementsPerDay": "Total number of achievements per day",
+    "averageAccountAchievementsByDay": "Average percentage of account achievements by day"
 }
