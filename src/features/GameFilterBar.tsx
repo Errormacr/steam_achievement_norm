@@ -157,7 +157,7 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
         </div>
         <button className="arrows-container-light" onClick={handleToggleArrows}>
           <div className={filters.desc ? 'arrow activate' : 'arrow'}>&#x25B2;</div>
-          <div className={!filters.desc ? 'arrow activate' : 'arrow'}>&#x25BC;</div>
+          <div className={filters.desc ? 'arrow' : 'arrow activate'}>&#x25BC;</div>
         </button>
       </div>
     </div>

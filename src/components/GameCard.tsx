@@ -54,9 +54,9 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const { t } = useTranslation();
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const [percent, setPercent] = useState(0.0);
+  const [percent, setPercent] = useState(0);
   const [lastLaunchTime, setLastLaunchTime] = useState('');
-  const [playtime, setPlaytime] = useState(0.0);
+  const [playtime, setPlaytime] = useState(0);
   const [all, setAll] = useState(0);
   const [gained, setGained] = useState(0);
   const [gameName, setGameName] = useState('');

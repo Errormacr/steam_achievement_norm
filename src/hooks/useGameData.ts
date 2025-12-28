@@ -62,7 +62,7 @@ export function useGameData () {
       renderComponent();
       setLoaded(true);
     } catch (error) {
-      window.alert(error.message);
+      globalThis.alert(error.message);
     }
   }, [renderComponent]);
 

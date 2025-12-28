@@ -34,7 +34,7 @@ const handleCompletionFilterChange = (
 
 const getSortingOptions = (all?: boolean) => {
   const options = [...SORTING_OPTIONS];
-  if (!all && !options.find((option) => option.value === 'unlocked')) {
+  if (!all && !options.some((option) => option.value === 'unlocked')) {
     options.push({ value: 'unlocked', label: 'Gained' });
   }
   return options;
@@ -106,7 +106,7 @@ export const AchievementFilterBar: React.FC<AchievementFilterBarProps> = ({
         onClick={() => handleFilterChange(filters, onFilterChange, { desc: !desc })}
       >
         <div className={desc ? 'arrow activate' : 'arrow'}>&#x25B2;</div>
-        <div className={!desc ? 'arrow activate' : 'arrow'}>&#x25BC;</div>
+        <div className={desc ? 'arrow' : 'arrow activate'}>&#x25BC;</div>
       </button>
     </div>
   );

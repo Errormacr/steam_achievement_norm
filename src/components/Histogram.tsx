@@ -29,7 +29,7 @@ const Histogram: React.FC<HistogramProps> = ({ data, onClick }) => {
   const rightValue = data[Math.min(startIndex + windowSize - 1, data.length - 1)]?.name || '';
 
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStartIndex(parseInt(event.target.value));
+    setStartIndex(Number.parseInt(event.target.value));
   };
 
   return (

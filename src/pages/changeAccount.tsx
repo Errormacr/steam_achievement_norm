@@ -64,7 +64,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
       setAccFound(true);
     } catch (error) {
       setAccFound(false);
-      setSteamIdError(SteamId !== '' ? t('AccNotFound') : '');
+      setSteamIdError(SteamId === '' ? '' : t('AccNotFound'));
       console.error('Error fetching user data:', error);
     }
   };

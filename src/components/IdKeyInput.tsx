@@ -12,7 +12,7 @@ const IdKeyInput: React.FC<InputProps> = ({ onChange, placeholder, value }) => {
     <input
       placeholder={placeholder}
       className="idKeyInput"
-      value={value !== '' ? value : ''}
+      value={value}
       id="key"
       onChange={onChange}
     />

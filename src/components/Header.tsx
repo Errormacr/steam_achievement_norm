@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   const { t } = useTranslation();
 
   const handleRerender = () => {
-    window.location.reload();
+    globalThis.location.reload();
   };
 
   return (

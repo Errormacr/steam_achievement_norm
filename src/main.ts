@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
-import path from 'path';
-import { spawn, ChildProcess } from 'child_process';
+import path from 'node:path';
+import { spawn, ChildProcess } from 'node:child_process';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
