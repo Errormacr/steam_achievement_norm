@@ -106,5 +106,6 @@
     "achievementsDistributionByPlayers": "Distribution of achievements by players in percent",
     "achievementsReceivedPerDay": "Number of achievements received per day",
     "totalAchievementsPerDay": "Total number of achievements per day",
-    "averageAccountAchievementsByDay": "Average percentage of account achievements by day"
+    "averageAccountAchievementsByDay": "Average percentage of account achievements by day",
+    "gamesByCompletion": "Games by Completion"
 }

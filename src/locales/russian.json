@@ -114,5 +114,6 @@
     "achievementsDistributionByPlayers": "Распределение достижений по игрокам в процентах",
     "achievementsReceivedPerDay": "Количество достижений полученных за день",
     "totalAchievementsPerDay": "Общее количество достижений за день",
-    "averageAccountAchievementsByDay": "Средний процент достижений аккаунта по дням"
+    "averageAccountAchievementsByDay": "Средний процент достижений аккаунта по дням",
+    "gamesByCompletion": "Игры по выполнению"
 }

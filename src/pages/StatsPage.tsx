@@ -10,6 +10,7 @@ import AchRareHistogram from '../features/AchRareHistogram';
 import AchTimeHistogram from '../features/AchTimeHistogram';
 import AchCountTimeHistogram from '../features/AchCountTimeHistogram';
 import AchAccPercentHistogram from '../features/AchAccPercentHistogram';
+import GamesByCompletionDiagram from '../features/GamesByCompletionDiagram';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 
 import '../styles/scss/StatsPage.scss';
@@ -37,13 +38,17 @@ const StatsPage: React.FC = () => {
       component: <AchCountTimeHistogram gameAppid={gameAppid ? +gameAppid : undefined} />
     }
   ];
-
-  if (!gameAppid) {
+  if (Number.isNaN(Number(gameAppid))) {
     charts.push({
       title: 'averageAccountAchievementsByDay',
       component: <AchAccPercentHistogram />
     });
+    charts.push({
+      title: 'gamesByCompletion',
+      component: <GamesByCompletionDiagram />
+    });
   }
+  console.log(charts);
 
   return (
     <I18nextProvider i18n={i18n}>
