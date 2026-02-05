@@ -2,6 +2,7 @@ import React from 'react';
 import Histogram from '../components/Histogram';
 import { useNavigate } from 'react-router-dom';
 import { useTimeAchievementCount } from '../hooks/useTimeAchievementCount';
+import { useTranslation } from 'react-i18next';
 
 interface HistogramClickEvent {
   activeLabel: string;
@@ -14,6 +15,7 @@ interface AchCountTimeHistogramProps {
 const AchCountTimeHistogram: React.FC<AchCountTimeHistogramProps> = ({ gameAppid }) => {
   const navigate = useNavigate();
   const data = useTimeAchievementCount(gameAppid);
+  const { t } = useTranslation();
 
   const handleHistogramClick = (event: HistogramClickEvent) => {
     const gameUrl = gameAppid ? `/${gameAppid}` : '/undefinded';
@@ -22,7 +24,7 @@ const AchCountTimeHistogram: React.FC<AchCountTimeHistogramProps> = ({ gameAppid
     );
   };
 
-  return <Histogram onClick={handleHistogramClick} data={data} />;
+  return <Histogram onClick={handleHistogramClick} data={data} yLabel={t('count')} />;
 };
 
 export default AchCountTimeHistogram;

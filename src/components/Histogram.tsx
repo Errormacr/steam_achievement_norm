@@ -10,9 +10,10 @@ interface HistogramProps {
     count: number;
   }>;
   onClick?: OnClick;
+  yLabel?: string;
 }
 
-const Histogram: React.FC<HistogramProps> = ({ data, onClick }) => {
+const Histogram: React.FC<HistogramProps> = ({ data, onClick, yLabel = 'Count' }) => {
   const [startIndex, setStartIndex] = useState(0);
   const windowSize = 30;
 
@@ -87,7 +88,7 @@ const Histogram: React.FC<HistogramProps> = ({ data, onClick }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'Count',
+          legend: yLabel,
           legendOffset: -40,
           legendPosition: 'middle'
         }}
@@ -98,6 +99,29 @@ const Histogram: React.FC<HistogramProps> = ({ data, onClick }) => {
         pointLabelYOffset={-12}
         useMesh={true}
         enableSlices="x"
+        sliceTooltip={({ slice }) => {
+          return (
+            <div
+              style={{
+                background: 'var(--bg-secondary)',
+                padding: '9px 12px',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-primary)',
+                minWidth: 150,
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {slice.points.map((point) => (
+                <div key={point.id}>
+                  <div>Date: {point.data.xFormatted}</div>
+                  <div>
+                    {yLabel}: {point.data.yFormatted}
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        }}
         legends={[
           {
             anchor: 'bottom-right',
@@ -125,11 +149,11 @@ const Histogram: React.FC<HistogramProps> = ({ data, onClick }) => {
           }
         ]}
         theme={{
-          textColor: 'rgb(var(--color-text-primary))',
+          textColor: 'var(--text-primary)',
           tooltip: {
             container: {
-              background: 'rgb(var(--color-background-secondary))',
-              color: 'rgb(var(--color-text-primary))'
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-primary)'
             }
           }
         }}

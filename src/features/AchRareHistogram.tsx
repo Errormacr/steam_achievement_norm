@@ -4,6 +4,7 @@ import { HistogramValue } from '../types/sharedProps';
 import { ApiService } from '../services/api.services';
 import { RareAchievementCount } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface AchRareHistogramProps {
   gameAppid?: number;
@@ -13,6 +14,7 @@ const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
   const navigate = useNavigate();
   const [data,
     setData] = useState < HistogramValue[] >([]);
+    const { t } = useTranslation();
   useEffect(() => {
     const steamId = localStorage.getItem('steamId');
     let query = '';
@@ -41,7 +43,9 @@ const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
                     .split('-');
                   navigate(`/achievements/${min}/${max}/undefined/Stats${addUrl}`);
                 }}
-                data={data}/>
+                data={data}
+                yLabel={t('count')}
+                />
   );
 };
 

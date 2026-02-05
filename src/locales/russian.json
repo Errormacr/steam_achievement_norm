@@ -115,5 +115,8 @@
     "achievementsReceivedPerDay": "Количество достижений полученных за день",
     "totalAchievementsPerDay": "Общее количество достижений за день",
     "averageAccountAchievementsByDay": "Средний процент достижений аккаунта по дням",
-    "gamesByCompletion": "Игры по выполнению"
+    "gamesByCompletion": "Игры по выполнению",
+    "percent": "Процент",
+    "gamesPercentsByTime": "Прохождение игр по времени",
+    "noGamesSelected": "Игры не выбраны. Пожалуйста, выберите игры для отображения графика."
 }

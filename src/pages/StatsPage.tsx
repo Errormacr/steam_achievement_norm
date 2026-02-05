@@ -12,6 +12,7 @@ import AchCountTimeHistogram from '../features/AchCountTimeHistogram';
 import AchAccPercentHistogram from '../features/AchAccPercentHistogram';
 import GamesByCompletionDiagram from '../features/GamesByCompletionDiagram';
 import ScrollToTopButton from '../components/ScrollToTopButton';
+import GamesPercentsByTimeChart from '../features/GamesPercentsByTimeChart';
 
 import '../styles/scss/StatsPage.scss';
 
@@ -46,6 +47,10 @@ const StatsPage: React.FC = () => {
     charts.push({
       title: 'gamesByCompletion',
       component: <GamesByCompletionDiagram />
+    });
+    charts.push({
+      title: 'gamesPercentsByTime',
+      component: <GamesPercentsByTimeChart />
     });
   }
   console.log(charts);

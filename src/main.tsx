@@ -20,8 +20,7 @@ const darkTheme = createTheme({
   }
 });
 
-const rootElement = document.getElementById('body') as HTMLElement;
-rootElement.setAttribute('data-theme', 'dark');
+const rootElement = document.getElementById('root') as HTMLElement;
 
 ReactDOM.createRoot(rootElement).render(
   <ThemeProvider theme={darkTheme}>
