@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useModal } from '../hooks/useModal';
 import '../styles/scss/Modal.scss';
 import Portal from '../components/Portal';
+import GameButton from '../components/GameButton';
+import '../styles/scss/_date-input.scss'; // Added this import
 
 interface GamesPercentsData {
   percents: Record<string, Record<number, number>>;
@@ -36,6 +38,41 @@ const GamesPercentsByTimeChart: React.FC = () => {
     return d.toISOString().split('T')[0];
   });
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
+
+  const handleDateShift = (amount: number, unit: 'day' | 'month' | 'year') => {
+    const newStartDate = new Date(startDate);
+    const newEndDate = new Date(endDate);
+
+    if (unit === 'day') {
+      newStartDate.setDate(newStartDate.getDate() + amount);
+      newEndDate.setDate(newEndDate.getDate() + amount);
+    } else if (unit === 'month') {
+      newStartDate.setMonth(newStartDate.getMonth() + amount);
+      newEndDate.setMonth(newEndDate.getMonth() + amount);
+    } else if (unit === 'year') {
+      newStartDate.setFullYear(newStartDate.getFullYear() + amount);
+      newEndDate.setFullYear(newEndDate.getFullYear() + amount);
+    }
+
+    setStartDate(newStartDate.toISOString().split('T')[0]);
+    setEndDate(newEndDate.toISOString().split('T')[0]);
+  };
+
+  const setDisplayRange = (unit: 'month' | 'year' | '5years') => {
+    const newEndDate = new Date();
+    const newStartDate = new Date();
+
+    if (unit === 'month') {
+      newStartDate.setMonth(newStartDate.getMonth() - 1);
+    } else if (unit === 'year') {
+      newStartDate.setFullYear(newStartDate.getFullYear() - 1);
+    } else if (unit === '5years') {
+      newStartDate.setFullYear(newStartDate.getFullYear() - 5);
+    }
+
+    setStartDate(newStartDate.toISOString().split('T')[0]);
+    setEndDate(newEndDate.toISOString().split('T')[0]);
+  };
 
   useEffect(() => {
     const steamId = localStorage.getItem('steamId');
@@ -130,15 +167,28 @@ const GamesPercentsByTimeChart: React.FC = () => {
 
   return (
     <div style={{ height: '500px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-        <button onClick={handleOpenModal}>{t('selectGames')}</button>
-        <div>
-          <label htmlFor="startDate">{t('from')}: </label>
-          <input type="date" id="startDate" value={startDate} onChange={e => setStartDate(e.target.value)} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <GameButton onClick={handleOpenModal} id={'select-games'} text={t('selectGames')} style={{ marginRight: 0 }} />
+          <GameButton onClick={() => setDisplayRange('month')} id={'set-range-month'} text={t('month')} style={{ marginRight: 0 }} />
+          <GameButton onClick={() => setDisplayRange('year')} id={'set-range-year'} text={t('year')} style={{ marginRight: 0 }} />
+          <GameButton onClick={() => setDisplayRange('5years')} id={'set-range-5years'} text={t('5 years')} style={{ marginRight: 0 }} />
         </div>
-        <div>
-          <label htmlFor="endDate">{t('to')}: </label>
-          <input type="date" id="endDate" value={endDate} onChange={e => setEndDate(e.target.value)} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <GameButton onClick={() => handleDateShift(-1, 'year')} title={t('shiftYearBack')} id={'shift-year-back'} text={'<<<'} style={{ marginRight: 0 }} />
+          <GameButton onClick={() => handleDateShift(-1, 'month')} title={t('shiftMonthBack')} id={'shift-month-back'} text={'<<'} style={{ marginRight: 0 }} />
+          <GameButton onClick={() => handleDateShift(-1, 'day')} title={t('shiftDayBack')} id={'shift-day-back'} text={'<'} style={{ marginRight: 0 }} />
+          <div>
+            <label htmlFor="startDate">{t('from')}: </label>
+            <input type="date" id="startDate" value={startDate} onChange={e => setStartDate(e.target.value)} className="dateInput" style={{ margin: 0 }} />
+          </div>
+          <div>
+            <label htmlFor="endDate">{t('to')}: </label>
+            <input type="date" id="endDate" value={endDate} onChange={e => setEndDate(e.target.value)} className="dateInput" style={{ margin: 0 }} />
+          </div>
+          <GameButton onClick={() => handleDateShift(1, 'day')} title={t('shiftDayForward')} id={'shift-day-forward'} text={'>'} style={{ marginRight: 0 }} />
+          <GameButton onClick={() => handleDateShift(1, 'month')} title={t('shiftMonthForward')} id={'shift-month-forward'} text={'>>'} style={{ marginRight: 0 }} />
+          <GameButton onClick={() => handleDateShift(1, 'year')} title={t('shiftYearForward')} id={'shift-year-forward'} text={'>>>'} style={{ marginRight: 0 }} />
         </div>
       </div>
       {isOpen && (
@@ -154,8 +204,8 @@ const GamesPercentsByTimeChart: React.FC = () => {
                 style={{ width: '90%', margin: '10px', padding: '5px' }}
               />
                <div className="modal-actions" style={{ justifyContent: 'flex-start', padding: '0 10px' }}>
-                <button onClick={handleSelectAllFiltered}>{t('selectAllVisible')}</button>
-                <button onClick={handleDeselectAllFiltered}>{t('deselectAllVisible')}</button>
+                <GameButton onClick={handleSelectAllFiltered} id={'select-all-filtered'} text={t('selectAllVisible')} style={{ marginRight: 0 }} />
+                <GameButton onClick={handleDeselectAllFiltered} id={'deselect-all-filtered'} text={t('deselectAllVisible')} style={{ marginRight: 0 }} />
               </div>
               <div className="modal-scrollable-content">
                 {getFilteredGames().map(gameName => (
@@ -170,8 +220,8 @@ const GamesPercentsByTimeChart: React.FC = () => {
                 ))}
               </div>
               <div className="modal-actions">
-                <button onClick={handleApplySelection}>{t('apply')}</button>
-                <button onClick={closeModal}>{t('cancel')}</button>
+                <GameButton onClick={handleApplySelection} id={'apply-selection'} text={t('apply')} style={{ marginRight: 0 }} />
+                <GameButton onClick={closeModal} id={'cancel-selection'} text={t('cancel')} style={{ marginRight: 0 }} />
               </div>
             </div>
           </div>
@@ -209,6 +259,8 @@ const GamesPercentsByTimeChart: React.FC = () => {
           legendOffset: -40,
           legendPosition: 'middle'
         }}
+        enableGridX={false}
+        enableGridY={false}
         pointSize={4}
         pointColor={{ theme: 'background' }}
         pointBorderWidth={2}

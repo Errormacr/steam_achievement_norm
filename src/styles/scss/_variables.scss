@@ -14,6 +14,7 @@
   --hover-bg: #a9a9a9;
   --histogram-bg: #3a4c62;
   --main-background: #0E141B;
+  --calendar-icon-invert: 0;
 }
 
 // Dark theme
@@ -29,6 +30,7 @@
   --progress-bg: rgba(255, 255, 255, 0.1);
   --hover-bg: #505050;
   --histogram-bg: #353535;
+  --calendar-icon-invert: 1;
 }
 
 // Breakpoints
@@ -57,4 +59,5 @@ $transition-slow: 0.5s ease;
 // Z-index layers
 $z-index-dropdown: 1000;
 $z-index-modal: 2000;
-$z-index-tooltip: 3000; 
+$z-index-tooltip: 3000;
+ 

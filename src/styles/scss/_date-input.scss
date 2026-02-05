@@ -1,0 +1,23 @@
+// src/styles/scss/_date-input.scss
+@use './variables' as *;
+
+.dateInput {
+    border: none;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: $spacing-xs $spacing-sm;
+    font-size: 1rem;
+    border-radius: $border-radius-sm;
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    &::-webkit-calendar-picker-indicator {
+        filter: invert(var(--calendar-icon-invert));
+        cursor: pointer;
+    }
+}
