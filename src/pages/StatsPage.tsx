@@ -43,12 +43,10 @@ const StatsPage: React.FC = () => {
     charts.push({
       title: 'averageAccountAchievementsByDay',
       component: <AchAccPercentHistogram />
-    });
-    charts.push({
+    }, {
       title: 'gamesByCompletion',
       component: <GamesByCompletionDiagram />
-    });
-    charts.push({
+    }, {
       title: 'gamesPercentsByTime',
       component: <GamesPercentsByTimeChart />
     });

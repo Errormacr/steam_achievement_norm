@@ -1,10 +1,8 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useGamesByCompletion } from '../hooks/useGamesByCompletion';
 import { Typography } from '@mui/material';
 
 export default function GamesByCompletionDiagram() {
-  const { t } = useTranslation();
   const data = useGamesByCompletion();
 
   const maxValue = Math.max(...data.map(d => d.count), 0);

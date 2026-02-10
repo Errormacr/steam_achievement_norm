@@ -15,8 +15,8 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ isOpen, onClose, onUpdate }) 
   if (!isOpen) return null;
 
   return (
-    <section className="modal" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <button className="modal" onClick={onClose}>
+      <button className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
@@ -44,8 +44,8 @@ const UpdateModal: React.FC<UpdateModalProps> = ({ isOpen, onClose, onUpdate }) 
             text={t('updatePercentAch')}
           />
         </div>
-      </div>
-    </section>
+      </button>
+    </button>
   );
 };
 

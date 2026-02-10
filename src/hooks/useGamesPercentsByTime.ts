@@ -12,11 +12,38 @@ const PALETTE = [
   '#008080', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9'
 ];
 
-function getColor(index: number) {
+function getColor (index: number) {
   return PALETTE[index % PALETTE.length];
 }
 
-export function useGamesPercentsByTime(startDate: string, endDate: string) {
+function processGamesData (percents: Record<string, Record<number, number>>, gameNameMap: Record<number, string>): { series: Serie[], gameNames: string[] } {
+  const gameIdsInData = new Set<string>();
+  Object.values(percents).forEach((dailyData) => {
+    Object.keys(dailyData).forEach((appid) => {
+      gameIdsInData.add(appid);
+    });
+  });
+
+  const series = Array.from(gameIdsInData).map((appid, index) => {
+    const numberAppid = Number(appid);
+    const gameName = gameNameMap[numberAppid];
+    const displayName = gameName?.trim() || `AppID: ${appid}`;
+
+    return {
+      id: displayName,
+      color: getColor(index),
+      data: Object.entries(percents).map(([date, dailyData]) => ({
+        x: date,
+        y: dailyData[numberAppid]?.toFixed(2) ?? null
+      }))
+    };
+  });
+
+  const gameNames = series.map(s => s.id);
+  return { series, gameNames };
+}
+
+export function useGamesPercentsByTime (startDate: string, endDate: string) {
   const [data, setData] = useState<Serie[]>([]);
   const [allGames, setAllGames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +62,7 @@ export function useGamesPercentsByTime(startDate: string, endDate: string) {
     ApiService.get<GamesPercentsData>(
       `user/${steamId}/games-percents-by-time?startDate=${startDate}&endDate=${endDate}`
     ).then((response) => {
-      if (!response || !response.percents) {
+      if (response?.percents) {
         setData([]);
         setAllGames([]);
         setIsLoading(false);
@@ -43,33 +70,11 @@ export function useGamesPercentsByTime(startDate: string, endDate: string) {
       }
       const { percents, names: gameNameMap } = response;
 
-      const gameIdsInData = new Set<string>();
-      Object.values(percents).forEach((dailyData) => {
-        Object.keys(dailyData).forEach((appid) => {
-          gameIdsInData.add(appid);
-        });
-      });
-
-      const series = Array.from(gameIdsInData).map((appid, index) => {
-        const numberAppid = Number(appid);
-        const gameName = gameNameMap[numberAppid];
-        const displayName = (gameName && gameName.trim()) ? gameName.trim() : `AppID: ${appid}`;
-        
-        return {
-          id: displayName,
-          color: getColor(index),
-          data: Object.entries(percents).map(([date, dailyData]) => ({
-            x: date,
-            y: dailyData[numberAppid]?.toFixed(2) ?? null
-          }))
-        };
-      });
-      
-      const gameNames = series.map(s => s.id as string);
+      const { series, gameNames } = processGamesData(percents, gameNameMap);
       setAllGames(gameNames);
       setData(series);
     }).catch(err => {
-      console.error("Failed to fetch games percents by time:", err);
+      console.error('Failed to fetch games percents by time:', err);
       setError(err);
       setData([]);
       setAllGames([]);
