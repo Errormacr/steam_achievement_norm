@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useClickOutside } from '../hooks/useClickOutside';
 import { useTranslation } from 'react-i18next';
+import { ResetButton } from './ResetButton';
 
 interface DropdownOption {
   value: string;
@@ -14,42 +15,6 @@ interface DropdownProps {
   buttonText: string;
   onReset?: () => void;
 }
-
-const unstyledButton: React.CSSProperties = {
-  background: 'none',
-  border: 'none',
-  padding: '0',
-  margin: '0',
-  font: 'inherit',
-  color: 'inherit',
-  cursor: 'pointer'
-};
-
-const dropdownOptionStyles: React.CSSProperties = {
-  ...unstyledButton,
-  width: '100%',
-  padding: '8px 12px',
-  textAlign: 'left'
-};
-
-interface ResetButtonProps {
-  onReset: () => void;
-}
-
-const ResetButton: React.FC<ResetButtonProps> = ({ onReset }) => {
-  const { t } = useTranslation();
-  return (
-    <button
-      onClick={onReset}
-      className="cross"
-      aria-label={t('resetSelection')}
-      style={unstyledButton}
-    >
-      <div className="horizontal"></div>
-      <div className="vertical"></div>
-    </button>
-  );
-};
 
 interface DropdownListProps {
   options: DropdownOption[];
@@ -66,7 +31,6 @@ const DropdownList: React.FC<DropdownListProps> = ({ options, selectedValue, han
           <button
             className={selectedValue === option.value ? 'active' : ''}
             onClick={() => handleSelect(option.value)}
-            style={dropdownOptionStyles}
           >
             {t(option.label)}
           </button>

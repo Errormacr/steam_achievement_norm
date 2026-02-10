@@ -27,3 +27,20 @@
     right: 0;
     top: 8%;
 }
+
+.cross {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-header);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}

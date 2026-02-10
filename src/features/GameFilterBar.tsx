@@ -4,6 +4,7 @@ import IdKeyInput from '../components/IdKeyInput';
 import { useClickOutside } from '../hooks/useClickOutside';
 import { COMPLETION_FILTER_OPTIONS, SORTING_OPTIONS, TIME_FILTER_OPTIONS } from '../constants/gameFilters';
 import { Filters } from '../types';
+import { ResetButton } from '../components/ResetButton';
 
 interface GameFilterBarProps {
   filters: {
@@ -49,18 +50,6 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
     onFilterChange({ ...filters, desc: !filters.desc });
   };
 
-  const buttonStyle: React.CSSProperties = {
-    all: 'unset',
-    width: '100%',
-    textAlign: 'left',
-    cursor: 'pointer'
-  };
-
-  const crossButtonStyle: React.CSSProperties = {
-    all: 'unset',
-    cursor: 'pointer'
-  };
-
   return (
     <div className="gameFilterCont">
       <div className="inputSortFilterContainerGames">
@@ -84,7 +73,7 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
                   key={option.value}
                   className={filters.selectedValue === option.value ? 'active' : ''}
                 >
-                  <button style={buttonStyle} onClick={() => handleItemClick(option.value)}>
+                  <button onClick={() => handleItemClick(option.value)}>
                     {t(option.label)}
                   </button>
                 </li>
@@ -94,13 +83,10 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
         </div>
         <div ref={filterTimeListRef} className="dropdown-container">
           {filters.selectedTimeFilterValue != null && (
-            <button
-              style={crossButtonStyle}
-              onClick={() => onFilterChange({ ...filters, selectedTimeFilterValue: null })}
+            <ResetButton
+              onReset={() => onFilterChange({ ...filters, selectedTimeFilterValue: null })}
               className="cross"
-            >
-              <div className="horizontal"></div>
-            </button>
+            />
           )}
           <button
             className="dropdown-button-light"
@@ -115,7 +101,7 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
                   key={filter.value}
                   className={filters.selectedTimeFilterValue === filter.value ? 'active' : ''}
                 >
-                  <button style={buttonStyle} onClick={() => handleTimeFilterItemClick(filter.value)}>
+                  <button onClick={() => handleTimeFilterItemClick(filter.value)}>
                     {t(filter.label)}
                   </button>
                 </li>
@@ -125,14 +111,10 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
         </div>
         <div ref={filterCompletedListRef} className="dropdown-container">
           {filters.selectedCompletionFilterValue != null && (
-            <button
-              style={crossButtonStyle}
-              onClick={() => onFilterChange({ ...filters, selectedCompletionFilterValue: null })}
+            <ResetButton
+              onReset={() => onFilterChange({ ...filters, selectedCompletionFilterValue: null })}
               className="cross"
-            >
-              <div className="horizontal"></div>
-              <div className="vertical"></div>
-            </button>
+            />
           )}
           <button
             className="dropdown-button-light"
@@ -147,7 +129,7 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
                   key={filterValue}
                   className={filters.selectedCompletionFilterValue === filterValue ? 'active' : ''}
                 >
-                  <button style={buttonStyle} onClick={() => handleCompletionFilterItemClick(filterValue)}>
+                  <button onClick={() => handleCompletionFilterItemClick(filterValue)}>
                     {t(filterValue)}
                   </button>
                 </li>
