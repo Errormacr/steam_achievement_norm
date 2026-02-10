@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Histogram from '../components/Histogram';
-import { HistogramValue } from '../types/sharedProps';
-import { ApiService } from '../services/api.services';
-import { RareAchievementCount } from '../types';
+import { useAchRareHistogramData } from '../hooks/useAchRareHistogramData';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -12,24 +10,16 @@ interface AchRareHistogramProps {
 
 const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
   const navigate = useNavigate();
-  const [data,
-    setData] = useState < HistogramValue[] >([]);
-    const { t } = useTranslation();
-  useEffect(() => {
-    const steamId = localStorage.getItem('steamId');
-    let query = '';
-    for (let i = 1; i <= 100; i += 1) {
-      query += `percents=${i}&`;
-    }
+  const { data, isLoading, error } = useAchRareHistogramData(gameAppid);
+  const { t } = useTranslation();
 
-    if (gameAppid) {
-      query += `appid=${gameAppid}`;
-    }
+  if (isLoading) {
+    return <div>{t('loading')}...</div>;
+  }
 
-    ApiService.get < RareAchievementCount >(`user/achievements-rare-count/${steamId}?${query}`).then((data) => {
-      setData(Object.entries(data).map(([key, item]) => ({ count: item, name: `${key}%` })));
-    });
-  }, []);
+  if (error) {
+    return <div>{t('error')}: {error.message}</div>;
+  }
   return (
             <Histogram
                 onClick={(el : {

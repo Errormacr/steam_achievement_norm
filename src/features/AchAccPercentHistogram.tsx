@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Histogram from '../components/Histogram';
-import { HistogramValue } from '../types/sharedProps';
-import { ApiService } from '../services/api.services';
-import { TimeAveragePercent } from '../types';
+import { useAchAccPercentHistogramData } from '../hooks/useAchAccPercentHistogramData';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const AchAccPercentHistogram : React.FC = () => {
   const navigate = useNavigate();
-  const [data,
-    setData] = useState < HistogramValue[] >([]);
-    const { t } = useTranslation();
+  const { data, isLoading, error } = useAchAccPercentHistogramData();
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    const steamId = localStorage.getItem('steamId');
-    ApiService.get < TimeAveragePercent >(`user/${steamId}/avg-percent-by-time/`).then((data) => {
-      setData(Object.entries(data).map(([key, item]) => ({ count: +item.toFixed(2), name: key })));
-    });
-  }, []);
+  if (isLoading) {
+    return <div>{t('loading')}...</div>;
+  }
+
+  if (error) {
+    return <div>{t('error')}: {error.message}</div>;
+  }
   return (
 
             <Histogram

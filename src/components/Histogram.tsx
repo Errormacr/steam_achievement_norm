@@ -1,15 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { ResponsiveLine, Serie } from '@nivo/line';
+import { HistogramTooltip } from './HistogramTooltip';
 import '../styles/scss/Histogram.scss';
-
-type OnClick = any;
 
 interface HistogramProps {
   data: Array<{
     name: string | number;
     count: number;
   }>;
-  onClick?: OnClick;
+  onClick?: any;
   yLabel?: string;
 }
 
@@ -99,29 +98,7 @@ const Histogram: React.FC<HistogramProps> = ({ data, onClick, yLabel = 'Count' }
         pointLabelYOffset={-12}
         useMesh={true}
         enableSlices="x"
-        sliceTooltip={({ slice }) => {
-          return (
-            <div
-              style={{
-                background: 'var(--bg-secondary)',
-                padding: '9px 12px',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-primary)',
-                minWidth: 150,
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {slice.points.map((point) => (
-                <div key={point.id}>
-                  <div>Date: {point.data.xFormatted}</div>
-                  <div>
-                    {yLabel}: {point.data.yFormatted}
-                  </div>
-                </div>
-              ))}
-            </div>
-          );
-        }}
+        sliceTooltip={({ slice }) => <HistogramTooltip slice={slice} yLabel={yLabel} />}
         legends={[
           {
             anchor: 'bottom-right',
@@ -149,7 +126,7 @@ const Histogram: React.FC<HistogramProps> = ({ data, onClick, yLabel = 'Count' }
           }
         ]}
         theme={{
-          textColor: 'var(--text-primary)',
+          text: { color: 'var(--text-primary)' },
           tooltip: {
             container: {
               background: 'var(--bg-secondary)',

@@ -1,37 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { ResponsiveLine, Serie } from '@nivo/line';
-import { ApiService } from '../services/api.services';
+import { ResponsiveLine } from '@nivo/line';
 import { useTranslation } from 'react-i18next';
 import { useModal } from '../hooks/useModal';
 import '../styles/scss/Modal.scss';
-import Portal from '../components/Portal';
+import '../styles/scss/_date-input.scss';
+import { useGamesPercentsByTime } from '../hooks/useGamesPercentsByTime';
+import { DateRangeControls } from './DateRangeControls';
+import { GameSelectionModal } from './GameSelectionModal';
 import GameButton from '../components/GameButton';
-import '../styles/scss/_date-input.scss'; // Added this import
-
-interface GamesPercentsData {
-  percents: Record<string, Record<number, number>>;
-  names: Record<number, string>;
-}
-
-const PALETTE = [
-  '#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
-  '#008080', '#e6beff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9'
-];
-
-function getColor(index: number) {
-  return PALETTE[index % PALETTE.length];
-}
 
 const GamesPercentsByTimeChart: React.FC = () => {
   const { t } = useTranslation();
-  const [data, setData] = useState<Serie[]>([]);
-  const [allGames, setAllGames] = useState<string[]>([]);
-  const [selectedGames, setSelectedGames] = useState<string[]>([]);
-  const [tempSelectedGames, setTempSelectedGames] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-
   const { isOpen, openModal, closeModal } = useModal();
-  
+
   const [startDate, setStartDate] = useState(() => {
     const d = new Date();
     d.setMonth(d.getMonth() - 1);
@@ -39,301 +20,159 @@ const GamesPercentsByTimeChart: React.FC = () => {
   });
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
 
-  const handleDateShift = (amount: number, unit: 'day' | 'month' | 'year') => {
-    const newStartDate = new Date(startDate);
-    const newEndDate = new Date(endDate);
+  const { data, allGames, isLoading } = useGamesPercentsByTime(startDate, endDate);
 
-    if (unit === 'day') {
-      newStartDate.setDate(newStartDate.getDate() + amount);
-      newEndDate.setDate(newEndDate.getDate() + amount);
-    } else if (unit === 'month') {
-      newStartDate.setMonth(newStartDate.getMonth() + amount);
-      newEndDate.setMonth(newEndDate.getMonth() + amount);
-    } else if (unit === 'year') {
-      newStartDate.setFullYear(newStartDate.getFullYear() + amount);
-      newEndDate.setFullYear(newEndDate.getFullYear() + amount);
-    }
-
-    setStartDate(newStartDate.toISOString().split('T')[0]);
-    setEndDate(newEndDate.toISOString().split('T')[0]);
-  };
-
-  const setDisplayRange = (unit: 'month' | 'year' | '5years') => {
-    const newEndDate = new Date();
-    const newStartDate = new Date();
-
-    if (unit === 'month') {
-      newStartDate.setMonth(newStartDate.getMonth() - 1);
-    } else if (unit === 'year') {
-      newStartDate.setFullYear(newStartDate.getFullYear() - 1);
-    } else if (unit === '5years') {
-      newStartDate.setFullYear(newStartDate.getFullYear() - 5);
-    }
-
-    setStartDate(newStartDate.toISOString().split('T')[0]);
-    setEndDate(newEndDate.toISOString().split('T')[0]);
-  };
+  const [selectedGames, setSelectedGames] = useState<string[]>([]);
 
   useEffect(() => {
-    const steamId = localStorage.getItem('steamId');
-    if (!steamId) return;
-
-    ApiService.get<GamesPercentsData>(
-      `user/${steamId}/games-percents-by-time?startDate=${startDate}&endDate=${endDate}`
-    ).then((response) => {
-      if (!response || !response.percents) {
-        return;
+    const savedSelectionJSON = localStorage.getItem('selectedGamesForPercentsChart');
+    if (savedSelectionJSON) {
+      const savedSelection = JSON.parse(savedSelectionJSON);
+      const validSelection = savedSelection.filter((g: string) => allGames.includes(g));
+      setSelectedGames(validSelection);
+      // Auto-select some games if the saved selection is empty but there is data
+      if (validSelection.length === 0 && allGames.length > 0) {
+        setSelectedGames(allGames.slice(0, Math.min(5, allGames.length)));
       }
-      const { percents, names: gameNameMap } = response;
+    } else if (allGames.length > 0) {
+      // Default selection for first-time users
+      setSelectedGames(allGames.slice(0, Math.min(5, allGames.length)));
+    }
+  }, [allGames]);
 
-      const gameIdsInData = new Set<string>();
-      Object.values(percents).forEach((dailyData) => {
-        Object.keys(dailyData).forEach((appid) => {
-          gameIdsInData.add(appid);
-        });
-      });
-
-      const series = Array.from(gameIdsInData).map((appid, index) => {
-        const numberAppid = Number(appid);
-        const gameName = gameNameMap[numberAppid];
-        const displayName = (gameName && gameName.trim()) ? gameName.trim() : `AppID: ${appid}`;
-        
-        return {
-          id: displayName,
-          color: getColor(index),
-          data: Object.entries(percents).map(([date, dailyData]) => ({
-            x: date,
-            y: dailyData[numberAppid]?.toFixed(2) ?? null
-          }))
-        };
-      });
-      
-      const gameNames = series.map(s => s.id as string);
-      setAllGames(gameNames);
-      setData(series);
-
-      const savedSelectionJSON = localStorage.getItem('selectedGamesForPercentsChart');
-      if (savedSelectionJSON) {
-        const savedSelection = JSON.parse(savedSelectionJSON);
-        const validSelection = savedSelection.filter((g: string) => gameNames.includes(g));
-        setSelectedGames(validSelection);
-        if (validSelection.length === 0 && gameNames.length > 0) {
-          setSelectedGames(gameNames.slice(0, Math.min(5, gameNames.length)));
-        }
-      } else {
-        setSelectedGames(gameNames.slice(0, Math.min(5, gameNames.length)));
-      }
-    });
-  }, [startDate, endDate]);
-  
   useEffect(() => {
     localStorage.setItem('selectedGamesForPercentsChart', JSON.stringify(selectedGames));
   }, [selectedGames]);
 
-  const handleTempGameSelection = (gameName: string) => {
-    setTempSelectedGames(prevSelected =>
-      prevSelected.includes(gameName)
-        ? prevSelected.filter(name => name !== gameName)
-        : [...prevSelected, gameName]
-    );
-  };
-  
-  const handleOpenModal = () => {
-    setTempSelectedGames(selectedGames);
-    setSearchQuery('');
-    openModal();
-  };
-
-  const handleApplySelection = () => {
-    setSelectedGames(tempSelectedGames);
-    closeModal();
-  };
-
   const filteredData = data.filter(series => selectedGames.includes(series.id as string));
-
-  const getFilteredGames = () => {
-    return allGames.filter(gameName => gameName.toLowerCase().includes(searchQuery.toLowerCase()));
-  };
-
-  const handleSelectAllFiltered = () => {
-    const filtered = getFilteredGames();
-    setTempSelectedGames(prev => [...new Set([...prev, ...filtered])]);
-  };
-
-  const handleDeselectAllFiltered = () => {
-    const filtered = getFilteredGames();
-    setTempSelectedGames(prev => prev.filter(name => !filtered.includes(name)));
-  };
 
   return (
     <div style={{ height: '500px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <GameButton onClick={handleOpenModal} id={'select-games'} text={t('selectGames')} style={{ marginRight: 0 }} />
-          <GameButton onClick={() => setDisplayRange('month')} id={'set-range-month'} text={t('month')} style={{ marginRight: 0 }} />
-          <GameButton onClick={() => setDisplayRange('year')} id={'set-range-year'} text={t('year')} style={{ marginRight: 0 }} />
-          <GameButton onClick={() => setDisplayRange('5years')} id={'set-range-5years'} text={t('5 years')} style={{ marginRight: 0 }} />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <GameButton onClick={() => handleDateShift(-1, 'year')} title={t('shiftYearBack')} id={'shift-year-back'} text={'<<<'} style={{ marginRight: 0 }} />
-          <GameButton onClick={() => handleDateShift(-1, 'month')} title={t('shiftMonthBack')} id={'shift-month-back'} text={'<<'} style={{ marginRight: 0 }} />
-          <GameButton onClick={() => handleDateShift(-1, 'day')} title={t('shiftDayBack')} id={'shift-day-back'} text={'<'} style={{ marginRight: 0 }} />
-          <div>
-            <label htmlFor="startDate">{t('from')}: </label>
-            <input type="date" id="startDate" value={startDate} onChange={e => setStartDate(e.target.value)} className="dateInput" style={{ margin: 0 }} />
-          </div>
-          <div>
-            <label htmlFor="endDate">{t('to')}: </label>
-            <input type="date" id="endDate" value={endDate} onChange={e => setEndDate(e.target.value)} className="dateInput" style={{ margin: 0 }} />
-          </div>
-          <GameButton onClick={() => handleDateShift(1, 'day')} title={t('shiftDayForward')} id={'shift-day-forward'} text={'>'} style={{ marginRight: 0 }} />
-          <GameButton onClick={() => handleDateShift(1, 'month')} title={t('shiftMonthForward')} id={'shift-month-forward'} text={'>>'} style={{ marginRight: 0 }} />
-          <GameButton onClick={() => handleDateShift(1, 'year')} title={t('shiftYearForward')} id={'shift-year-forward'} text={'>>>'} style={{ marginRight: 0 }} />
-        </div>
-      </div>
-      {isOpen && (
-        <Portal>
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h3>{t('selectGames')}</h3>
-              <input
-                type="text"
-                placeholder={t('searchGames')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ width: '90%', margin: '10px', padding: '5px' }}
-              />
-               <div className="modal-actions" style={{ justifyContent: 'flex-start', padding: '0 10px' }}>
-                <GameButton onClick={handleSelectAllFiltered} id={'select-all-filtered'} text={t('selectAllVisible')} style={{ marginRight: 0 }} />
-                <GameButton onClick={handleDeselectAllFiltered} id={'deselect-all-filtered'} text={t('deselectAllVisible')} style={{ marginRight: 0 }} />
-              </div>
-              <div className="modal-scrollable-content">
-                {getFilteredGames().map(gameName => (
-                  <label key={gameName} style={{ display: 'block', margin: '5px 0' }}>
-                    <input
-                      type="checkbox"
-                      checked={tempSelectedGames.includes(gameName)}
-                      onChange={() => handleTempGameSelection(gameName)}
-                    />
-                    {gameName}
-                  </label>
-                ))}
-              </div>
-              <div className="modal-actions">
-                <GameButton onClick={handleApplySelection} id={'apply-selection'} text={t('apply')} style={{ marginRight: 0 }} />
-                <GameButton onClick={closeModal} id={'cancel-selection'} text={t('cancel')} style={{ marginRight: 0 }} />
-              </div>
-            </div>
-          </div>
-        </Portal>
-      )}
+      <GameButton onClick={openModal} id={'select-games'} text={t('selectGames')} />
+      <DateRangeControls
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+      />
 
-      {filteredData.length > 0 ? (
-      <ResponsiveLine
-        data={filteredData}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: 'point' }}
-        yScale={{
-          type: 'linear',
-          min: 0,
-          max: 100,
-          stacked: false,
-          reverse: false
-        }}
-        yFormat=" >-.2f"
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 45,
-          legend: t('date'),
-          legendOffset: 45,
-          legendPosition: 'middle'
-        }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: t('percent'),
-          legendOffset: -40,
-          legendPosition: 'middle'
-        }}
-        enableGridX={false}
-        enableGridY={false}
-        pointSize={4}
-        pointColor={{ theme: 'background' }}
-        pointBorderWidth={2}
-        pointBorderColor={{ from: 'serieColor' }}
-        pointLabelYOffset={-12}
-        useMesh={true}
-        enableSlices="x"
-        legends={[
-          {
-            anchor: 'bottom-right',
-            direction: 'column',
-            justify: false,
-            translateX: 120,
-            translateY: 0,
-            itemsSpacing: 2,
-            itemWidth: 100,
-            itemHeight: 20,
-            itemDirection: 'left-to-right',
-            itemOpacity: 0.85,
-            symbolSize: 12,
-            symbolShape: 'circle',
-            effects: [
-              {
-                on: 'hover',
-                style: {
-                  itemOpacity: 1
+      <GameSelectionModal
+        isOpen={isOpen}
+        onClose={closeModal}
+        allGames={allGames}
+        selectedGames={selectedGames}
+        onApply={setSelectedGames}
+      />
+
+      {isLoading && <div>{t('loading')}...</div>}
+
+      {!isLoading && filteredData.length > 0
+        ? (
+        <ResponsiveLine
+          data={filteredData}
+          margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+          xScale={{ type: 'point' }}
+          yScale={{
+            type: 'linear',
+            min: 0,
+            max: 100,
+            stacked: false,
+            reverse: false
+          }}
+          yFormat=" >-.2f"
+          axisTop={null}
+          axisRight={null}
+          axisBottom={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 45,
+            legend: t('date'),
+            legendOffset: 45,
+            legendPosition: 'middle'
+          }}
+          axisLeft={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: t('percent'),
+            legendOffset: -40,
+            legendPosition: 'middle'
+          }}
+          enableGridX={false}
+          enableGridY={false}
+          pointSize={4}
+          pointColor={{ theme: 'background' }}
+          pointBorderWidth={2}
+          pointBorderColor={{ from: 'serieColor' }}
+          pointLabelYOffset={-12}
+          useMesh={true}
+          enableSlices="x"
+          legends={[
+            {
+              anchor: 'bottom-right',
+              direction: 'column',
+              justify: false,
+              translateX: 120,
+              translateY: 0,
+              itemsSpacing: 2,
+              itemWidth: 100,
+              itemHeight: 20,
+              itemDirection: 'left-to-right',
+              itemOpacity: 0.85,
+              symbolSize: 12,
+              symbolShape: 'circle',
+              effects: [
+                {
+                  on: 'hover',
+                  style: {
+                    itemOpacity: 1
+                  }
+                }
+              ]
+            }
+          ]}
+          theme={{
+            text: { color: 'var(--text-primary)' },
+            axis: {
+              domain: {
+                line: {
+                  stroke: 'var(--text-primary)'
+                }
+              },
+              ticks: {
+                line: {
+                  stroke: 'var(--text-primary)',
+                  strokeWidth: 1
+                },
+                text: {
+                  fill: 'var(--text-primary)'
+                }
+              },
+              legend: {
+                text: {
+                  fill: 'var(--text-primary)'
                 }
               }
-            ]
-          }
-        ]}
-        theme={{
-          textColor: 'var(--text-primary)',
-          axis: {
-            domain: {
-              line: {
-                stroke: 'var(--text-primary)',
-              },
             },
-            ticks: {
-              line: {
-                stroke: 'var(--text-primary)',
-                strokeWidth: 1,
-              },
+            legends: {
               text: {
-                fill: 'var(--text-primary)',
-              },
+                fill: 'var(--text-primary)'
+              }
             },
-            legend: {
-              text: {
-                fill: 'var(--text-primary)',
-              },
-            },
-          },
-          legends: {
-            text: {
-              fill: 'var(--text-primary)',
-            },
-          },
-          tooltip: {
-            container: {
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-primary)',
-            },
-          },
-        }}
-      />
-      ) : (
-        <div>{t('noGamesSelected')}</div>
-      )}
+            tooltip: {
+              container: {
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-primary)'
+              }
+            }
+          }}
+        />
+          )
+        : (
+            !isLoading && <div>{t('noGamesSelected')}</div>
+          )}
     </div>
   );
 };
-
 
 export default GamesPercentsByTimeChart;
