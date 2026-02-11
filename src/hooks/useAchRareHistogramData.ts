@@ -18,9 +18,9 @@ export function useAchRareHistogramData(gameAppid?: number) {
     setIsLoading(true);
     setError(null);
 
-    let query = '';
-    for (let i = 1; i <= 100; i += 1) {
-      query += `percents=${i}&`;
+    let query = 'percents=1';
+    for (let i = 2; i <= 100; i += 1) {
+      query += `,${i}`;
     }
 
     if (gameAppid) {

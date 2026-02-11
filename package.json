@@ -25,8 +25,8 @@
     "@electron-internal/eslint-config": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "electron": "28.1.4",
-    "eslint": "^8.56.0",
+    "electron": "^40.3.0",
+    "eslint": "^10.0.0",
     "eslint-plugin-import": "^2.25.0",
     "eslint-plugin-node": "^11.1.0",
     "ts-node": "^10.0.0",
@@ -47,16 +47,14 @@
     "@types/node": "^20.11.5",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "body-parser": "1.20.3",
+    "body-parser": "^2.2.2",
     "buffer": "^6.0.3",
     "cors": "^2.8.5",
-    "cors-anywhere": "^0.4.4",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "events": "^3.3.0",
     "express": "5.0.0",
-    "fs": "^0.0.1-security",
     "i18next": "^23.5.1",
     "i18next-browser-languagedetector": "^7.1.0",
     "node-fetch": "^3.3.2",
@@ -77,6 +75,6 @@
     "typescript": "^5.2.2",
     "use-debouncy": "^5.0.1",
     "vite": "^6.2.5",
-    "webpack": "5.94.0"
+    "webpack": "^5.105.1"
   }
 }

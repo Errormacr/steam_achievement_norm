@@ -35,7 +35,7 @@ function sleep (ms: number): Promise<void> {
 // and is ready to create browser windows.
 app.on('ready', () => {
   const nestAppDirectory = path.join(__dirname, '../../server');
-  nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/main'], { cwd: nestAppDirectory });
+  nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/src/main'], { cwd: nestAppDirectory });
 
   // Capture NestJS app output for logging
   nestAppProcess.stdout.on('data', (data) => {
