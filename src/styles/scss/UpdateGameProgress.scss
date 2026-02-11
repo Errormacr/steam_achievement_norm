@@ -4,67 +4,65 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(5px);
 }
 
 .update-progress {
   background-color: var(--background-color);
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   width: 90%;
   max-width: 500px;
   text-align: center;
+  animation: slideIn 0.3s ease-out;
 
   h3 {
     margin-top: 0;
     margin-bottom: 1.5rem;
     color: var(--text-color);
+    font-size: 1.5rem;
   }
 
-  .loading-message,
-  .error-message,
-  .no-games-message {
-    font-size: 1.1rem;
+  .status-message {
+    font-size: 1.2rem;
     color: var(--text-color);
+    padding: 2rem 0;
   }
 
   .progress-container {
+    .progress-circular {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
     .progress-header {
       margin-bottom: 1rem;
       color: var(--text-color);
+      font-size: 1.1rem;
     }
 
-    .progress-bar {
-      background-color: var(--secondary-background-color);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 1rem;
-
-      .progress-fill {
-        background-color: var(--primary-color);
-        height: 20px;
-        transition: width 0.3s ease-in-out;
-      }
-    }
-
-    ul {
+    .updated-games-list {
       list-style: none;
       padding: 0;
       margin: 0;
-      max-height: 150px;
+      max-height: 180px;
       overflow-y: auto;
+      border: 1px solid var(--secondary-background-color);
+      border-radius: 8px;
 
       &::-webkit-scrollbar {
         width: 8px;
       }
 
       &::-webkit-scrollbar-track {
-        background: var(--secondary-background-color);
+        background: transparent;
       }
 
       &::-webkit-scrollbar-thumb {
@@ -73,13 +71,14 @@
       }
 
       .list-item {
-        padding: 0.5rem;
+        padding: 0.75rem 1rem;
         border-bottom: 1px solid var(--secondary-background-color);
         color: var(--text-color);
         transition: background-color 0.2s ease-in-out;
+        text-align: left;
 
         &:hover {
-          background-color: rgba(255, 255, 255, 0.1);
+          background-color: var(--secondary-background-color);
         }
 
         &:last-child {
@@ -101,11 +100,3 @@
   }
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}

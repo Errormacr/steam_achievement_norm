@@ -109,7 +109,7 @@ export function useUpdateSocket (rerender: () => void) {
   }, [isConnected, startUpdate]);
 
   const progressPercent = gameCount && gameCount > 0
-    ? Math.round((finishedGameCount / gameCount) * 100)
+    ? ((finishedGameCount / gameCount) * 100)
     : 0;
 
   return {

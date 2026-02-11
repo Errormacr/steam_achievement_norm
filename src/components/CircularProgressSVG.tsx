@@ -21,7 +21,12 @@ const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
   const innerCircumference = innerRadius * 2 * Math.PI;
 
   const outerOffset = outerCircumference - (integerPercent / 100) * outerCircumference;
-  const innerOffset = innerCircumference - (fractionalPercent / 100) * innerCircumference;
+  let innerOffset: number;
+  if (fractionalPercent === 0 && integerPercent !== 100) { // Keep empty if integerPercent is 100
+    innerOffset = 0; // Fully filled when fractional part is 0
+  } else {
+    innerOffset = innerCircumference - (fractionalPercent / 100) * innerCircumference;
+  }
 
   return (
         <svg
