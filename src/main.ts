@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import { spawn, ChildProcess } from 'node:child_process';
+import net from 'node:net';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -8,6 +9,8 @@ if (require('electron-squirrel-startup')) {
 }
 
 let nestAppProcess: ChildProcess | null = null;
+const API_PORT = 8888;
+const API_HOST = '127.0.0.1';
 
 const createWindow = () => {
   // Create the browser window.
@@ -27,13 +30,44 @@ const createWindow = () => {
   }
 };
 
-function sleep (ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function waitForApiPort (
+  host: string,
+  port: number,
+  retries = 30,
+  intervalMs = 300
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    let attempt = 0;
+
+    const tryConnect = () => {
+      const socket = new net.Socket();
+
+      socket.setTimeout(500);
+      socket.once('connect', () => {
+        socket.destroy();
+        resolve(true);
+      });
+      socket.once('timeout', () => socket.destroy());
+      socket.once('error', () => socket.destroy());
+      socket.once('close', () => {
+        attempt += 1;
+        if (attempt >= retries) {
+          resolve(false);
+          return;
+        }
+        setTimeout(tryConnect, intervalMs);
+      });
+
+      socket.connect(port, host);
+    };
+
+    tryConnect();
+  });
 }
 
 // This method will be called when Electron has finished initialization
 // and is ready to create browser windows.
-app.on('ready', () => {
+app.on('ready', async () => {
   const nestAppDirectory = path.join(__dirname, '../../server');
   nestAppProcess = spawn('node', ['--experimental-require-module', 'dist/src/main'], { cwd: nestAppDirectory });
 
@@ -50,7 +84,15 @@ app.on('ready', () => {
     console.log(`NestJS process exited with code ${code}`);
   });
 
-  sleep(1000).then(() => createWindow());
+  nestAppProcess.on('error', (err) => {
+    console.error('Failed to start NestJS process:', err);
+  });
+
+  const isApiReady = await waitForApiPort(API_HOST, API_PORT);
+  if (!isApiReady) {
+    console.warn(`NestJS API did not become ready on ${API_HOST}:${API_PORT} in time`);
+  }
+  createWindow();
 });
 
 // Quit when all windows are closed, except on macOS.
