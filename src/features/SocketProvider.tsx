@@ -23,16 +23,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         transports: ['websocket', 'polling']
       });
 
-      socket.on('connect', () => {
-        console.log('Socket connected');
-      });
-
       socket.on('connect_error', (error) => {
         console.error('Socket connection error:', error);
       });
 
       socket.on('disconnect', (reason) => {
-        console.log('Socket disconnected:', reason);
         if (reason === 'io server disconnect') {
           socket.connect();
         }
@@ -63,9 +58,5 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 };
 
 export const useSocket = () => {
-  const socket = useContext(SocketContext);
-  if (!socket) {
-    console.warn('useSocket must be used within a SocketProvider');
-  }
-  return socket;
+  return useContext(SocketContext);
 };

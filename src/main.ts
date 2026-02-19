@@ -11,6 +11,25 @@ if (require('electron-squirrel-startup')) {
 let nestAppProcess: ChildProcess | null = null;
 const API_PORT = 8888;
 const API_HOST = '127.0.0.1';
+const LOGGER_PREFIX = '[electron-main]';
+
+const logger = {
+  info: (message: string) => {
+    if (!app.isPackaged) {
+      console.info(`${LOGGER_PREFIX} ${message}`);
+    }
+  },
+  warn: (message: string) => {
+    console.warn(`${LOGGER_PREFIX} ${message}`);
+  },
+  error: (message: string, error?: unknown) => {
+    if (error) {
+      console.error(`${LOGGER_PREFIX} ${message}`, error);
+      return;
+    }
+    console.error(`${LOGGER_PREFIX} ${message}`);
+  }
+};
 
 const createWindow = () => {
   // Create the browser window.
@@ -73,24 +92,24 @@ app.on('ready', async () => {
 
   // Capture NestJS app output for logging
   nestAppProcess.stdout.on('data', (data) => {
-    console.log(`NestJS Output: ${data}`);
+    logger.info(`NestJS Output: ${data}`);
   });
 
   nestAppProcess.stderr.on('data', (data) => {
-    console.error(`NestJS Error: ${data}`);
+    logger.error(`NestJS Error: ${data}`);
   });
 
   nestAppProcess.on('close', (code) => {
-    console.log(`NestJS process exited with code ${code}`);
+    logger.info(`NestJS process exited with code ${code}`);
   });
 
   nestAppProcess.on('error', (err) => {
-    console.error('Failed to start NestJS process:', err);
+    logger.error('Failed to start NestJS process', err);
   });
 
   const isApiReady = await waitForApiPort(API_HOST, API_PORT);
   if (!isApiReady) {
-    console.warn(`NestJS API did not become ready on ${API_HOST}:${API_PORT} in time`);
+    logger.warn(`NestJS API did not become ready on ${API_HOST}:${API_PORT} in time`);
   }
   createWindow();
 });

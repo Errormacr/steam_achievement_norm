@@ -9,7 +9,7 @@
     "package": "electron-forge package --arch=x64 --platform=win32",
     "make": "electron-forge make --platform=win32",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx src"
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
   "keywords": [],
   "author": "errormacro",
@@ -26,7 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "electron": "^40.3.0",
-    "eslint": "^10.0.0",
+    "eslint": "8.57.1",
     "eslint-plugin-import": "^2.25.0",
     "eslint-plugin-node": "^11.1.0",
     "ts-node": "^10.0.0",

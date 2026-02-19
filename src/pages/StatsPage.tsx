@@ -51,7 +51,6 @@ const StatsPage: React.FC = () => {
       component: <GamesPercentsByTimeChart />
     });
   }
-  console.log(charts);
 
   return (
     <I18nextProvider i18n={i18n}>

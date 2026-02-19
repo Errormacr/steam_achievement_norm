@@ -64,7 +64,10 @@ const GamesPercentsByTimeChart: React.FC = () => {
         onApply={setSelectedGames}
       />
 
+      {isLoading && <div>{t('loading')}...</div>}
 
+      {!isLoading && filteredData.length > 0
+        ? (
         <ResponsiveLine
           data={filteredData}
           curve="monotoneX"
@@ -165,6 +168,10 @@ const GamesPercentsByTimeChart: React.FC = () => {
             }
           }}
         />
+          )
+        : (
+            !isLoading && <div>{t('noGamesSelected')}</div>
+          )}
 
     </div>
   );
