@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+import { logger } from '../utils/logger';
 
 const API_URL = 'http://localhost:8888/api';
 
@@ -16,10 +17,10 @@ export class ApiService {
       }
       const data = await response.json();
       toast.error(`${data.message}`);
-      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
+      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
       throw new Error(`API Error: ${response.status} - ${data.message}`);
     } catch (error) {
-      console.error('Error fetching data from API:', error);
+      logger.error('Error fetching data from API', error);
       throw error;
     }
   }
@@ -38,10 +39,10 @@ export class ApiService {
       }
       const result = await response.json();
       toast.error(`${result.message}`);
-      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
+      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
       throw new Error(`API Error: ${response.status} - ${result.message}`);
     } catch (error) {
-      console.error('Error posting data to API:', error);
+      logger.error('Error posting data to API', error);
       throw error;
     }
   }
@@ -61,10 +62,10 @@ export class ApiService {
       }
       const result = await response.json();
       toast.error(`${result.message}`);
-      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
+      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
       throw new Error(`API Error: ${response.status} - ${result.message}`);
     } catch (error) {
-      console.error('Error updating data in API:', error);
+      logger.error('Error updating data in API', error);
       throw error;
     }
   }
@@ -83,10 +84,10 @@ export class ApiService {
       }
       const result = await response.json();
       toast.error(`${result.message}`);
-      console.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
+      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
       throw new Error(`API Error: ${response.status} - ${result.message}`);
     } catch (error) {
-      console.error('Error deleting data from API:', error);
+      logger.error('Error deleting data from API', error);
       throw error;
     }
   }

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ResponsiveLine, Serie, SliceTooltipProps } from '@nivo/line';
+import { ResponsiveLine, LineSeries, SliceTooltipProps } from '@nivo/line';
 import { HistogramTooltip } from './HistogramTooltip';
 import '../styles/scss/Histogram.scss';
 
@@ -13,13 +13,13 @@ interface HistogramProps {
 }
 
 interface HistogramChartProps {
-  data: Serie[];
+  data: LineSeries[];
   onClick?: any;
   yLabel?: string;
 }
 
 const HistogramChart: React.FC<HistogramChartProps> = ({ data, onClick, yLabel }) => {
-  const slicing = ({ slice }: SliceTooltipProps<Serie>) => <HistogramTooltip slice={slice} yLabel={yLabel} />;
+  const slicing = ({ slice }: SliceTooltipProps<LineSeries>) => <HistogramTooltip slice={slice} yLabel={yLabel} />;
   return (
     <ResponsiveLine
       data={data}
@@ -103,7 +103,7 @@ const Histogram: React.FC<HistogramProps> = ({ data, onClick, yLabel = 'Count' }
   const [startIndex, setStartIndex] = useState(0);
   const windowSize = 30;
 
-  const transformedData: Serie[] = useMemo(
+  const transformedData: LineSeries[] = useMemo(
     () => [
       {
         id: 'histogram',

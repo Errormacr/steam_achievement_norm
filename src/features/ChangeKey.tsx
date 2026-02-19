@@ -7,6 +7,7 @@ import '../styles/scss/ChangeKey.scss';
 import { toast } from 'react-toastify';
 import { ApiService } from '../services/api.services';
 import { useModal } from '../hooks/useModal';
+import { logger } from '../utils/logger';
 
 import { ApiResponse } from '../types';
 
@@ -27,7 +28,7 @@ export default function ChangeKey (): React.JSX.Element {
         toast.success(t('changeKeySuccess'));
         closeModal();
       } catch (error) {
-        console.log(error);
+        logger.error('Error changing API key', error);
         toast.error(t('changeKeyError'));
       }
     }

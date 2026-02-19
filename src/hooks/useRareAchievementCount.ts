@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ApiService } from '../services/api.services';
 import { RareAchievementCount } from '../types';
+import { logger } from '../utils/logger';
 
 export const useRareAchievementCount = (gameAppid?: number) => {
   const [counts, setCounts] = useState<RareAchievementCount>({});
@@ -23,7 +24,7 @@ export const useRareAchievementCount = (gameAppid?: number) => {
         );
         setCounts(dataFromApi);
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        logger.error('Failed to fetch rare achievement data', error);
       }
     };
 

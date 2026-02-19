@@ -1,8 +1,8 @@
 import React from 'react';
-import { SliceTooltipProps } from '@nivo/line';
+import { LineSeries, SliceTooltipProps } from '@nivo/line';
 
 interface HistogramTooltipProps {
-  slice: SliceTooltipProps['slice'];
+  slice: SliceTooltipProps<LineSeries>['slice'];
   yLabel: string;
 }
 
@@ -18,7 +18,7 @@ export const HistogramTooltip: React.FC<HistogramTooltipProps> = ({ slice, yLabe
         whiteSpace: 'nowrap'
       }}
     >
-      {slice.points.map((point) => (
+      {slice.points.map((point: SliceTooltipProps<LineSeries>['slice']['points'][number]) => (
         <div key={point.id}>
           <div>Date: {point.data.xFormatted}</div>
           <div>

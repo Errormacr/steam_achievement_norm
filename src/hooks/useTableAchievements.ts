@@ -2,6 +2,7 @@ import { useEffect, useCallback, useReducer } from 'react';
 import { ApiService } from '../services/api.services';
 import { AchievmentsFromView, Pagination, AchContainerProps } from '../types';
 import i18n from 'i18next';
+import { logger } from '../utils/logger';
 
 const PAGE_SIZE = 50;
 
@@ -119,7 +120,7 @@ export const useTableAchievements = (filters: AchContainerProps) => {
       );
       dispatch({ type: 'FETCH_SUCCESS', payload: { rows: response.rows, reset: isReset } });
     } catch (error) {
-      console.error('Error fetching achievements:', error);
+      logger.error('Error fetching achievements', error);
       dispatch({ type: 'FETCH_ERROR' });
     }
   }, [sortConfig, desc, page, appid, all, minPercent, maxPercent, date, unlocked]);

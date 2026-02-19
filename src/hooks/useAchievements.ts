@@ -4,6 +4,7 @@ import { ApiService } from '../services/api.services';
 import { Pagination, AchievmentsFromView } from '../types';
 import { AchievementFiltersState } from './useAchievementFilters';
 import { useDebounce } from './useDebounce';
+import { logger } from '../utils/logger';
 const PAGE_SIZE = 100;
 
 interface BuildParams {
@@ -157,7 +158,7 @@ export const useAchievements = (
         );
         dispatch({ type: 'FETCH_SUCCESS', payload: { rows: response.rows, reset: isReset } });
       } catch (error) {
-        console.error('Error fetching achievements:', error);
+        logger.error('Error fetching achievements', error);
         dispatch({ type: 'FETCH_ERROR' });
       }
     };

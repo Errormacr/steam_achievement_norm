@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ApiService } from '../services/api.services';
 import { HistogramValue } from '../types/sharedProps';
 import { TimeAchievementCount } from '../types';
+import { logger } from '../utils/logger';
 
 export const useTimeAchievementHistogramData = (gameAppid?: number) => {
   const [data, setData] = useState<HistogramValue[]>([]);
@@ -16,7 +17,7 @@ export const useTimeAchievementHistogramData = (gameAppid?: number) => {
         setData(data.map((item) => ({ count: item.count, name: item.date })));
       })
       .catch(error => {
-        console.error('Failed to fetch time achievement data:', error);
+        logger.error('Failed to fetch time achievement data', error);
         setData([]); // Reset data on error
       });
   }, [gameAppid]);

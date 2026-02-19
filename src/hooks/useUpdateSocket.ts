@@ -5,6 +5,7 @@ import i18n from 'i18next';
 import { Percent, ProfileUpdateResponse, UpdateGameEvent } from '../types';
 import { useSocket } from '../features/SocketProvider';
 import { ApiService } from '../services/api.services';
+import { logger } from '../utils/logger';
 
 export function useUpdateSocket (rerender: () => void) {
   const socket = useSocket();
@@ -35,7 +36,7 @@ export function useUpdateSocket (rerender: () => void) {
           rerender();
         }
       } catch (error) {
-        console.error('Error updating profile:', error);
+        logger.error('Error updating profile', error);
       }
 
       if (type === 'ach-percentage') {

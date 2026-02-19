@@ -11,6 +11,7 @@ import { ApiService } from '../services/api.services';
 import { UserData } from '../types';
 
 import i18n from '../utils/translate';
+import { logger } from '../utils/logger';
 import '../styles/scss/MainWindow.scss';
 import { Box, Typography } from '@mui/material';
 
@@ -38,7 +39,7 @@ export default function App () {
         setRecentGames(userData.user.gameDatas);
         achContainer.render(<LastAchContainer />);
       } catch (e) {
-        console.error('Error updating user data:', e);
+        logger.error('Error updating user data', e);
         toast.error('Failed to update user data. Please try again.');
       }
     }

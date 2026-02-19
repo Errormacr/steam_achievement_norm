@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useRef, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { logger } from '../utils/logger';
 
 const SocketContext = createContext<Socket | null>(null);
 
@@ -24,7 +25,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       });
 
       socket.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
+        logger.error('Socket connection error', error);
       });
 
       socket.on('disconnect', (reason) => {
@@ -34,7 +35,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       });
 
       socket.on('error', (error) => {
-        console.error('Socket error:', error);
+        logger.error('Socket error', error);
       });
 
       socketRef.current = socket;

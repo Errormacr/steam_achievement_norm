@@ -7,6 +7,7 @@ import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
 import { ApiService } from '../services/api.services';
 import { User, UserData, ApiResponse } from '../types';
+import { logger } from '../utils/logger';
 
 export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: () => void }>): React.JSX.Element {
   const { t } = useTranslation();
@@ -65,7 +66,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
     } catch (error) {
       setAccFound(false);
       setSteamIdError(SteamId === '' ? '' : t('AccNotFound'));
-      console.error('Error fetching user data:', error);
+      logger.error('Error fetching user data', error);
     }
   };
 

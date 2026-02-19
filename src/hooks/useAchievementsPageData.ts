@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ApiService } from '../services/api.services';
 import { AchievmentsFromView, Pagination } from '../types';
 import i18n from 'i18next';
+import { logger } from '../utils/logger';
 
 interface AchPageParams {
     minPercent?: string;
@@ -58,7 +59,7 @@ export const useAchievementsPageData = ({ minPercent, maxPercent, date, gameAppi
           setAchCount(data.count);
         }
       } catch (error) {
-        console.error('Failed to fetch achievements count:', error);
+        logger.error('Failed to fetch achievements count', error);
       } finally {
         if (isMounted) {
           setLoaded(true);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ApiService } from '../services/api.services';
 import { RareAchievementCount } from '../types';
 import { HistogramValue } from '../types/sharedProps';
+import { logger } from '../utils/logger';
 
 export function useAchRareHistogramData(gameAppid?: number) {
   const [data, setData] = useState<HistogramValue[]>([]);
@@ -32,7 +33,7 @@ export function useAchRareHistogramData(gameAppid?: number) {
         setData(Object.entries(response).map(([key, item]) => ({ count: item, name: `${key}%` })));
       })
       .catch((err) => {
-        console.error("Failed to fetch rare achievement count:", err);
+        logger.error('Failed to fetch rare achievement count', err);
         setError(err);
         setData([]);
       })

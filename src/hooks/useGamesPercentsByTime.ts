@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Serie } from '@nivo/line';
+import { LineSeries } from '@nivo/line';
 import { ApiService } from '../services/api.services';
+import { logger } from '../utils/logger';
 
 interface GamesPercentsData {
   percents: Record<string, Record<number, number>>;
@@ -16,7 +17,7 @@ function getColor (index: number) {
   return PALETTE[index % PALETTE.length];
 }
 
-function processGamesData (percents: Record<string, Record<number, number>>, gameNameMap: Record<number, string>): { series: Serie[], gameNames: string[] } {
+function processGamesData (percents: Record<string, Record<number, number>>, gameNameMap: Record<number, string>): { series: LineSeries[], gameNames: string[] } {
   const dates = Object.keys(percents);
   const gameIdsInData = new Set<string>();
   Object.values(percents).forEach((dailyData) => {
@@ -52,7 +53,7 @@ function processGamesData (percents: Record<string, Record<number, number>>, gam
 }
 
 export function useGamesPercentsByTime (startDate: string, endDate: string) {
-  const [data, setData] = useState<Serie[]>([]);
+  const [data, setData] = useState<LineSeries[]>([]);
   const [allGames, setAllGames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -82,7 +83,7 @@ export function useGamesPercentsByTime (startDate: string, endDate: string) {
       setAllGames(gameNames.length > 0 ? gameNames : Object.values(gameNameMap));
       setData(series);
     }).catch(err => {
-      console.error('Failed to fetch games percents by time:', err);
+      logger.error('Failed to fetch games percents by time', err);
       setError(err);
       setData([]);
       setAllGames([]);
