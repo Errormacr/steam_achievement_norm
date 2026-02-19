@@ -5,7 +5,13 @@ import i18n from 'i18next';
 
 const PAGE_SIZE = 50;
 
-interface BuildAchievementParams extends AchContainerProps {
+interface BuildAchievementParams {
+  all: boolean;
+  appid?: number;
+  unlocked?: 0 | 1;
+  minPercent?: number;
+  maxPercent?: number;
+  date?: string;
   sortConfig: string;
   desc: boolean;
   page: number;
@@ -23,7 +29,9 @@ const buildAchievementParams = (params: BuildAchievementParams) => {
     pageSize: pageSize.toString()
   };
 
-  if (unlocked || all) {
+  if (unlocked === 0 || unlocked === 1) {
+    queryObj.unlocked = String(unlocked);
+  } else if (all) {
     queryObj.unlocked = '1';
   }
   if (!all && appid) {

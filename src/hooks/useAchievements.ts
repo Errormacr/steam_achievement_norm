@@ -12,7 +12,7 @@ interface BuildParams {
   pageSize: number;
   appid?: number;
   all?: boolean;
-  unlocked?: boolean;
+  unlocked?: 0 | 1;
   minPercent?: number;
   maxPercent?: number;
   date?: string;
@@ -21,7 +21,11 @@ interface BuildParams {
 type Applier = (q: Record<string, string>, p: BuildParams) => void;
 
 const applyUnlockedParam: Applier = (q, p) => {
-  if (p.unlocked || p.all) q.unlocked = '1';
+  if (p.unlocked === 0 || p.unlocked === 1) {
+    q.unlocked = String(p.unlocked);
+    return;
+  }
+  if (p.all) q.unlocked = '1';
 };
 
 const applyAppIdParam: Applier = (q, p) => {
@@ -125,7 +129,7 @@ export const useAchievements = (
   props: {
     appid?: number;
     all?: boolean;
-    unlocked?: boolean;
+    unlocked?: 0 | 1;
     minPercent?: number;
     maxPercent?: number;
     date?: string;

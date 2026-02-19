@@ -72,7 +72,7 @@ const AchPage: React.FC = () => {
               maxPercent={+maxPercent}
               date={date === 'undefined' ? undefined : date}
               appid={Number(gameAppid) || undefined}
-              unlocked={true}
+              unlocked={1}
               all={!+gameAppid}
             />
           )}
