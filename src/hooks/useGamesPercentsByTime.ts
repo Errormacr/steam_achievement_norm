@@ -17,6 +17,7 @@ function getColor (index: number) {
 }
 
 function processGamesData (percents: Record<string, Record<number, number>>, gameNameMap: Record<number, string>): { series: Serie[], gameNames: string[] } {
+  const dates = Object.keys(percents);
   const gameIdsInData = new Set<string>();
   Object.values(percents).forEach((dailyData) => {
     Object.keys(dailyData).forEach((appid) => {
@@ -28,14 +29,21 @@ function processGamesData (percents: Record<string, Record<number, number>>, gam
     const numberAppid = Number(appid);
     const gameName = gameNameMap[numberAppid];
     const displayName = gameName?.trim() || `AppID: ${appid}`;
+    let lastKnownPercent: number | null = null;
 
     return {
       id: displayName,
       color: getColor(index),
-      data: Object.entries(percents).map(([date, dailyData]) => ({
-        x: date,
-        y: dailyData[numberAppid]?.toFixed(2) ?? null
-      }))
+      data: dates.map((date) => {
+        const value = percents[date][numberAppid];
+        if (value !== undefined) {
+          lastKnownPercent = value;
+        }
+        return {
+          x: date,
+          y: lastKnownPercent
+        };
+      })
     };
   });
 
@@ -62,7 +70,7 @@ export function useGamesPercentsByTime (startDate: string, endDate: string) {
     ApiService.get<GamesPercentsData>(
       `user/${steamId}/games-percents-by-time?startDate=${startDate}&endDate=${endDate}`
     ).then((response) => {
-      if (response?.percents) {
+      if (!response?.percents || !response?.names) {
         setData([]);
         setAllGames([]);
         setIsLoading(false);
@@ -71,7 +79,7 @@ export function useGamesPercentsByTime (startDate: string, endDate: string) {
       const { percents, names: gameNameMap } = response;
 
       const { series, gameNames } = processGamesData(percents, gameNameMap);
-      setAllGames(gameNames);
+      setAllGames(gameNames.length > 0 ? gameNames : Object.values(gameNameMap));
       setData(series);
     }).catch(err => {
       console.error('Failed to fetch games percents by time:', err);

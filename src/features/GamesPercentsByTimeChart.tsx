@@ -64,13 +64,11 @@ const GamesPercentsByTimeChart: React.FC = () => {
         onApply={setSelectedGames}
       />
 
-      {isLoading && <div>{t('loading')}...</div>}
 
-      {!isLoading && filteredData.length > 0
-        ? (
         <ResponsiveLine
           data={filteredData}
-          margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+          curve="monotoneX"
+          margin={{ top: 35, right: 110, bottom: 115, left: 60 }}
           xScale={{ type: 'point' }}
           yScale={{
             type: 'linear',
@@ -85,9 +83,9 @@ const GamesPercentsByTimeChart: React.FC = () => {
           axisBottom={{
             tickSize: 5,
             tickPadding: 5,
-            tickRotation: 45,
+            tickRotation: 0,
             legend: t('date'),
-            legendOffset: 45,
+            legendOffset: 46,
             legendPosition: 'middle'
           }}
           axisLeft={{
@@ -167,10 +165,7 @@ const GamesPercentsByTimeChart: React.FC = () => {
             }
           }}
         />
-          )
-        : (
-            !isLoading && <div>{t('noGamesSelected')}</div>
-          )}
+
     </div>
   );
 };
