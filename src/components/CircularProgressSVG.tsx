@@ -94,7 +94,7 @@ const CircularProgressSVG: React.FC<CircularProgressSVGProps> = ({
                 strokeWidth="0.5px" // Thinner stroke for text
                 dy=".3em"
             >
-                {`${percent.toFixed(2)}%`}
+                {`${percent.toFixed(3)}%`}
             </text>
         </svg>
   );

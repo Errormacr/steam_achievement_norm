@@ -14,6 +14,7 @@ export interface User {
     avatarHash : string;
     nickname : string;
     percent : number;
+    lastAvgPercentChange : number;
     gameDatas?: GameData[];
 }
 

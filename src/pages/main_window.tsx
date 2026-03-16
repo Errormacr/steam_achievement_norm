@@ -22,6 +22,7 @@ export default function App () {
   const [gamesCount, setGamesCount] = useState(0);
   const [avaUrl, setAvaUrl] = useState('');
   const [percent, setPercent] = useState(0);
+  const [lastAvgPercentChange, setLastAvgPercentChange] = useState(0);
   const [recentGames, setRecentGames] = useState([]);
 
   const updateUserData = useCallback(async () => {
@@ -34,6 +35,7 @@ export default function App () {
         setPersonalName(userData.user.nickname);
         setAvaUrl(userData.user.avatarLarge);
         setPercent(userData.user.percent);
+        setLastAvgPercentChange(userData.user.lastAvgPercentChange);
         setGamesCount(userData.gameCount);
         setAchCount(userData.achCount);
         setRecentGames(userData.user.gameDatas);
@@ -79,6 +81,9 @@ export default function App () {
                 />
                 <Typography variant="subtitle1" sx={{ mt: 1 }}>
                   {t('AveragePercent')}
+                </Typography>
+                <Typography variant="caption" sx={{ mt: 0.5 }}>
+                  {t('AveragePercentChange')}: {(lastAvgPercentChange >= 0 ? '+' : '') + lastAvgPercentChange.toFixed(2)}%
                 </Typography>
               </Box>
             </div>
