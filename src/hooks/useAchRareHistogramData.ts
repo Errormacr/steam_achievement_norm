@@ -20,12 +20,12 @@ export function useAchRareHistogramData(gameAppid?: number) {
     setError(null);
 
     let query = 'percents=1';
-    for (let i = 2; i <= 100; i += 1) {
+    for (let i = 5; i <= 100; i += 5) {
       query += `,${i}`;
     }
 
     if (gameAppid) {
-      query += `appid=${gameAppid}`;
+      query += `&appid=${gameAppid}`;
     }
 
     ApiService.get<RareAchievementCount>(`user/achievements-rare-count/${steamId}?${query}`)
