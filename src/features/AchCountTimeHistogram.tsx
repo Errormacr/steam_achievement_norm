@@ -18,7 +18,7 @@ const AchCountTimeHistogram: React.FC<AchCountTimeHistogramProps> = ({ gameAppid
   const { t } = useTranslation();
 
   const handleHistogramClick = (event: HistogramClickEvent) => {
-    const gameUrl = gameAppid ? `/${gameAppid}` : '/undefinded';
+    const gameUrl = gameAppid ? `/${gameAppid}` : '/undefined';
     navigate(
       `/achievements/0/100/${event.activeLabel}/Stats${gameUrl}`
     );

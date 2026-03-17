@@ -47,7 +47,7 @@ const GamesPercentsByTimeChart: React.FC = () => {
   const filteredData = data.filter(series => selectedGames.includes(series.id as string));
 
   return (
-    <div style={{ height: '500px' }}>
+    <div style={{ height: '500px', width: '100%' }}>
       <GameButton onClick={openModal} id={'select-games'} text={t('selectGames')} />
       <DateRangeControls
         startDate={startDate}

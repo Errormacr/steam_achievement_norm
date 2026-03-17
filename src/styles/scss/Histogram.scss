@@ -2,17 +2,17 @@
 
 .histogram {
     width: 100%;
-    margin-top: $spacing-xl;
-    height: 30rem;
-    background-color: var(--histogram-bg);
-    border-radius: $border-radius-lg;
-    padding: $spacing-md;
-    box-shadow: var(--card-shadow);
+    margin-top: $spacing-lg;
+    height: 500px;
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
 
     @media (max-width: $breakpoint-sm) {
-        height: 25rem;
-        margin-top: $spacing-lg;
-        padding: $spacing-sm;
+        height: 380px;
+        margin-top: $spacing-md;
+        padding: 0;
     }
 
     .histogram-slider {

@@ -20,11 +20,18 @@ interface HistogramChartProps {
 
 const HistogramChart: React.FC<HistogramChartProps> = ({ data, onClick, yLabel }) => {
   const slicing = ({ slice }: SliceTooltipProps<LineSeries>) => <HistogramTooltip slice={slice} yLabel={yLabel} />;
+  const handlePointClick = (point: any) => {
+    if (!onClick) return;
+    const label = point.points[0].data.x
+    if (label == null) return;
+    onClick({ activeLabel: String(label), raw: point });
+  };
   return (
     <ResponsiveLine
       data={data}
-      onClick={onClick}
-      margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+      onClick={handlePointClick}
+      curve="monotoneX"
+      margin={{ top: 35, right: 110, bottom: 115, left: 60 }}
       xScale={{ type: 'point' }}
       yScale={{
         type: 'linear',
@@ -41,7 +48,7 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ data, onClick, yLabel }
         tickPadding: 5,
         tickRotation: 0,
         legend: 'Date',
-        legendOffset: 36,
+        legendOffset: 46,
         legendPosition: 'middle'
       }}
       axisLeft={{
@@ -52,7 +59,9 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ data, onClick, yLabel }
         legendOffset: -40,
         legendPosition: 'middle'
       }}
-      pointSize={10}
+      enableGridX={false}
+      enableGridY={false}
+      pointSize={4}
       pointColor={{ theme: 'background' }}
       pointBorderWidth={2}
       pointBorderColor={{ from: 'serieColor' }}
@@ -60,34 +69,34 @@ const HistogramChart: React.FC<HistogramChartProps> = ({ data, onClick, yLabel }
       useMesh={true}
       enableSlices="x"
       sliceTooltip={slicing}
-      legends={[
-        {
-          anchor: 'bottom-right',
-          direction: 'column',
-          justify: false,
-          translateX: 100,
-          translateY: 0,
-          itemsSpacing: 0,
-          itemDirection: 'left-to-right',
-          itemWidth: 80,
-          itemHeight: 20,
-          itemOpacity: 0.75,
-          symbolSize: 12,
-          symbolShape: 'circle',
-          symbolBorderColor: 'rgba(0, 0, 0, .5)',
-          effects: [
-            {
-              on: 'hover',
-              style: {
-                itemBackground: 'rgba(0, 0, 0, .03)',
-                itemOpacity: 1
-              }
-            }
-          ]
-        }
-      ]}
       theme={{
         text: { color: 'var(--text-primary)' },
+        axis: {
+          domain: {
+            line: {
+              stroke: 'var(--text-primary)'
+            }
+          },
+          ticks: {
+            line: {
+              stroke: 'var(--text-primary)',
+              strokeWidth: 1
+            },
+            text: {
+              fill: 'var(--text-primary)'
+            }
+          },
+          legend: {
+            text: {
+              fill: 'var(--text-primary)'
+            }
+          }
+        },
+        legends: {
+          text: {
+            fill: 'var(--text-primary)'
+          }
+        },
         tooltip: {
           container: {
             background: 'var(--bg-secondary)',

@@ -26,11 +26,13 @@ const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
                 activeLabel: string
             }) => {
                   const addUrl = gameAppid ? `/${gameAppid}` : '/undefined';
-                  const [min,
-                    max] = el
-                    .activeLabel
-                    .slice(0, -1)
-                    .split('-');
+                  const label = String(el.activeLabel || '');
+                  console.log(label);
+                  const cleaned = label.endsWith('%') ? label.slice(0, -1) : label;
+                  const parts = cleaned.split('-').filter(Boolean);
+                  const min = parts[0] ?? cleaned;
+                  const max = parts[1] ?? parts[0] ?? cleaned;
+                  if (!min) return;
                   navigate(`/achievements/${min}/${max}/undefined/Stats${addUrl}`);
                 }}
                 data={data}
