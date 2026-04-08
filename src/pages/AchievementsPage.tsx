@@ -8,6 +8,7 @@ import { Box, Button, Container, IconButton, Typography } from '@mui/material';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import { useAchievementsPageData } from '../hooks/useAchievementsPageData';
 import AchievementsDisplay from '../features/AchievementsDisplay';
+import '../styles/scss/PageShell.scss';
 
 const AchPage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,35 +45,17 @@ const AchPage: React.FC = () => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <Container maxWidth={false}>
+      <Container maxWidth={false} className="page-shell">
         <ScrollToTopButton />
-        <Box
-          sx={{
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: 40,
-            mb: 2
-          }}
-        >
-          <IconButton onClick={handleGoBack} sx={{ position: 'absolute', left: 16 }}>
+        <Box className="page-shell__header">
+          <IconButton onClick={handleGoBack} className="page-shell__back">
             <FaArrowLeft />
           </IconButton>
-          <Typography variant="h6">
+          <Typography variant="h6" className="page-shell__title">
             {achCount} {t('Ach')}
           </Typography>
-          <Box
-            sx={{
-              position: 'absolute',
-              right: 16,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}
-          >
-
-            <Button variant="contained" onClick={handleToggleView}>
+          <Box className="page-shell__actions">
+            <Button variant="contained" onClick={handleToggleView} className="page-shell__button">
               {t('SwitchTable')}
             </Button>
           </Box>

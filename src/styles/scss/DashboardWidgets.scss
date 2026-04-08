@@ -1,0 +1,111 @@
+@use './variables' as *;
+
+.chart-shell {
+  width: 100%;
+
+  &--fixed-height {
+    height: 500px;
+  }
+}
+
+.chart-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.chart-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &--pie {
+    width: 600px;
+    max-width: 100%;
+    height: 300px;
+    margin: 0 auto;
+  }
+
+  &--bars {
+    width: 100%;
+    height: 500px;
+  }
+}
+
+.completion-bars {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 100%;
+  width: 100%;
+  gap: 12px;
+}
+
+.completion-bars__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  flex: 1;
+}
+
+.completion-bars__bar {
+  width: 100%;
+  max-width: 80px;
+  background: var(--accent-color);
+  border-radius: $border-radius-sm $border-radius-sm 0 0;
+  box-shadow: var(--card-shadow);
+}
+
+.date-range-controls {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.date-range-controls__row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.date-range-controls__button {
+  margin-right: 0 !important;
+}
+
+.date-range-controls__field {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  color: var(--text-primary);
+}
+
+.date-range-controls__input.dateInput {
+  margin: 0;
+}
+
+.selection-modal__search {
+  width: 100%;
+  margin: $spacing-sm 0;
+  padding: $spacing-sm;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: $border-radius-sm;
+}
+
+.selection-modal__actions {
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.selection-modal__option {
+  display: block;
+  margin: $spacing-xs 0;
+}

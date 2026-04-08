@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography, Card, CardMedia, Grid } from '@mui/material';
 import CircularProgressSVG from './CircularProgressSVG';
+import '../styles/scss/GameHeader.scss';
 
 interface GameHeaderProps {
   game: {
@@ -18,30 +19,30 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
 
   return (
     <>
-      <Typography variant="h4" component="h1" gutterBottom align="center">
+      <Typography variant="h4" component="h1" gutterBottom align="center" className="game-header__title">
         {game.gameName}
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-        <Card sx={{ mb: 2, width: 'fit-content' }}>
+      <Box className="game-header">
+        <Card className="game-header__card">
           <Grid container>
             <Grid>
               <CardMedia
+                className="game-header__image"
                 component="img"
                 image={`https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`}
                 alt={game.gameName}
-                sx={{ objectFit: 'cover' }}
               />
             </Grid>
-            <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+            <Grid className="game-header__stats">
               <CircularProgressSVG
                 percent={game.percent}
                 size={150}
                 strokeWidth={15}
               />
-              <Typography variant="subtitle1" sx={{ mt: 1 }}>
+              <Typography variant="subtitle1" className="game-header__subtitle">
                 {t('AveragePercent')}
               </Typography>
-              <Box sx={{ border: '1px solid grey', borderRadius: '4px', p: 1, mt: 2 }}>
+              <Box className="game-header__counter">
                 <Typography variant="h6" title={t('GainedFromAll')}>
                   {game.gained}/{game.all}
                 </Typography>

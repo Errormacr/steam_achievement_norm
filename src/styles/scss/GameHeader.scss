@@ -1,0 +1,51 @@
+@use './variables' as *;
+
+.game-header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: $spacing-lg;
+
+  &__title {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  &__card.MuiCard-root {
+    width: fit-content;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(68, 89, 116, 0.12) 100%);
+    border: 1px solid rgba(93, 122, 158, 0.35);
+    color: var(--text-primary);
+    box-shadow: var(--card-shadow);
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+  }
+
+  &__image.MuiCardMedia-root {
+    object-fit: cover;
+    display: block;
+  }
+
+  &__stats.MuiGrid-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-lg;
+    min-width: 210px;
+    gap: $spacing-sm;
+  }
+
+  &__subtitle {
+    color: var(--text-secondary);
+  }
+
+  &__counter {
+    margin-top: $spacing-sm;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid rgba(93, 122, 158, 0.45);
+    border-radius: $border-radius-md;
+    background: rgba(68, 89, 116, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+}

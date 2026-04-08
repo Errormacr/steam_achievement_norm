@@ -8,6 +8,7 @@ import { useGamesPercentsByTime } from '../hooks/useGamesPercentsByTime';
 import { DateRangeControls } from './DateRangeControls';
 import { GameSelectionModal } from './GameSelectionModal';
 import GameButton from '../components/GameButton';
+import '../styles/scss/DashboardWidgets.scss';
 
 const GamesPercentsByTimeChart: React.FC = () => {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ const GamesPercentsByTimeChart: React.FC = () => {
   const filteredData = data.filter(series => selectedGames.includes(series.id as string));
 
   return (
-    <div style={{ height: '500px', width: '100%' }}>
+    <div className="chart-shell chart-shell--fixed-height">
       <GameButton onClick={openModal} id={'select-games'} text={t('selectGames')} />
       <DateRangeControls
         startDate={startDate}
@@ -64,7 +65,7 @@ const GamesPercentsByTimeChart: React.FC = () => {
         onApply={setSelectedGames}
       />
 
-      {isLoading && <div>{t('loading')}...</div>}
+      {isLoading && <div className="chart-state">{t('loading')}...</div>}
 
       {!isLoading && filteredData.length > 0
         ? (
@@ -170,7 +171,7 @@ const GamesPercentsByTimeChart: React.FC = () => {
         />
           )
         : (
-            !isLoading && <div>{t('noGamesSelected')}</div>
+            !isLoading && <div className="chart-state">{t('noGamesSelected')}</div>
           )}
 
     </div>

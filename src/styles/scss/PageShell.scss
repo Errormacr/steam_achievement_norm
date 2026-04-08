@@ -1,0 +1,76 @@
+@use './variables' as *;
+
+.page-shell {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: $spacing-lg $spacing-lg $spacing-xl;
+}
+
+.page-shell__header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: $spacing-lg;
+}
+
+.page-shell__back {
+  position: absolute !important;
+  left: 0;
+  color: var(--text-primary) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(93, 122, 158, 0.25) !important;
+
+  &:hover {
+    background: rgba(93, 122, 158, 0.16) !important;
+  }
+}
+
+.page-shell__title {
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: center;
+}
+
+.page-shell__actions {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.page-shell__button.MuiButton-contained {
+  background: var(--accent-color);
+  color: var(--text-header);
+  border-radius: $border-radius-md;
+  box-shadow: var(--card-shadow);
+  text-transform: none;
+  font-weight: 700;
+
+  &:hover {
+    background: var(--hover-bg);
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .page-shell {
+    padding: $spacing-md;
+  }
+
+  .page-shell__header {
+    min-height: auto;
+    padding-top: 3.5rem;
+  }
+
+  .page-shell__back {
+    top: 0;
+  }
+
+  .page-shell__actions {
+    top: 0;
+  }
+}

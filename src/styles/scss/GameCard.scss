@@ -1,0 +1,123 @@
+@use './variables' as *;
+
+.game-card.MuiCard-root {
+  width: 400px;
+  min-height: 230px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: $border-radius-lg;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(68, 89, 116, 0.1) 100%);
+  border: 1px solid rgba(93, 122, 158, 0.25);
+  box-shadow: var(--card-shadow);
+  transition: transform $transition-normal, box-shadow $transition-normal, border-color $transition-normal;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.24);
+    border-color: rgba(93, 122, 158, 0.42);
+  }
+}
+
+.game-card--complete.MuiCard-root {
+  border: 2px solid rgba(255, 176, 32, 0.85);
+  box-shadow: 0 0 18px rgba(255, 176, 32, 0.35);
+}
+
+.game-card__action.MuiCardActionArea-root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 230px;
+}
+
+.game-card__top {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: $spacing-md $spacing-lg $spacing-sm;
+  gap: $spacing-sm;
+}
+
+.game-card__top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.game-card__image.MuiCardMedia-root {
+  width: 184px;
+  height: 69px;
+  border-radius: $border-radius-sm;
+  flex-shrink: 0;
+}
+
+.game-card__meta {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.game-card__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+  margin-bottom: 0 !important;
+}
+
+.game-card__chip.MuiChip-root {
+  width: fit-content;
+  background: rgba(93, 122, 158, 0.18);
+  color: var(--text-primary);
+  border: 1px solid rgba(93, 122, 158, 0.28);
+  align-self: flex-start;
+}
+
+.game-card__content.MuiCardContent-root {
+  flex-grow: 1;
+  width: 100%;
+  padding-top: 0;
+  padding-bottom: $spacing-md !important;
+}
+
+.game-card__progress-wrap {
+  width: 100%;
+  margin-bottom: $spacing-sm;
+}
+
+.game-card__progress-header {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-xs;
+  flex-wrap: wrap;
+}
+
+.game-card__muted {
+  color: var(--text-secondary) !important;
+}
+
+.game-card__progress.MuiLinearProgress-root {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--progress-bg);
+
+  .MuiLinearProgress-bar {
+    background: var(--accent-color);
+    border-radius: 999px;
+  }
+}
+
+.game-card__achievements.MuiGrid-root {
+  justify-content: center;
+  align-content: flex-start;
+}
+
+.game-card__avatar.MuiAvatar-root {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(93, 122, 158, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}

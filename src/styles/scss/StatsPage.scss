@@ -1,15 +1,19 @@
 .stats-page {
-  padding: 2rem 2.5rem 3rem;
   position: relative;
   max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
 
-  .stats-header {
+  .stats-header,
+  &__header {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
+    color: var(--text-primary);
+  }
+
+  &__title {
+    margin: 0;
   }
 
   .stats-header-text {
@@ -30,6 +34,10 @@
   }
 
   .chart-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(68, 89, 116, 0.08) 100%);
+    border: 1px solid rgba(93, 122, 158, 0.24);
+    box-shadow: var(--card-shadow);
+    border-radius: 16px;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     height: 100%;
     display: flex;
@@ -51,10 +59,17 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
+    padding: 1.25rem;
   }
 
   .chart-card .MuiCardContent-root > :last-child {
     flex: 1 1 auto;
     min-height: 280px;
+  }
+
+  .chart-card__title {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 1rem;
   }
 }

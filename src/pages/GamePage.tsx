@@ -10,6 +10,7 @@ import GameHeader from '../components/GameHeader';
 import ActionBar from '../components/ActionBar';
 import { useGameData } from '../hooks/useGameData';
 import AchievementsDisplay from '../features/AchievementsDisplay';
+import '../styles/scss/PageShell.scss';
 
 const GamePage: React.FC = () => {
   const navigate = useNavigate();
@@ -43,10 +44,11 @@ const GamePage: React.FC = () => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <Container maxWidth={false}>
+      <Container maxWidth={false} className="page-shell">
         <ToastContainer />
         <ScrollToTopButton />
         <IconButton
+          className="page-shell__back"
           onClick={() => {
             if (backWindow === 'main') {
               navigate('/');

@@ -92,11 +92,16 @@
   display: flex;
   flex-direction: row;
   gap: $spacing-xl;
-  padding: $spacing-md;
+  padding: $spacing-lg;
   margin: 0 auto;
+  max-width: 1640px;
+  width: 100%;
 }
 
 .user-profile {
+  flex: 0 0 250px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(68, 89, 116, 0.08) 100%);
+  border: 1px solid rgba(93, 122, 158, 0.24);
   border-radius: $border-radius-md;
   padding: $spacing-xl;
   box-shadow: var(--card-shadow);
@@ -157,15 +162,36 @@
   }
 }
 
+.profile-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__title {
+    margin-top: $spacing-sm;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  &__subtitle {
+    margin-top: $spacing-xs;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+}
+
 .content-section {
   display: flex;
+  flex: 1 1 auto;
   gap: $spacing-xl;
   flex-wrap: nowrap;
 
   .recent-games {
-    flex: 1;
-    min-width: 300px;
-    max-width: calc(100% - 370px);
+    flex: 1 1 auto;
+    min-width: 860px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(68, 89, 116, 0.08) 100%);
+    border: 1px solid rgba(93, 122, 158, 0.24);
     border-radius: $border-radius-md;
     padding: $spacing-lg;
     box-shadow: var(--card-shadow);
@@ -178,7 +204,9 @@
   }
 
   .last-achievements {
-    flex-shrink: 0;
+    flex: 0 0 320px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(68, 89, 116, 0.08) 100%);
+    border: 1px solid rgba(93, 122, 158, 0.24);
     border-radius: $border-radius-md;
     padding: $spacing-lg;
     box-shadow: var(--card-shadow);
@@ -191,9 +219,11 @@
   }
 
   .game-cards {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 400px);
     gap: $spacing-md;
     width: 100%;
-    flex-wrap: wrap;
+    align-items: start;
+    justify-content: start;
   }
 }

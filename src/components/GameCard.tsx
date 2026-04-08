@@ -15,39 +15,9 @@ import {
   Grid,
   Chip
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import { Achievements, AchievmentsFromView, GameDataWithAch, GamePageProps } from '../types';
 import { ApiService } from '../services/api.services';
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  width: 400,
-  minHeight: 230,
-  margin: theme.spacing(1),
-  display: 'flex',
-  flexDirection: 'column',
-  transition: 'all 0.3s ease-in-out',
-  '&:hover': {
-    transform: 'translateY(-5px)',
-    boxShadow: theme.shadows[10]
-  }
-}));
-
-const FullGameCard = styled(StyledCard)(({ theme }) => ({
-  boxShadow: '0 0 15px rgba(255, 165, 0, 0.7)',
-  border: `2px solid ${theme.palette.warning.main}`,
-  animation: '$shine 2s ease-in-out infinite',
-  '@keyframes shine': {
-    '0%': {
-      boxShadow: '0 0 15px rgba(255, 165, 0, 0.7)'
-    },
-    '50%': {
-      boxShadow: '0 0 25px rgba(255, 165, 0, 1)'
-    },
-    '100%': {
-      boxShadow: '0 0 15px rgba(255, 165, 0, 0.7)'
-    }
-  }
-}));
+import '../styles/scss/GameCard.scss';
 
 const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const navigate = useNavigate();
@@ -63,14 +33,14 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const [aches, setAches] = useState<AchievmentsFromView[]>([]);
   const [isProgressBarAnimated, setIsProgressBarAnimated] = useState(false);
 
-  const logging = (appid: number, backWindow: string) => {
-    navigate(`/GamePage/${appid}/${backWindow}`);
+  const logging = (currentAppid: number, currentBackWindow: string) => {
+    navigate(`/GamePage/${currentAppid}/${currentBackWindow}`);
   };
 
   const updateGame = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
     const gameData = await ApiService.get<GameDataWithAch>(
-            `user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`
+      `user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`
     );
 
     setPercent(gameData.userData[0].percent);
@@ -114,69 +84,69 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
     };
   }, [updateGame]);
 
-  const CardComponent = percent === 100 ? FullGameCard : StyledCard;
-
   return (
-        <CardComponent ref={cardRef}>
-            <CardActionArea onClick={() => logging(appid, backWindow)} sx={{ display: 'flex', flexDirection: 'column', height: '230px' }}>
-                <Box sx={{ display: 'flex', width: '100%', padding: 2, flexWrap: 'wrap' }}>
-                    <CardMedia
-                        component="img"
-                        sx={{ width: 184, height: 69, borderRadius: 1 }}
-                        image={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
-                        alt={gameName}
-                    />
-                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', ml: 2, flexGrow: 1, width: '164px' }}>
-                        <Typography gutterBottom variant="h6" component="div" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {gameName}
-                        </Typography>
-                         <Chip label={`${playtime} ${t('Hours')}`} size="small" />
-                    </Box>
-                </Box>
+    <Card ref={cardRef} className={`game-card${percent === 100 ? ' game-card--complete' : ''}`}>
+      <CardActionArea onClick={() => logging(appid, backWindow)} className="game-card__action">
+        <Box className="game-card__top">
+          <Box className="game-card__top-row">
+            <CardMedia
+              component="img"
+              className="game-card__image"
+              image={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
+              alt={gameName}
+            />
+            <Chip className="game-card__chip" label={`${playtime} ${t('Hours')}`} size="small" />
+          </Box>
+          <Box className="game-card__meta">
+            <Typography gutterBottom variant="h6" component="div" className="game-card__title">
+              {gameName}
+            </Typography>
+          </Box>
+        </Box>
 
-                <CardContent sx={{ flexGrow: 1, width: '100%', pt: 0 }}>
-                    <Box sx={{ width: '100%', mb: 1 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5, flexWrap: 'wrap' }}>
-                             <Typography variant="body2" color="text.secondary">{`Получено ${gained} из ${all}`}</Typography>
-                             <Typography variant="body2" color="text.secondary">{`${percent.toFixed(2)}%`}</Typography>
-                             <Typography variant="body2" color="text.secondary" title={t('LastLaunch')}>
-                                 {lastLaunchTime.substring(0, 10)}
-                             </Typography>
-                        </Box>
-                        <LinearProgress
-                            variant="determinate"
-                            value={isProgressBarAnimated ? percent : 0}
-                            sx={{ height: 10, borderRadius: 5 }}
-                        />
-                    </Box>
+        <CardContent className="game-card__content">
+          <Box className="game-card__progress-wrap">
+            <Box className="game-card__progress-header">
+              <Typography variant="body2" className="game-card__muted">{`${t('GainedFromAll')}: ${gained}/${all}`}</Typography>
+              <Typography variant="body2" className="game-card__muted">{`${percent.toFixed(2)}%`}</Typography>
+              <Typography variant="body2" className="game-card__muted" title={t('LastLaunch')}>
+                {lastLaunchTime.substring(0, 10)}
+              </Typography>
+            </Box>
+            <LinearProgress
+              className="game-card__progress"
+              variant="determinate"
+              value={isProgressBarAnimated ? percent : 0}
+            />
+          </Box>
 
-                    <Grid container spacing={1} justifyContent="center">
-                        {aches.map((achievement) => (
-                             <Grid key={achievement.name}>
-                                 <Tooltip title={
-                                     <React.Fragment>
-                                         <Typography color="inherit" variant="subtitle2">{achievement.displayName}</Typography>
-                                         <Typography variant="body2">{achievement.description}</Typography>
-                                         <Typography variant="caption" color="text.secondary">{`Rarity: ${achievement.percent.toFixed(2)}%`}</Typography>
-                                         {achievement.unlocked && (
-                                             <Typography variant="caption" display="block" color="text.secondary">
-                                                 {t('Unlocked')}: {new Date(achievement.unlockedDate).toLocaleString()}
-                                             </Typography>
-                                         )}
-                                     </React.Fragment>
-                                 }>
-                                     <Avatar
-                                         src={achievement.unlocked ? achievement.icon : achievement.grayIcon}
-                                         alt={achievement.displayName}
-                                         sx={{ width: 32, height: 32 }}
-                                     />
-                                 </Tooltip>
-                             </Grid>
-                        ))}
-                    </Grid>
-                </CardContent>
-            </CardActionArea>
-        </CardComponent>
+          <Grid container spacing={1} className="game-card__achievements">
+            {aches.map((achievement) => (
+              <Grid key={achievement.name}>
+                <Tooltip title={
+                  <React.Fragment>
+                    <Typography color="inherit" variant="subtitle2">{achievement.displayName}</Typography>
+                    <Typography variant="body2">{achievement.description}</Typography>
+                    <Typography variant="caption" color="text.secondary">{`Rarity: ${achievement.percent.toFixed(2)}%`}</Typography>
+                    {achievement.unlocked && (
+                      <Typography variant="caption" display="block" color="text.secondary">
+                        {t('Unlocked')}: {new Date(achievement.unlockedDate).toLocaleString()}
+                      </Typography>
+                    )}
+                  </React.Fragment>
+                }>
+                  <Avatar
+                    className="game-card__avatar"
+                    src={achievement.unlocked ? achievement.icon : achievement.grayIcon}
+                    alt={achievement.displayName}
+                  />
+                </Tooltip>
+              </Grid>
+            ))}
+          </Grid>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
 

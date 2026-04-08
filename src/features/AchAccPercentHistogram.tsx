@@ -3,6 +3,7 @@ import Histogram from '../components/Histogram';
 import { useAchAccPercentHistogramData } from '../hooks/useAchAccPercentHistogramData';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import '../styles/scss/DashboardWidgets.scss';
 
 const AchAccPercentHistogram : React.FC = () => {
   const navigate = useNavigate();
@@ -10,11 +11,11 @@ const AchAccPercentHistogram : React.FC = () => {
   const { t } = useTranslation();
 
   if (isLoading) {
-    return <div>{t('loading')}...</div>;
+    return <div className="chart-state">{t('loading')}...</div>;
   }
 
   if (error) {
-    return <div>{t('error')}: {error.message}</div>;
+    return <div className="chart-state">{t('error')}: {error.message}</div>;
   }
   return (
 

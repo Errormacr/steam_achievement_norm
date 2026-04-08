@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Portal from '../components/Portal';
 import GameButton from '../components/GameButton';
+import '../styles/scss/DashboardWidgets.scss';
 
 interface GameSelectionModalProps {
   isOpen: boolean;
@@ -67,15 +68,15 @@ export const GameSelectionModal: React.FC<GameSelectionModalProps> = ({
             placeholder={t('searchGames')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ width: '90%', margin: '10px', padding: '5px' }}
+            className="selection-modal__search"
           />
-          <div className="modal-actions" style={{ justifyContent: 'flex-start', padding: '0 10px' }}>
-            <GameButton onClick={handleSelectAllFiltered} id={'select-all-filtered'} text={t('selectAllVisible')} style={{ marginRight: 0 }} />
-            <GameButton onClick={handleDeselectAllFiltered} id={'deselect-all-filtered'} text={t('deselectAllVisible')} style={{ marginRight: 0 }} />
+          <div className="modal-actions selection-modal__actions">
+            <GameButton onClick={handleSelectAllFiltered} id={'select-all-filtered'} text={t('selectAllVisible')} additionalClass="date-range-controls__button" />
+            <GameButton onClick={handleDeselectAllFiltered} id={'deselect-all-filtered'} text={t('deselectAllVisible')} additionalClass="date-range-controls__button" />
           </div>
           <div className="modal-scrollable-content">
             {filteredGames.map(gameName => (
-              <label key={gameName} style={{ display: 'block', margin: '5px 0' }}>
+              <label key={gameName} className="selection-modal__option">
                 <input
                   type="checkbox"
                   checked={tempSelectedGames.includes(gameName)}
@@ -86,8 +87,8 @@ export const GameSelectionModal: React.FC<GameSelectionModalProps> = ({
             ))}
           </div>
           <div className="modal-actions">
-            <GameButton onClick={handleApplySelection} id={'apply-selection'} text={t('apply')} style={{ marginRight: 0 }} />
-            <GameButton onClick={onClose} id={'cancel-selection'} text={t('cancel')} style={{ marginRight: 0 }} />
+            <GameButton onClick={handleApplySelection} id={'apply-selection'} text={t('apply')} additionalClass="date-range-controls__button" />
+            <GameButton onClick={onClose} id={'cancel-selection'} text={t('cancel')} additionalClass="date-range-controls__button" />
           </div>
         </div>
       </div>

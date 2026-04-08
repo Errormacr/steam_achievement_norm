@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import GameButton from '../components/GameButton';
+import '../styles/scss/DashboardWidgets.scss';
 
 interface DateRangeControlsProps {
   startDate: string;
@@ -53,27 +54,27 @@ export const DateRangeControls: React.FC<DateRangeControlsProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '10px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <GameButton onClick={() => setDisplayRange('month')} id={'set-range-month'} text={t('month')} style={{ marginRight: 0 }} />
-        <GameButton onClick={() => setDisplayRange('year')} id={'set-range-year'} text={t('year')} style={{ marginRight: 0 }} />
-        <GameButton onClick={() => setDisplayRange('5years')} id={'set-range-5years'} text={t('5 years')} style={{ marginRight: 0 }} />
+    <div className="date-range-controls">
+      <div className="date-range-controls__row">
+        <GameButton onClick={() => setDisplayRange('month')} id={'set-range-month'} text={t('month')} additionalClass="date-range-controls__button" />
+        <GameButton onClick={() => setDisplayRange('year')} id={'set-range-year'} text={t('year')} additionalClass="date-range-controls__button" />
+        <GameButton onClick={() => setDisplayRange('5years')} id={'set-range-5years'} text={t('5 years')} additionalClass="date-range-controls__button" />
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <GameButton onClick={() => handleDateShift(-1, 'year')} title={t('shiftYearBack')} id={'shift-year-back'} text={'<<<'} style={{ marginRight: 0 }} />
-        <GameButton onClick={() => handleDateShift(-1, 'month')} title={t('shiftMonthBack')} id={'shift-month-back'} text={'<<'} style={{ marginRight: 0 }} />
-        <GameButton onClick={() => handleDateShift(-1, 'day')} title={t('shiftDayBack')} id={'shift-day-back'} text={'<'} style={{ marginRight: 0 }} />
-        <div>
+      <div className="date-range-controls__row">
+        <GameButton onClick={() => handleDateShift(-1, 'year')} title={t('shiftYearBack')} id={'shift-year-back'} text={'<<<'} additionalClass="date-range-controls__button" />
+        <GameButton onClick={() => handleDateShift(-1, 'month')} title={t('shiftMonthBack')} id={'shift-month-back'} text={'<<'} additionalClass="date-range-controls__button" />
+        <GameButton onClick={() => handleDateShift(-1, 'day')} title={t('shiftDayBack')} id={'shift-day-back'} text={'<'} additionalClass="date-range-controls__button" />
+        <div className="date-range-controls__field">
           <label htmlFor="startDate">{t('from')}: </label>
-          <input type="date" id="startDate" value={startDate} onChange={e => onStartDateChange(e.target.value)} className="dateInput" style={{ margin: 0 }} />
+          <input type="date" id="startDate" value={startDate} onChange={e => onStartDateChange(e.target.value)} className="dateInput date-range-controls__input" />
         </div>
-        <div>
+        <div className="date-range-controls__field">
           <label htmlFor="endDate">{t('to')}: </label>
-          <input type="date" id="endDate" value={endDate} onChange={e => onEndDateChange(e.target.value)} className="dateInput" style={{ margin: 0 }} />
+          <input type="date" id="endDate" value={endDate} onChange={e => onEndDateChange(e.target.value)} className="dateInput date-range-controls__input" />
         </div>
-        <GameButton onClick={() => handleDateShift(1, 'day')} title={t('shiftDayForward')} id={'shift-day-forward'} text={'>'} style={{ marginRight: 0 }} />
-        <GameButton onClick={() => handleDateShift(1, 'month')} title={t('shiftMonthForward')} id={'shift-month-forward'} text={'>>'} style={{ marginRight: 0 }} />
-        <GameButton onClick={() => handleDateShift(1, 'year')} title={t('shiftYearForward')} id={'shift-year-forward'} text={'>>>'} style={{ marginRight: 0 }} />
+        <GameButton onClick={() => handleDateShift(1, 'day')} title={t('shiftDayForward')} id={'shift-day-forward'} text={'>'} additionalClass="date-range-controls__button" />
+        <GameButton onClick={() => handleDateShift(1, 'month')} title={t('shiftMonthForward')} id={'shift-month-forward'} text={'>>'} additionalClass="date-range-controls__button" />
+        <GameButton onClick={() => handleDateShift(1, 'year')} title={t('shiftYearForward')} id={'shift-year-forward'} text={'>>>'} additionalClass="date-range-controls__button" />
       </div>
     </div>
   );

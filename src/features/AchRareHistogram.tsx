@@ -14,11 +14,11 @@ const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
   const { t } = useTranslation();
 
   if (isLoading) {
-    return <div>{t('loading')}...</div>;
+    return <div className="chart-state">{t('loading')}...</div>;
   }
 
   if (error) {
-    return <div>{t('error')}: {error.message}</div>;
+    return <div className="chart-state">{t('error')}: {error.message}</div>;
   }
   return (
             <Histogram

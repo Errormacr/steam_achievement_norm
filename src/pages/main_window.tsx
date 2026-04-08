@@ -13,7 +13,6 @@ import { UserData } from '../types';
 import i18n from '../utils/translate';
 import { logger } from '../utils/logger';
 import '../styles/scss/MainWindow.scss';
-import { Box, Typography } from '@mui/material';
 
 export default function App () {
   const { t } = useTranslation();
@@ -51,6 +50,14 @@ export default function App () {
     updateUserData().then();
   }, [updateUserData]);
 
+  useEffect(() => {
+    document.body.classList.add('main-window-page');
+
+    return () => {
+      document.body.classList.remove('main-window-page');
+    };
+  }, []);
+
   return (
 
       <I18nextProvider i18n={i18n}>
@@ -73,19 +80,19 @@ export default function App () {
               </div>
             </div>
             <div className="progress-section">
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className="profile-progress">
                 <CircularProgressSVG
                   percent={percent}
                   size={150}
                   strokeWidth={15}
                 />
-                <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                <div className="profile-progress__title">
                   {t('AveragePercent')}
-                </Typography>
-                <Typography variant="caption" sx={{ mt: 0.5 }}>
+                </div>
+                <div className="profile-progress__subtitle">
                   {t('AveragePercentChange')}: {(lastAvgPercentChange >= 0 ? '+' : '') + lastAvgPercentChange.toFixed(2)}%
-                </Typography>
-              </Box>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -94,7 +101,7 @@ export default function App () {
         <div className="recent-games">
           <h3>{t('RecentGames')}</h3>
           <div className="game-cards">
-            {recentGames.map((game) => (
+            {recentGames.slice(0, 6).map((game) => (
               <GameCard key={game.appid} appid={game.appid} backWindow="main" />
             ))}
           </div>

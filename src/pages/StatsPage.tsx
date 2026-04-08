@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
 import i18n from 'i18next';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 
 import AchRareHistogram from '../features/AchRareHistogram';
 import AchTimeHistogram from '../features/AchTimeHistogram';
@@ -13,6 +13,7 @@ import ScrollToTopButton from '../components/ScrollToTopButton';
 import GamesPercentsByTimeChart from '../features/GamesPercentsByTimeChart';
 
 import '../styles/scss/StatsPage.scss';
+import '../styles/scss/PageShell.scss';
 
 const StatsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -51,18 +52,20 @@ const StatsPage: React.FC = () => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <div className="stats-page">
-        <div className="stats-header">
-          <FaArrowLeft className="button-icon return" onClick={() => navigate('/')} id="return" />
+      <div className="stats-page page-shell">
+        <Box className="page-shell__header stats-page__header">
+          <IconButton className="page-shell__back" onClick={() => navigate('/')} id="return">
+            <FaArrowLeft />
+          </IconButton>
           <div className="stats-header-text">
-            <Typography variant="h4" component="h1">
+            <Typography variant="h4" component="h1" className="page-shell__title stats-page__title">
               {isGlobalStats ? t('statsTitleGlobal') : t('statsTitleGame')}
             </Typography>
             <Typography variant="subtitle2" className="stats-subtitle">
               {isGlobalStats ? t('statsSubtitleGlobal') : `${t('statsSubtitleGame')} ${gameId}`}
             </Typography>
           </div>
-        </div>
+        </Box>
         <div className="charts-container">
           {charts.map((chart) => (
             <Card
@@ -70,7 +73,7 @@ const StatsPage: React.FC = () => {
               className={`chart-card${chart.wide ? ' chart-card--wide' : ''}`}
             >
               <CardContent>
-                <Typography variant="h6" component="h2" gutterBottom>
+                <Typography variant="h6" component="h2" gutterBottom className="chart-card__title">
                   {t(chart.title)}
                 </Typography>
                 {chart.component}

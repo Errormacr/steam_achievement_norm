@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useRareAchievementCount } from '../hooks/useRareAchievementCount';
 import { RARE_ACHIEVEMENT_CATEGORIES } from '../constants/achRareDiagram';
 import { CustomPieChart } from '../components/CustomPieChart';
+import '../styles/scss/DashboardWidgets.scss';
 
 interface AchRareDiagramProps {
   gameAppid?: number;
@@ -28,7 +29,7 @@ export default function AchRareDiagram({
   })).filter((d) => d.value > 0);
 
   return (
-    <div style={{ height: 300, width: 600, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div className="chart-center chart-center--pie">
       <CustomPieChart data={dataToShow} width={600} height={300} />
     </div>
   );

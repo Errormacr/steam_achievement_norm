@@ -1,0 +1,86 @@
+@use './variables' as *;
+
+.action-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  &__button.MuiButton-contained {
+    background: var(--accent-color);
+    color: var(--text-header);
+    border-radius: $border-radius-md;
+    box-shadow: var(--card-shadow);
+    padding: 0.65rem 1.1rem;
+    font-weight: 700;
+    text-transform: none;
+    transition: transform $transition-fast, background-color $transition-fast, box-shadow $transition-fast;
+
+    &:hover {
+      background: var(--hover-bg);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+      transform: translateY(-1px);
+    }
+  }
+
+  &__filter-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-md $spacing-lg;
+    border-radius: $border-radius-lg;
+    background: linear-gradient(180deg, rgba(68, 89, 116, 0.22) 0%, rgba(68, 89, 116, 0.1) 100%);
+    border: 1px solid rgba(93, 122, 158, 0.5);
+    box-shadow: var(--card-shadow);
+  }
+
+  &__filter-title {
+    color: var(--text-secondary);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  &__toggle-group.MuiToggleButtonGroup-root {
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__toggle-group .MuiToggleButtonGroup-grouped {
+    margin: 0;
+    border: 1px solid rgba(93, 122, 158, 0.45);
+    border-radius: $border-radius-md !important;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    padding: 0.7rem 1rem;
+    font-weight: 700;
+    text-transform: none;
+    transition: background-color $transition-fast, color $transition-fast, border-color $transition-fast, box-shadow $transition-fast;
+
+    &:hover {
+      background: rgba(93, 122, 158, 0.18);
+      border-color: var(--accent-color);
+    }
+
+    &.Mui-selected {
+      background: var(--accent-color);
+      color: var(--text-header);
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(93, 122, 158, 0.22);
+    }
+
+    &.Mui-selected:hover {
+      background: var(--accent-color);
+    }
+  }
+}
