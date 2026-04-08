@@ -24,7 +24,8 @@ const AchPage: React.FC = () => {
     minPercent,
     maxPercent,
     date,
-    gameAppid
+    gameAppid,
+    unlocked: 1
   });
 
   const handleToggleView = () => {
@@ -51,6 +52,7 @@ const AchPage: React.FC = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            minHeight: 40,
             mb: 2
           }}
         >
@@ -60,9 +62,20 @@ const AchPage: React.FC = () => {
           <Typography variant="h6">
             {achCount} {t('Ach')}
           </Typography>
-          <Button variant="contained" onClick={handleToggleView} sx={{ position: 'absolute', right: 16 }}>
-            {t('SwitchTable')}
-          </Button>
+          <Box
+            sx={{
+              position: 'absolute',
+              right: 16,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
+          >
+
+            <Button variant="contained" onClick={handleToggleView}>
+              {t('SwitchTable')}
+            </Button>
+          </Box>
         </Box>
         <Box>
           {loaded && (

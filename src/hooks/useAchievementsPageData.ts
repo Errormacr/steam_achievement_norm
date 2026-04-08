@@ -9,9 +9,10 @@ interface AchPageParams {
     maxPercent?: string;
     date?: string;
     gameAppid?: string;
+    unlocked?: -1 | 0 | 1;
 }
 
-export const useAchievementsPageData = ({ minPercent, maxPercent, date, gameAppid }: AchPageParams) => {
+export const useAchievementsPageData = ({ minPercent, maxPercent, date, gameAppid, unlocked }: AchPageParams) => {
   const [tableOrBox, setTableOrBox] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [achCount, setAchCount] = useState(0);
@@ -35,10 +36,13 @@ export const useAchievementsPageData = ({ minPercent, maxPercent, date, gameAppi
           orderBy: 'unlockedDate',
           desc: '1',
           language: i18n.language,
-          unlocked: '1',
           page: '1',
           pageSize: '0'
         });
+
+        if (unlocked === 0 || unlocked === 1) {
+          queryParams.set('unlocked', String(unlocked));
+        }
 
         if (minPercent) queryParams.set('percentMin', minPercent);
         if (maxPercent) queryParams.set('percentMax', maxPercent);
@@ -72,7 +76,7 @@ export const useAchievementsPageData = ({ minPercent, maxPercent, date, gameAppi
     return () => {
       isMounted = false;
     };
-  }, [minPercent, maxPercent, date, gameAppid, i18n.language]);
+  }, [minPercent, maxPercent, date, gameAppid, unlocked, i18n.language]);
 
   return { tableOrBox, setTableOrBox, loaded, achCount };
 };

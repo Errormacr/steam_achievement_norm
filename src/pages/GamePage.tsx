@@ -16,6 +16,7 @@ const GamePage: React.FC = () => {
   const { backWindow } = useParams<{ appid: string; backWindow: string }>();
   const { game, loaded, fetchUpdatedGameData } = useGameData();
   const [tableOrBox, setTableOrBox] = useState(true);
+  const [unlockedFilter, setUnlockedFilter] = useState<-1 | 0 | 1>(-1);
 
   useEffect(() => {
     const boxView = localStorage.getItem('boxView') === 'true';
@@ -27,6 +28,17 @@ const GamePage: React.FC = () => {
   const handleToggleView = () => {
     setTableOrBox(!tableOrBox);
     localStorage.setItem('boxView', String(!tableOrBox));
+  };
+
+  const handleUnlockedFilterChange = (
+    _: React.MouseEvent<HTMLElement>,
+    value: string | null
+  ) => {
+    if (value === null) {
+      return;
+    }
+
+    setUnlockedFilter(Number(value) as -1 | 0 | 1);
   };
 
   return (
@@ -50,6 +62,8 @@ const GamePage: React.FC = () => {
           gameAppid={game.appid}
           onUpdate={fetchUpdatedGameData}
           onToggleView={handleToggleView}
+          unlockedFilter={unlockedFilter}
+          onUnlockedFilterChange={handleUnlockedFilterChange}
         />
         <Box>
           {loaded && (game.appid !== 0) &&
@@ -59,7 +73,7 @@ const GamePage: React.FC = () => {
                   maxPercent={100}
                   date={undefined }
                   appid={game.appid}
-                  unlocked={undefined}
+                  unlocked={unlockedFilter}
                   all={false}
               />
          }

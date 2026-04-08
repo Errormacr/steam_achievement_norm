@@ -8,7 +8,7 @@ interface AchievementsDisplayProps {
     maxPercent?: number;
     date?: string;
     appid?: number;
-    unlocked?: 0 | 1;
+    unlocked?: -1 | 0 | 1;
     all: boolean;
 }
 

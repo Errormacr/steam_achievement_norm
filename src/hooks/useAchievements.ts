@@ -13,7 +13,7 @@ interface BuildParams {
   pageSize: number;
   appid?: number;
   all?: boolean;
-  unlocked?: 0 | 1;
+  unlocked?: -1 | 0 | 1;
   minPercent?: number;
   maxPercent?: number;
   date?: string;
@@ -130,7 +130,7 @@ export const useAchievements = (
   props: {
     appid?: number;
     all?: boolean;
-    unlocked?: 0 | 1;
+    unlocked?: -1 | 0 | 1;
     minPercent?: number;
     maxPercent?: number;
     date?: string;
@@ -139,13 +139,14 @@ export const useAchievements = (
   const [state, dispatch] = useReducer(achievementsReducer, initialState);
   const { page } = state;
   const debouncedFilters = useDebounce(filters, 500);
+  const { appid, all, unlocked, minPercent, maxPercent, date } = props;
 
-  // Effect to reset page when filters change (after debounce)
+  // Reset pagination when any filter source changes.
   useEffect(() => {
     dispatch({ type: 'SET_PAGE', payload: 1 });
-  }, [debouncedFilters]);
+  }, [debouncedFilters, appid, all, unlocked, minPercent, maxPercent, date]);
 
-  // Effect to fetch data when debounced filters or page change
+  // Refetch when filters, route params, or pagination change.
   useEffect(() => {
     const fetch = async () => {
       dispatch({ type: 'FETCH_START' });
@@ -164,7 +165,7 @@ export const useAchievements = (
     };
 
     fetch();
-  }, [debouncedFilters, page]);
+  }, [debouncedFilters, page, appid, all, unlocked, minPercent, maxPercent, date]);
 
   const setPage = (pageUpdater: (prevPage: number) => number) => {
     dispatch({ type: 'SET_PAGE', payload: pageUpdater(page) });

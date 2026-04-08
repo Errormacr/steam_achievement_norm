@@ -9,7 +9,7 @@ const PAGE_SIZE = 50;
 interface BuildAchievementParams {
   all: boolean;
   appid?: number;
-  unlocked?: 0 | 1;
+  unlocked?: -1 | 0 | 1;
   minPercent?: number;
   maxPercent?: number;
   date?: string;

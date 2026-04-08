@@ -50,5 +50,5 @@ export interface AchContainerProps {
     minPercent?: number;
     maxPercent?: number;
     date?: string;
-    unlocked?: 0 | 1;
+    unlocked?: -1 | 0 | 1;
 }
