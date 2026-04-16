@@ -23,7 +23,7 @@ const AchAccPercentHistogram : React.FC = () => {
                 onClick={(el : {
                 activeLabel: string
             }) => {
-                  navigate(`/Achievements/0/100/${el.activeLabel}/Stats/undefinded`);
+                  navigate(`/Achievements/0/100/${el.activeLabel}/Stats/undefined`);
                 }}
                 data={data}
                 yLabel={t('percent')}

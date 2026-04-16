@@ -8,6 +8,7 @@ interface UpdateProgressProps {
     gameCount: number | null;
     finishedGameCount: number;
     updatedGames: string[];
+    updateErrors: string[];
     isError: boolean;
     isConnected: boolean;
     progressPercent: number;
@@ -20,15 +21,26 @@ const StatusMessage: React.FC<{ message: string }> = ({ message }) => (
 
 const UpdateProgress: React.FC<UpdateProgressProps> = ({ progress }) => {
   const { t } = useTranslation();
-  const { gameCount, finishedGameCount, updatedGames, isError, isConnected, progressPercent } = progress;
+  const { gameCount, finishedGameCount, updatedGames, updateErrors, isError, isConnected, progressPercent } = progress;
 
   const renderContent = () => {
     if (!isConnected && !isError) {
       return <StatusMessage message={t('connecting')} />;
     }
 
-    if (isError) {
-      return <StatusMessage message={t('connectionError')} />;
+    if (isError && gameCount === null) {
+      return (
+        <div>
+          <StatusMessage message={t('connectionError')} />
+          {updateErrors.length > 0 && (
+            <ul className="updated-games-list">
+              {updateErrors.map((error, index) => (
+                <li key={`${error}_update_error_${index}`} className="list-item">{error}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      );
     }
 
     if (gameCount === null) {

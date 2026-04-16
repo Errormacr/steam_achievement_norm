@@ -3,6 +3,42 @@ import { logger } from '../utils/logger';
 
 const API_URL = 'http://localhost:8888/api';
 
+async function parseResponseBody (response: Response) {
+  const rawBody = await response.text();
+
+  if (!rawBody) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return rawBody;
+  }
+}
+
+function extractErrorMessage (body: unknown, response: Response) {
+  if (body && typeof body === 'object' && 'message' in body) {
+    const message = body.message;
+    return Array.isArray(message) ? message.join(', ') : String(message);
+  }
+
+  if (typeof body === 'string' && body.trim().length > 0) {
+    return body;
+  }
+
+  return response.statusText || `Request failed with status ${response.status}`;
+}
+
+async function handleErrorResponse (response: Response): Promise<never> {
+  const body = await parseResponseBody(response);
+  const message = extractErrorMessage(body, response);
+
+  toast.error(message);
+  logger.error(`API request failed: ${response.status} ${response.statusText}`, body);
+  throw new Error(`API Error: ${response.status} - ${message}`);
+}
+
 export class ApiService {
   static async get<T> (endpoint: string): Promise<T> {
     try {
@@ -13,12 +49,9 @@ export class ApiService {
         }
       });
       if (response.ok) {
-        return await response.json();
+        return await response.json() as T;
       }
-      const data = await response.json();
-      toast.error(`${data.message}`);
-      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
-      throw new Error(`API Error: ${response.status} - ${data.message}`);
+      return await handleErrorResponse(response);
     } catch (error) {
       logger.error('Error fetching data from API', error);
       throw error;
@@ -35,12 +68,9 @@ export class ApiService {
         body: JSON.stringify(data)
       });
       if (response.ok) {
-        return await response.json();
+        return await response.json() as T;
       }
-      const result = await response.json();
-      toast.error(`${result.message}`);
-      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
-      throw new Error(`API Error: ${response.status} - ${result.message}`);
+      return await handleErrorResponse(response);
     } catch (error) {
       logger.error('Error posting data to API', error);
       throw error;
@@ -58,12 +88,9 @@ export class ApiService {
       });
 
       if (response.ok) {
-        return await response.json();
+        return await response.json() as T;
       }
-      const result = await response.json();
-      toast.error(`${result.message}`);
-      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
-      throw new Error(`API Error: ${response.status} - ${result.message}`);
+      return await handleErrorResponse(response);
     } catch (error) {
       logger.error('Error updating data in API', error);
       throw error;
@@ -80,12 +107,9 @@ export class ApiService {
         }
       });
       if (response.ok) {
-        return await response.json();
+        return await response.json() as T;
       }
-      const result = await response.json();
-      toast.error(`${result.message}`);
-      logger.error(`Error fetching data from API: Failed to update: ${response.statusText}`);
-      throw new Error(`API Error: ${response.status} - ${result.message}`);
+      return await handleErrorResponse(response);
     } catch (error) {
       logger.error('Error deleting data from API', error);
       throw error;

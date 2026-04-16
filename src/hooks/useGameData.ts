@@ -58,12 +58,28 @@ export function useGameData () {
   };
 
   useEffect(() => {
-    try {
-      renderComponent();
-      setLoaded(true);
-    } catch (error) {
-      globalThis.alert(error.message);
-    }
+    let isMounted = true;
+
+    const loadGame = async () => {
+      setLoaded(false);
+
+      try {
+        await renderComponent();
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        globalThis.alert(message);
+      } finally {
+        if (isMounted) {
+          setLoaded(true);
+        }
+      }
+    };
+
+    loadGame();
+
+    return () => {
+      isMounted = false;
+    };
   }, [renderComponent]);
 
   return { game, loaded, fetchUpdatedGameData };

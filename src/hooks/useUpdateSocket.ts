@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import i18n from 'i18next';
-import { Percent, ProfileUpdateResponse, UpdateGameEvent } from '../types';
+import { Percent, ProfileUpdateResponse, UpdateErrorEvent, UpdateGameEvent, UpdateStatusEvent } from '../types';
 import { useSocket } from '../features/SocketProvider';
 import { ApiService } from '../services/api.services';
 import { logger } from '../utils/logger';
@@ -15,11 +15,17 @@ export function useUpdateSocket (rerender: () => void) {
   const [gameCount, setGameCount] = useState<number | null>(null);
   const [finishedGameCount, setFinishedGameCount] = useState(0);
   const [updatedGames, setUpdatedGames] = useState<string[]>([]);
+  const [updateErrors, setUpdateErrors] = useState<string[]>([]);
   const [isError, setIsError] = useState(false);
 
   const startUpdate = useCallback(async (type: string) => {
     if (socket) {
       setIsUpdating(true);
+      setIsError(false);
+      setUpdateErrors([]);
+      setGameCount(null);
+      setFinishedGameCount(0);
+      setUpdatedGames([]);
       const steamId = localStorage.getItem('steamId');
       const language = i18n.language;
       const data = { steamId, language };
@@ -52,12 +58,22 @@ export function useUpdateSocket (rerender: () => void) {
 
     const handleConnect = () => setIsConnected(true);
     const handleDisconnect = () => setIsConnected(false);
-    const handleStatus = () => {
+    const handleStatus = (data: UpdateStatusEvent | string) => {
+      const hasErrors = typeof data !== 'string' && !data.success;
+
       setIsUpdating(false);
       setGameCount(null);
       setFinishedGameCount(0);
       setUpdatedGames([]);
-      setIsError(false);
+      setIsError(hasErrors);
+
+      if (typeof data !== 'string' && data.failed > 0) {
+        setUpdateErrors(data.errors.map((error) => `${error.gamename}: ${error.message}`));
+        toast.error(`${t('connectionError')}: ${data.failed}/${data.total}`);
+      } else {
+        setUpdateErrors([]);
+      }
+
       rerender();
     };
     const handleChange = (data: Percent) => {
@@ -73,6 +89,10 @@ export function useUpdateSocket (rerender: () => void) {
       setFinishedGameCount((prev) => prev + 1);
       setUpdatedGames((prev) => [gamename, ...prev.slice(0, 19)]);
     };
+    const handleUpdateError = ({ gamename, message }: UpdateErrorEvent) => {
+      setUpdateErrors((prev) => [`${gamename}: ${message}`, ...prev.slice(0, 19)]);
+      setIsError(true);
+    };
     const handleError = () => {
       setIsError(true);
       toast.error(t('connectionError'));
@@ -84,6 +104,7 @@ export function useUpdateSocket (rerender: () => void) {
     socket.on('change', handleChange);
     socket.on('gameCount', handleGameCount);
     socket.on('updateGame', handleUpdateGame);
+    socket.on('updateError', handleUpdateError);
     socket.on('connect_error', handleError);
     socket.on('error', handleError);
     socket.connect();
@@ -95,6 +116,7 @@ export function useUpdateSocket (rerender: () => void) {
       socket.off('change', handleChange);
       socket.off('gameCount', handleGameCount);
       socket.off('updateGame', handleUpdateGame);
+      socket.off('updateError', handleUpdateError);
       socket.off('connect_error', handleError);
       socket.off('error', handleError);
       socket.disconnect();
@@ -120,6 +142,7 @@ export function useUpdateSocket (rerender: () => void) {
       gameCount,
       finishedGameCount,
       updatedGames,
+      updateErrors,
       isError,
       isConnected,
       progressPercent

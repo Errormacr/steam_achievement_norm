@@ -9,6 +9,15 @@ export interface UpdateGameEvent {
     appid: number;
     gamename: string;
 }
+export interface UpdateErrorEvent extends UpdateGameEvent {
+    message: string;
+}
+export interface UpdateStatusEvent {
+    success: boolean;
+    total: number;
+    failed: number;
+    errors: UpdateErrorEvent[];
+}
 export interface Percent {
     oldPercent: number;
     newPercent: number;
