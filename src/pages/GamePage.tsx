@@ -42,6 +42,20 @@ const GamePage: React.FC = () => {
     setUnlockedFilter(Number(value) as -1 | 0 | 1);
   };
 
+  const handleBack = () => {
+    if (backWindow === 'main') {
+      navigate('/');
+      return;
+    }
+
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/Games');
+  };
+
   return (
     <I18nextProvider i18n={i18n}>
       <Container maxWidth={false} className="page-shell">
@@ -49,13 +63,7 @@ const GamePage: React.FC = () => {
         <ScrollToTopButton />
         <IconButton
           className="page-shell__back"
-          onClick={() => {
-            if (backWindow === 'main') {
-              navigate('/');
-            } else {
-              navigate('/Games');
-            }
-          }}
+          onClick={handleBack}
         >
           <ArrowBack />
         </IconButton>

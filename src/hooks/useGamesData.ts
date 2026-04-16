@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import i18n from 'i18next';
 import { ApiService } from '../services/api.services';
 import { GameDataRow, Pagination } from '../types';
@@ -13,20 +13,26 @@ interface GamesDataFilters {
   selectedCompletionFilterValue: string | null;
 }
 
-export function useGamesData (filters: GamesDataFilters) {
+interface UseGamesDataOptions {
+  initialPage?: number;
+}
+
+export function useGamesData (filters: GamesDataFilters, options?: UseGamesDataOptions) {
   const { orderBy, desc, gameName, playtime, selectedCompletionFilterValue } = filters;
+  const initialPageRef = useRef(Math.max(options?.initialPage ?? 1, 1));
+  const hasInitializedRef = useRef(false);
+  const skipNextPageLoadRef = useRef(false);
   const [games, setGames] = useState<GameDataRow[]>([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPageRef.current);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const loadGames = useCallback(async (reset = false) => {
-    setIsLoading(true);
+  const fetchGamesPage = useCallback(async (pageToLoad: number) => {
     const queryParams = new URLSearchParams({
       orderBy: orderBy || 'lastLaunchTime',
       desc: desc ? '1' : '0',
       language: i18n.language,
-      page: page.toString(),
+      page: pageToLoad.toString(),
       pageSize: '30'
     });
 
@@ -49,19 +55,45 @@ export function useGamesData (filters: GamesDataFilters) {
     }
 
     const dataSteamId = localStorage.getItem('steamId');
-    const achData = await ApiService.get<Pagination<GameDataRow>>(
+    return await ApiService.get<Pagination<GameDataRow>>(
       `user/${dataSteamId}/games?${queryParams.toString()}`
     );
+  }, [orderBy, desc, gameName, playtime, selectedCompletionFilterValue]);
+
+  const loadGames = useCallback(async (reset = false, targetPage = page) => {
+    setIsLoading(true);
+
+    if (reset) {
+      const pagesToLoad = Array.from({ length: targetPage }, (_, index) => index + 1);
+      const loadedPages = await Promise.all(
+        pagesToLoad.map(async (pageNumber) => await fetchGamesPage(pageNumber))
+      );
+      const rows = loadedPages.flatMap((loadedPage) => loadedPage.rows);
+      const lastPage = loadedPages.at(-1);
+
+      setHasMore((lastPage?.rows.length ?? 0) > 0);
+      setGames(rows);
+      setIsLoading(false);
+      return;
+    }
+
+    const achData = await fetchGamesPage(targetPage);
 
     setHasMore(achData.rows.length > 0);
-    setGames((prev) => (reset ? achData.rows : [...prev, ...achData.rows]));
+    setGames((prev) => [...prev, ...achData.rows]);
     setIsLoading(false);
-  }, [orderBy, desc, gameName, playtime, selectedCompletionFilterValue, page]);
+  }, [fetchGamesPage, page]);
 
   useEffect(() => {
+    const nextPage = hasInitializedRef.current ? 1 : initialPageRef.current;
+
+    hasInitializedRef.current = true;
+    initialPageRef.current = 1;
+    skipNextPageLoadRef.current = nextPage > 1;
     setGames([]);
-    setPage(1);
-    loadGames(true);
+    setHasMore(true);
+    setPage(nextPage);
+    loadGames(true, nextPage);
   }, [orderBy, desc, gameName, playtime, selectedCompletionFilterValue]);
 
   const loadMore = () => {
@@ -72,9 +104,14 @@ export function useGamesData (filters: GamesDataFilters) {
 
   useEffect(() => {
     if (page > 1) {
-      loadGames();
-    }
-  }, [page]);
+      if (skipNextPageLoadRef.current) {
+        skipNextPageLoadRef.current = false;
+        return;
+      }
 
-  return { games, isLoading, hasMore, loadMore, setPage };
+      loadGames(false, page);
+    }
+  }, [page, loadGames]);
+
+  return { games, isLoading, hasMore, loadMore, page, setPage };
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
@@ -10,6 +10,20 @@ import { useAchievementsPageData } from '../hooks/useAchievementsPageData';
 import AchievementsDisplay from '../features/AchievementsDisplay';
 import '../styles/scss/PageShell.scss';
 
+interface AchievementPageScrollState {
+  scrollY: number;
+}
+
+function getAchievementsStateKey (
+  minPercent?: string,
+  maxPercent?: string,
+  date?: string,
+  backWindow?: string,
+  gameAppid?: string
+) {
+  return `achievementsPageState:${minPercent ?? '0'}:${maxPercent ?? '100'}:${date ?? 'undefined'}:${backWindow ?? 'main'}:${gameAppid ?? 'undefined'}`;
+}
+
 const AchPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -20,6 +34,28 @@ const AchPage: React.FC = () => {
     backWindow?: string;
     gameAppid?: string;
   }>();
+  const storageKey = useMemo(
+    () => getAchievementsStateKey(minPercent, maxPercent, date, backWindow, gameAppid),
+    [minPercent, maxPercent, date, backWindow, gameAppid]
+  );
+  const savedState = useMemo(() => {
+    const value = sessionStorage.getItem(storageKey);
+
+    if (!value) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(value) as AchievementPageScrollState;
+    } catch {
+      sessionStorage.removeItem(storageKey);
+      return null;
+    }
+  }, [storageKey]);
+  const restoreScrollRef = useRef(savedState?.scrollY ?? 0);
+  const [shouldRestoreScroll, setShouldRestoreScroll] = useState(
+    Boolean(savedState && savedState.scrollY > 0)
+  );
 
   const { tableOrBox, setTableOrBox, loaded, achCount } = useAchievementsPageData({
     minPercent,
@@ -36,12 +72,54 @@ const AchPage: React.FC = () => {
   };
 
   const handleGoBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
     if (backWindow === 'Stats') {
       navigate(`/${backWindow}${gameAppid ? '/' + gameAppid : ''}`);
     } else {
       navigate('/');
     }
   };
+
+  useEffect(() => {
+    sessionStorage.setItem(storageKey, JSON.stringify({ scrollY: window.scrollY }));
+  }, [storageKey]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      sessionStorage.setItem(storageKey, JSON.stringify({ scrollY: window.scrollY }));
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (!shouldRestoreScroll || !loaded) {
+      return;
+    }
+
+    const savedScrollY = restoreScrollRef.current;
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      window.scrollTo(0, savedScrollY);
+
+      window.setTimeout(() => {
+        window.scrollTo(0, savedScrollY);
+        setShouldRestoreScroll(false);
+      }, 150);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [loaded, shouldRestoreScroll]);
 
   return (
     <I18nextProvider i18n={i18n}>

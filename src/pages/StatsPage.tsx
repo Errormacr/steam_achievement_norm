@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
@@ -15,12 +15,81 @@ import GamesPercentsByTimeChart from '../features/GamesPercentsByTimeChart';
 import '../styles/scss/StatsPage.scss';
 import '../styles/scss/PageShell.scss';
 
+interface StatsPageScrollState {
+  scrollY: number;
+}
+
 const StatsPage: React.FC = () => {
   const navigate = useNavigate();
   const { gameAppid } = useParams<{ gameAppid?: string }>();
   const { t } = useTranslation();
   const gameId = gameAppid ? Number(gameAppid) : undefined;
   const isGlobalStats = !gameAppid || Number.isNaN(gameId);
+  const storageKey = useMemo(() => `statsPageState:${gameAppid ?? 'undefined'}`, [gameAppid]);
+  const savedState = useMemo(() => {
+    const value = sessionStorage.getItem(storageKey);
+
+    if (!value) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(value) as StatsPageScrollState;
+    } catch {
+      sessionStorage.removeItem(storageKey);
+      return null;
+    }
+  }, [storageKey]);
+  const restoreScrollRef = useRef(savedState?.scrollY ?? 0);
+  const [shouldRestoreScroll, setShouldRestoreScroll] = useState(
+    Boolean(savedState && savedState.scrollY > 0)
+  );
+
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/');
+  };
+
+  useEffect(() => {
+    sessionStorage.setItem(storageKey, JSON.stringify({ scrollY: window.scrollY }));
+  }, [storageKey]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      sessionStorage.setItem(storageKey, JSON.stringify({ scrollY: window.scrollY }));
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (!shouldRestoreScroll) {
+      return;
+    }
+
+    const savedScrollY = restoreScrollRef.current;
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      window.scrollTo(0, savedScrollY);
+
+      window.setTimeout(() => {
+        window.scrollTo(0, savedScrollY);
+        setShouldRestoreScroll(false);
+      }, 150);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [shouldRestoreScroll]);
 
   const charts = [
     {
@@ -54,7 +123,7 @@ const StatsPage: React.FC = () => {
     <I18nextProvider i18n={i18n}>
       <div className="stats-page page-shell">
         <Box className="page-shell__header stats-page__header">
-          <IconButton className="page-shell__back" onClick={() => navigate('/')} id="return">
+          <IconButton className="page-shell__back" onClick={handleGoBack} id="return">
             <FaArrowLeft />
           </IconButton>
           <div className="stats-header-text">
