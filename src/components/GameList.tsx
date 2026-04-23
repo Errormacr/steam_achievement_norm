@@ -15,7 +15,7 @@ export function GameList ({ games, isLoading, lastElementRef }: Readonly<GameLis
         <div
           key={game.appid}
           ref={index === games.length - 1 ? lastElementRef : null}
-          style={{ width: 'fit-content' }}
+          style={{ width: 'fit-content', justifySelf: 'center', maxWidth: '100%' }}
         >
           <GameCard appid={game.appid} backWindow={'Games'} />
         </div>

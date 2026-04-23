@@ -45,8 +45,15 @@
       color: #FFFFFFFF;
       border: none;
       margin-left: 0;
-      padding: 10px 10px 10px 0px;
+      padding: 10px 12px;
       cursor: pointer;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+
+      &:hover {
+        background-color: #6b88ad;
+      }
     }
 
     /* Стили для списка */
@@ -87,6 +94,11 @@
                 background-color: var(--accent-color);
                 font-weight: bold;
               }
+            }
+
+            &.active button {
+              background-color: var(--accent-color);
+              font-weight: bold;
             }
             
             &:first-child button {

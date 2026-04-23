@@ -50,6 +50,12 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
     onFilterChange({ ...filters, desc: !filters.desc });
   };
 
+  const selectedSortingOption = SORTING_OPTIONS.find((option) => option.value === filters.selectedValue);
+  const selectedTimeFilterOption = TIME_FILTER_OPTIONS.find(
+    (option) => option.value === filters.selectedTimeFilterValue
+  );
+  const selectedCompletionFilterOption = filters.selectedCompletionFilterValue ?? null;
+
   return (
     <div className="gameFilterCont">
       <div className="inputSortFilterContainerGames">
@@ -60,10 +66,12 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
         />
         <div ref={listRef} className="dropdown-container">
           <button
+            type="button"
             className="dropdown-button-light"
             onClick={() => setDropdownOpen(!dropdownOpen)}
+            aria-expanded={dropdownOpen}
           >
-            {t('SortBy')}
+            {selectedSortingOption ? t(selectedSortingOption.label) : t('SortBy')}
           </button>
 
           {dropdownOpen && (
@@ -73,7 +81,11 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
                   key={option.value}
                   className={filters.selectedValue === option.value ? 'active' : ''}
                 >
-                  <button onClick={() => handleItemClick(option.value)}>
+                  <button
+                    type="button"
+                    className={filters.selectedValue === option.value ? 'active' : ''}
+                    onClick={() => handleItemClick(option.value)}
+                  >
                     {t(option.label)}
                   </button>
                 </li>
@@ -89,10 +101,12 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
             />
           )}
           <button
+            type="button"
             className="dropdown-button-light"
             onClick={() => setTimeFilterDropdownOpen(!timeFilterDropdownOpen)}
+            aria-expanded={timeFilterDropdownOpen}
           >
-            {t('TimeFilter')}
+            {selectedTimeFilterOption ? t(selectedTimeFilterOption.label) : t('TimeFilter')}
           </button>
           {timeFilterDropdownOpen && (
             <ul className="dropdown-list">
@@ -101,7 +115,11 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
                   key={filter.value}
                   className={filters.selectedTimeFilterValue === filter.value ? 'active' : ''}
                 >
-                  <button onClick={() => handleTimeFilterItemClick(filter.value)}>
+                  <button
+                    type="button"
+                    className={filters.selectedTimeFilterValue === filter.value ? 'active' : ''}
+                    onClick={() => handleTimeFilterItemClick(filter.value)}
+                  >
                     {t(filter.label)}
                   </button>
                 </li>
@@ -117,10 +135,12 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
             />
           )}
           <button
+            type="button"
             className="dropdown-button-light"
             onClick={() => setCompletedFilterDropdownOpen(!completedFilterDropdownOpen)}
+            aria-expanded={completedFilterDropdownOpen}
           >
-            {t('CompletedFilter')}
+            {selectedCompletionFilterOption ? t(selectedCompletionFilterOption) : t('CompletedFilter')}
           </button>
           {completedFilterDropdownOpen && (
             <ul className="dropdown-list">
@@ -129,7 +149,11 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
                   key={filterValue}
                   className={filters.selectedCompletionFilterValue === filterValue ? 'active' : ''}
                 >
-                  <button onClick={() => handleCompletionFilterItemClick(filterValue)}>
+                  <button
+                    type="button"
+                    className={filters.selectedCompletionFilterValue === filterValue ? 'active' : ''}
+                    onClick={() => handleCompletionFilterItemClick(filterValue)}
+                  >
                     {t(filterValue)}
                   </button>
                 </li>
@@ -137,7 +161,7 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
             </ul>
           )}
         </div>
-        <button className="arrows-container-light" onClick={handleToggleArrows}>
+        <button type="button" className="arrows-container-light" onClick={handleToggleArrows}>
           <div className={filters.desc ? 'arrow activate' : 'arrow'}>&#x25B2;</div>
           <div className={filters.desc ? 'arrow' : 'arrow activate'}>&#x25BC;</div>
         </button>

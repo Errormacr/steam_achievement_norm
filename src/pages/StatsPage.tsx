@@ -9,7 +9,6 @@ import AchRareHistogram from '../features/AchRareHistogram';
 import AchTimeHistogram from '../features/AchTimeHistogram';
 import AchAccPercentHistogram from '../features/AchAccPercentHistogram';
 import GamesByCompletionDiagram from '../features/GamesByCompletionDiagram';
-import ScrollToTopButton from '../components/ScrollToTopButton';
 import GamesPercentsByTimeChart from '../features/GamesPercentsByTimeChart';
 
 import '../styles/scss/StatsPage.scss';
@@ -150,7 +149,6 @@ const StatsPage: React.FC = () => {
             </Card>
           ))}
         </div>
-        <ScrollToTopButton />
       </div>
     </I18nextProvider>
   );

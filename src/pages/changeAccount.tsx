@@ -1,25 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { FaTrash } from 'react-icons/fa';
 
 import GameButton from '../components/GameButton';
 import IdKeyInput from '../components/IdKeyInput';
+import { useDebounce } from '../hooks/useDebounce';
 import { ApiService } from '../services/api.services';
 import { User, UserData, ApiResponse } from '../types';
 import { logger } from '../utils/logger';
+import {
+  getSteamIdValidationErrorKey,
+  isSteamIdLookupValue
+} from './changeAccount.helpers';
 
 export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: () => void }>): React.JSX.Element {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [addingAcc, setAddingAcc] = useState(false);
-  const [SteamId, setSteamId] = useState('');
+  const [steamId, setSteamId] = useState('');
   const [writingSteamId, setWritingSteamId] = useState('');
   const [steamIdError, setSteamIdError] = useState('');
   const [accFound, setAccFound] = useState(false);
   const [newAccName, setNewAccName] = useState('');
   const [newAccAva, setNewAccAva] = useState('');
   const [accounts, setAccounts] = useState<User[]>([]);
+  const debouncedSteamId = useDebounce(steamId, 500);
+  const lookupRequestIdRef = useRef(0);
+
+  const resetFoundAccount = () => {
+    setAccFound(false);
+    setNewAccName('');
+    setNewAccAva('');
+  };
 
   const openModal = () => {
     setIsOpen(true);
@@ -27,23 +40,35 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
 
   const closeModal = () => {
     setIsOpen(false);
+    setAddingAcc(false);
+    setSteamId('');
+    setWritingSteamId('');
+    setSteamIdError('');
+    resetFoundAccount();
   };
 
   const getExistingUser = async () => {
-    const users = await ApiService.get<User[]>('user');
-    setAccounts(users);
+    try {
+      const users = await ApiService.get<User[]>('user');
+      setAccounts(users);
+    } catch (error) {
+      logger.error('Error fetching existing users', error);
+    }
   };
 
   useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
     const handleOutsideClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (isOpen && !target.closest('.modal-content')) {
         closeModal();
-        setAddingAcc(false);
       }
     };
 
-    getExistingUser();
+    void getExistingUser();
     document.addEventListener('mousedown', handleOutsideClick);
 
     return () => {
@@ -51,28 +76,73 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
     };
   }, [isOpen]);
 
-  const update = (steamId: string) => {
-    ApiService.put<ApiResponse>(`user/${steamId}/all-force?lang=${i18n.language}`);
+  const update = (nextSteamId: string) => {
+    void ApiService.put<ApiResponse>(`user/${nextSteamId}/all-force?lang=${i18n.language}`);
   };
 
-  const fetchData = async (steamId: string) => {
+  useEffect(() => {
+    if (!addingAcc || !isSteamIdLookupValue(debouncedSteamId)) {
+      return;
+    }
+
+    let isCancelled = false;
+    const requestId = lookupRequestIdRef.current + 1;
+    lookupRequestIdRef.current = requestId;
+
+    const lookupAccount = async () => {
+      try {
+        const { user } = await ApiService.get<UserData>(`user/${debouncedSteamId}/data`);
+
+        if (isCancelled || requestId !== lookupRequestIdRef.current) {
+          return;
+        }
+
+        setNewAccName(user.nickname);
+        setNewAccAva(user.avatarMedium);
+        setAccFound(true);
+        setSteamIdError('');
+      } catch (error) {
+        if (isCancelled || requestId !== lookupRequestIdRef.current) {
+          return;
+        }
+
+        resetFoundAccount();
+        setSteamIdError(t('AccNotFound'));
+        logger.error('Error fetching user data', error);
+      }
+    };
+
+    void lookupAccount();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [addingAcc, debouncedSteamId, t]);
+
+  const deleteUser = async (userId: string) => {
     try {
-      const { user } = await ApiService.get<UserData>(`user/${steamId}/data`);
-      const personalName = user.nickname;
-      const avaUrl = user.avatarMedium;
-      setNewAccName(personalName);
-      setNewAccAva(avaUrl);
-      setAccFound(true);
+      await ApiService.delete<ApiResponse>(`user/${userId}`);
+      setAccounts((prev) => prev.filter((acc) => acc.steamID !== userId));
     } catch (error) {
-      setAccFound(false);
-      setSteamIdError(SteamId === '' ? '' : t('AccNotFound'));
-      logger.error('Error fetching user data', error);
+      logger.error('Error deleting user', error);
     }
   };
 
-  const deleteUser = (userId: string) => {
-    ApiService.delete<ApiResponse>(`user/${userId}`);
-    setAccounts((prev) => prev.filter((acc) => acc.steamID !== userId));
+  const handleSteamIdChange = (event: { target: { value: string } }) => {
+    const value = event.target.value;
+    const validationErrorKey = getSteamIdValidationErrorKey(value);
+
+    setWritingSteamId(value);
+    resetFoundAccount();
+
+    if (validationErrorKey) {
+      setSteamId('');
+      setSteamIdError(t(validationErrorKey));
+      return;
+    }
+
+    setSteamId(value);
+    setSteamIdError('');
   };
 
   return (
@@ -101,7 +171,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
                       className="deleteIcon"
                       onClick={(e) => {
                         e.stopPropagation();
-                        deleteUser(account.steamID);
+                        void deleteUser(account.steamID);
                       }}
                     />
                   </button>
@@ -118,20 +188,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
             {addingAcc && (
               <IdKeyInput
                 value={writingSteamId}
-                onChange={(event: { target: { value: string } }) => {
-                  const value = event.target.value;
-                  const regex = /^\d+$/;
-                  if (value !== '' && regex.test(value)) {
-                    setSteamId(value);
-                    fetchData(value);
-                    setSteamIdError('');
-                  } else if (value === '') {
-                    setSteamIdError(t('SteamIdRequired'));
-                  } else {
-                    setSteamIdError(t('SteamIdError'));
-                  }
-                  setWritingSteamId(value);
-                }}
+                onChange={handleSteamIdChange}
                 placeholder="Steam id"
               />
             )}
@@ -141,8 +198,8 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
                 <button
                   className="userContainer"
                   onClick={() => {
-                    localStorage.setItem('steamId', SteamId);
-                    update(SteamId);
+                    localStorage.setItem('steamId', steamId);
+                    update(steamId);
                     updatePage();
                     closeModal();
                   }}

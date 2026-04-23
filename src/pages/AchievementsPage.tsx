@@ -5,7 +5,6 @@ import { FaArrowLeft } from 'react-icons/fa';
 import i18n from 'i18next';
 import { Box, Button, Container, IconButton, Typography } from '@mui/material';
 
-import ScrollToTopButton from '../components/ScrollToTopButton';
 import { useAchievementsPageData } from '../hooks/useAchievementsPageData';
 import AchievementsDisplay from '../features/AchievementsDisplay';
 import '../styles/scss/PageShell.scss';
@@ -124,7 +123,6 @@ const AchPage: React.FC = () => {
   return (
     <I18nextProvider i18n={i18n}>
       <Container maxWidth={false} className="page-shell">
-        <ScrollToTopButton />
         <Box className="page-shell__header">
           <IconButton onClick={handleGoBack} className="page-shell__back">
             <FaArrowLeft />

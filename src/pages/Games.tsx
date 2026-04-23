@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { I18nextProvider } from 'react-i18next';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import { FaArrowLeft } from 'react-icons/fa';
 import i18n from 'i18next';
+import { Box, Container, IconButton, Typography } from '@mui/material';
 
-import ScrollToTopButton from '../components/ScrollToTopButton';
 import AddGame from '../features/AddGame';
 import { useGamesData } from '../hooks/useGamesData';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
@@ -13,6 +13,7 @@ import { GameList } from '../components/GameList';
 
 import '../styles/scss/Games.scss';
 import '../styles/scss/FilterSort.scss';
+import '../styles/scss/PageShell.scss';
 import { Filters } from '../types';
 
 const GAMES_PAGE_STATE_KEY = 'gamesPageState';
@@ -52,6 +53,7 @@ function saveState (state: GamesPageState) {
 
 export default function Games () {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const savedState = useMemo(() => readSavedState(), []);
   const restoreScrollRef = useRef(savedState?.scrollY ?? 0);
   const [shouldRestoreScroll, setShouldRestoreScroll] = useState(
@@ -122,26 +124,31 @@ export default function Games () {
     };
   }, [games.length, isLoading, shouldRestoreScroll]);
 
-  function rendApp () {
+  function handleGoBack () {
     navigate('/');
   }
 
   return (
     <I18nextProvider i18n={i18n}>
-      <GameFilterBar filters={filters} onFilterChange={handleFilterChange} />
+      <Container maxWidth={false} className="page-shell games-page">
+        <Box className="page-shell__header games-page__header">
+          <IconButton className="page-shell__back" onClick={handleGoBack} id="return">
+            <FaArrowLeft />
+          </IconButton>
+          <Typography variant="h4" component="h1" className="page-shell__title games-page__title">
+            {t('Games')}
+          </Typography>
+          <Box className="page-shell__actions games-page__actions">
+            <AddGame />
+          </Box>
+        </Box>
 
-      <FaArrowLeft className="button-icon return" onClick={rendApp} id="return" />
+        <div className="games-page__filters">
+          <GameFilterBar filters={filters} onFilterChange={handleFilterChange} />
+        </div>
 
-      <AddGame />
-
-      <div id="header key">
-        <ScrollToTopButton />
-
-        <br />
         <GameList games={games} isLoading={isLoading} lastElementRef={infiniteScrollRef} />
-        <ScrollToTopButton />
-        <AddGame />
-      </div>
+      </Container>
     </I18nextProvider>
   );
 }

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
-import { ToastContainer } from 'react-toastify';
 import { ArrowBack } from '@mui/icons-material';
 import i18n from 'i18next';
 import { Container, Box, IconButton } from '@mui/material';
-import ScrollToTopButton from '../components/ScrollToTopButton';
 import GameHeader from '../components/GameHeader';
 import ActionBar from '../components/ActionBar';
 import { useGameData } from '../hooks/useGameData';
@@ -59,8 +57,6 @@ const GamePage: React.FC = () => {
   return (
     <I18nextProvider i18n={i18n}>
       <Container maxWidth={false} className="page-shell">
-        <ToastContainer />
-        <ScrollToTopButton />
         <IconButton
           className="page-shell__back"
           onClick={handleBack}

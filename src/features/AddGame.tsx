@@ -6,7 +6,7 @@ import IdKeyInput from '../components/IdKeyInput';
 import { ApiService } from '../services/api.services';
 import '../styles/scss/AddGame.scss';
 import { Percent } from '../types';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useModal } from '../hooks/useModal';
 import { useGameSearch } from '../hooks/useGameSearch';
 
@@ -41,7 +41,6 @@ export default function AddGame (): React.JSX.Element {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ToastContainer />
       <GameButton
         additionalClass="add-game-button"
         onClick={openModal}

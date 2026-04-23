@@ -1,5 +1,40 @@
 @use './variables' as *;
 
+.games-page {
+  width: 100%;
+}
+
+.games-page__header {
+  margin-bottom: $spacing-md;
+}
+
+.games-page__title {
+  margin: 0;
+}
+
+.games-page__actions .add-game-button {
+  margin: 0;
+  position: static;
+}
+
+.games-page__filters {
+  margin-bottom: $spacing-lg;
+
+  .gameFilterCont {
+    justify-content: center;
+  }
+
+  .gameFilterCont .inputSortFilterContainerGames {
+    margin-top: 0;
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    padding: $spacing-sm;
+  }
+}
+
 .gameFilterCont {
     display: flex;
     justify-content: center;
@@ -15,17 +50,14 @@
     }
 }
 .games-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(416px, 1fr));
-    gap: 10px;
-    padding: 10px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .add-game-button {
     margin-right: $spacing-md;
-    position: absolute;
-    right: 0;
-    top: 8%;
 }
 
 .cross {
@@ -42,5 +74,20 @@
 
   &:hover {
     transform: scale(1.1);
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .games-page__filters {
+    margin-bottom: $spacing-md;
+  }
+
+  .games-container {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0;
+  }
+
+  .games-page__actions .add-game-button {
+    margin-right: 0;
   }
 }
