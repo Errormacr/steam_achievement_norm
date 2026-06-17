@@ -5,12 +5,14 @@ import '../styles/scss/LastAchContainer.scss';
 import AchievementImage from '../components/AchievementImage';
 import { AchievmentsFromView } from '../types';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8888/api';
+
 const LastAchContainer: React.FC = () => {
   const [allAch, setAllAch] = useState<AchievmentsFromView[]>([]);
 
   const renderWindow = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const lastAch = await fetch(`http://localhost:8888/api/user/${dataSteamId}/achievements?orderBy=unlockedDate&desc=1&language=${i18n.language}&unlocked=1&page=1&pageSize=36`);
+    const lastAch = await fetch(`${API_URL}/user/${dataSteamId}/achievements?orderBy=unlockedDate&desc=1&language=${i18n.language}&unlocked=1&page=1&pageSize=36`);
     const lastAchData = await lastAch.json();
     setAllAch(lastAchData.rows);
   }, []);

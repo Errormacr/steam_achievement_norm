@@ -8,13 +8,15 @@ interface SocketProviderProps {
   children: React.ReactNode;
 }
 
+const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:8888';
+
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const socketRef = useRef<Socket | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     if (!socketRef.current && !isInitialized) {
-      const socket = io('http://localhost:8888', {
+      const socket = io(WS_URL, {
         reconnection: true,
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,

@@ -6,7 +6,7 @@ import {
   parseSuccessResponse
 } from './api-response';
 
-const API_URL = 'http://localhost:8888/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8888/api';
 
 async function handleErrorResponse (response: Response): Promise<never> {
   const body = await parseResponseBody(response);
