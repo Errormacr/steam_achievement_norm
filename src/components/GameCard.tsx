@@ -44,13 +44,13 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
     );
 
     setPercent(gameData.userData[0].percent);
-    setAll(gameData.achievmentsFromView.length);
+    setAll(gameData.achievementsFromView?.length ?? 0);
     setGained(gameData.userData[0].gainedAch);
     setPlaytime(+gameData.userData[0].playtime.toFixed(2));
     setGameName(gameData.gamename);
     setLastLaunchTime(`${gameData.userData[0].lastLaunchTime}`);
     setAches(
-      gameData.achievmentsFromView
+      (gameData.achievementsFromView ?? [])
         .toSorted((a: Achievements, b: Achievements) =>
           new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()
         )

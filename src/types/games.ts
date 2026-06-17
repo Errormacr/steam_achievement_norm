@@ -60,7 +60,7 @@ export interface GameDataWithAch {
     gamename: string;
     lowerGamename: string;
     userData: GameUserData[];
-    achievmentsFromView?: AchievmentsFromView[];
+    achievementsFromView?: AchievmentsFromView[];
     achievementCount: number;
 }
 
