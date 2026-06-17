@@ -109,18 +109,18 @@ export default function Games () {
     const savedScrollY = restoreScrollRef.current;
 
     const restoreScroll = () => {
-      window.scrollTo(0, savedScrollY);
+      globalThis.scrollTo(0, savedScrollY);
 
-      window.setTimeout(() => {
+      globalThis.setTimeout(() => {
         window.scrollTo(0, savedScrollY);
         setShouldRestoreScroll(false);
       }, 150);
     };
 
-    const animationFrameId = window.requestAnimationFrame(restoreScroll);
+    const animationFrameId = globalThis.requestAnimationFrame(restoreScroll);
 
     return () => {
-      window.cancelAnimationFrame(animationFrameId);
+      globalThis.cancelAnimationFrame(animationFrameId);
     };
   }, [games.length, isLoading, shouldRestoreScroll]);
 

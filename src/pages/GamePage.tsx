@@ -46,7 +46,7 @@ const GamePage: React.FC = () => {
       return;
     }
 
-    if (window.history.length > 1) {
+    if (globalThis.history.length > 1) {
       navigate(-1);
       return;
     }

@@ -71,7 +71,7 @@ const AchPage: React.FC = () => {
   };
 
   const handleGoBack = () => {
-    if (window.history.length > 1) {
+    if (globalThis.history.length > 1) {
       navigate(-1);
       return;
     }
@@ -106,17 +106,17 @@ const AchPage: React.FC = () => {
 
     const savedScrollY = restoreScrollRef.current;
 
-    const animationFrameId = window.requestAnimationFrame(() => {
+    const animationFrameId = globalThis.requestAnimationFrame(() => {
       window.scrollTo(0, savedScrollY);
 
-      window.setTimeout(() => {
+      globalThis.setTimeout(() => {
         window.scrollTo(0, savedScrollY);
         setShouldRestoreScroll(false);
       }, 150);
     });
 
     return () => {
-      window.cancelAnimationFrame(animationFrameId);
+      globalThis.cancelAnimationFrame(animationFrameId);
     };
   }, [loaded, shouldRestoreScroll]);
 
