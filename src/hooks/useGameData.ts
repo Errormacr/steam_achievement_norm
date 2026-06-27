@@ -14,6 +14,7 @@ interface Game {
   all: number;
   gained: number;
   percent: number;
+  headerUrl?: string | null;
 }
 
 export function useGameData () {
@@ -43,7 +44,8 @@ export function useGameData () {
       gameName: gameData.gamename,
       all: gameData.achievementCount,
       gained: userData.gainedAch,
-      percent: userData.percent
+      percent: userData.percent,
+      headerUrl: gameData.headerUrl
     };
     setGame(newGameData);
   }, [appid]);

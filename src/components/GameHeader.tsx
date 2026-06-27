@@ -11,12 +11,13 @@ interface GameHeaderProps {
     percent: number;
     gained: number;
     all: number;
+    headerUrl?: string | null;
   };
 }
 
 const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   const { t } = useTranslation();
-
+console.log(game);
   return (
     <>
       <Typography variant="h4" component="h1" gutterBottom align="center" className="game-header__title">
@@ -29,8 +30,15 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
               <CardMedia
                 className="game-header__image"
                 component="img"
-                image={`https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`}
+                image={'https://shared.akamai.steamstatic.com/store_item_assets/' + game.headerUrl || `https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`}
                 alt={game.gameName}
+                onError={(e) => {
+                  // Fallback to default Steam CDN if the API URL fails
+                  const target = e.currentTarget as HTMLImageElement;
+                  if (target.src !== `https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`) {
+                    target.src = `https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`;
+                  }
+                }}
               />
             </Grid>
             <Grid className="game-header__stats">

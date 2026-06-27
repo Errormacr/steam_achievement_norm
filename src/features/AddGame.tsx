@@ -57,6 +57,10 @@ export default function AddGame (): React.JSX.Element {
                 <img
                   alt={gamename}
                   src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
+                  onError={(e) => {
+                    // Fallback to default Steam CDN if the image fails to load
+                    e.currentTarget.src = `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`;
+                  }}
                 ></img>
                 <p>{gamename}</p>
               </button>

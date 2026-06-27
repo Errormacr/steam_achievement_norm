@@ -15,7 +15,7 @@ import {
   Grid,
   Chip
 } from '@mui/material';
-import { Achievements, AchievmentsFromView, GameDataWithAch, GamePageProps } from '../types';
+import { Achievements, AchievmentsFromView, Game, GameDataWithAch, GamePageProps } from '../types';
 import { ApiService } from '../services/api.services';
 import '../styles/scss/GameCard.scss';
 
@@ -30,6 +30,7 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const [all, setAll] = useState(0);
   const [gained, setGained] = useState(0);
   const [gameName, setGameName] = useState('');
+  const [game, setGame] = useState<Game | null>(null);
   const [aches, setAches] = useState<AchievmentsFromView[]>([]);
   const [isProgressBarAnimated, setIsProgressBarAnimated] = useState(false);
 
@@ -48,6 +49,15 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
     setGained(gameData.userData[0].gainedAch);
     setPlaytime(+gameData.userData[0].playtime.toFixed(2));
     setGameName(gameData.gamename);
+    setGame({
+      appid: gameData.appid,
+      gamename: gameData.gamename,
+      lowerGamename: gameData.lowerGamename,
+      capsuleUrl: gameData.capsuleUrl,
+      headerUrl: gameData.headerUrl,
+      libraryCapsule2xUrl: gameData.libraryCapsule2xUrl,
+      imageUrlUpdatedAt: gameData.imageUrlUpdatedAt,
+    });
     setLastLaunchTime(`${gameData.userData[0].lastLaunchTime}`);
     setAches(
       (gameData.achievementsFromView ?? [])
@@ -92,8 +102,12 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
             <CardMedia
               component="img"
               className="game-card__image"
-              image={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
+              image={'https://shared.akamai.steamstatic.com/store_item_assets/' + game?.capsuleUrl || `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
               alt={gameName}
+              onError={(e) => {
+                // Fallback to default Steam CDN if the API URL fails
+                e.currentTarget.src = `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`;
+              }}
             />
             <Chip className="game-card__chip" label={`${playtime} ${t('Hours')}`} size="small" />
           </Box>

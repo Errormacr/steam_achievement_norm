@@ -53,12 +53,20 @@ export interface Game {
     appid: number;
     gamename: string;
     lowerGamename: string;
+    capsuleUrl?: string | null;
+    headerUrl?: string | null;
+    libraryCapsule2xUrl?: string | null;
+    imageUrlUpdatedAt?: string | null;
 }
 
 export interface GameDataWithAch {
     appid: number;
     gamename: string;
     lowerGamename: string;
+    capsuleUrl?: string | null;
+    headerUrl?: string | null;
+    libraryCapsule2xUrl?: string | null;
+    imageUrlUpdatedAt?: string | null;
     userData: GameUserData[];
     achievementsFromView?: AchievmentsFromView[];
     achievementCount: number;
