@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import i18n from 'i18next';
 import { GameDataRow, GameDataWithAch } from '../types';
 import { ApiService } from '../services/api.services';
+import { logger } from '../utils/logger';
 
 interface Game {
   appid: number;
@@ -19,7 +20,7 @@ interface Game {
 
 export function useGameData () {
   const { t } = useTranslation();
-  const { appid } = useParams<{ appid: string }>();
+  const { appid: appidParam } = useParams<{ appid: string }>();
   const [game, setGame] = useState<Game>({
     appid: 0,
     last_launch_time: '',
@@ -34,11 +35,11 @@ export function useGameData () {
   const renderComponent = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
     const gameData = await ApiService.get<GameDataWithAch>(
-      `user/${dataSteamId}/game/${appid}/data?language=${i18n.language}&achievements=false`
+      `user/${dataSteamId}/game/${appidParam}/data?language=${i18n.language}&achievements=false`
     );
     const userData = gameData.userData[0];
     const newGameData = {
-      appid: +appid,
+      appid: +appidParam,
       last_launch_time: userData.lastLaunchTime,
       playtime: userData.playtime,
       gameName: gameData.gamename,
@@ -48,16 +49,28 @@ export function useGameData () {
       headerUrl: gameData.headerUrl
     };
     setGame(newGameData);
-  }, [appid]);
+  }, [appidParam]);
 
-  const fetchUpdatedGameData = async () => {
-    const steamId = localStorage.getItem('steamId');
-    const { unlockedCount: gained } = await ApiService.get<GameDataRow>(
-      `steam-api/all-user-ach-data/${steamId}/game/${game.appid}?lang=${i18n.language}`
-    );
-    toast.success(`${t('GameUpdateSuccess')}\n${t('Gained')} ${gained - game.gained}`);
-    await renderComponent();
-  };
+  const fetchUpdatedGameData = useCallback(async () => {
+    try {
+      const steamId = localStorage.getItem('steamId');
+      const response = await ApiService.get<GameDataRow | null>(
+        `steam-api/all-user-ach-data/${steamId}/game/${appidParam}?lang=${i18n.language}`
+      );
+
+      if (response && response.unlockedCount !== undefined) {
+        const gained = response.unlockedCount;
+        toast.success(`${t('GameUpdateSuccess')}\n${t('Gained')} ${gained - game.gained}`);
+      } else {
+        toast.warn(t('noGames'));
+      }
+
+      await renderComponent();
+    } catch (error) {
+      logger.error('Error updating game data', error);
+      toast.error(t('connectionError'));
+    }
+  }, [appidParam, game.gained, renderComponent, t]);
 
   useEffect(() => {
     let isMounted = true;

@@ -27,7 +27,6 @@ const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
             }) => {
                   const addUrl = gameAppid ? `/${gameAppid}` : '/undefined';
                   const label = String(el.activeLabel || '');
-                  console.log(label);
                   const cleaned = label.endsWith('%') ? label.slice(0, -1) : label;
                   const parts = cleaned.split('-').filter(Boolean);
                   const min = parts[0] ?? cleaned;

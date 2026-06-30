@@ -17,7 +17,6 @@ interface GameHeaderProps {
 
 const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   const { t } = useTranslation();
-console.log(game);
   return (
     <>
       <Typography variant="h4" component="h1" gutterBottom align="center" className="game-header__title">
