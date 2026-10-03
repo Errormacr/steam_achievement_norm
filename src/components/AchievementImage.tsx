@@ -1,5 +1,6 @@
 import React from 'react';
 import AchievementFallbackIcon from './AchievementFallbackIcon';
+import { useImageFallback } from '../hooks/useImageFallback';
 
 interface AchievementImageProps {
   icon: string | null;
@@ -42,16 +43,19 @@ const AchievementImage: React.FC<AchievementImageProps> = ({
     .filter(Boolean)
     .join('\n');
 
-  const hasIcon = Boolean(icon);
+  // Falls back not only when the URL is missing, but also when Steam's CDN
+  // answers 404 for it.
+  const { handleError, canRender } = useImageFallback(icon);
 
   return (
     <div className="Cont">
-      {hasIcon ? (
+      {canRender ? (
         <img
           className={getAchievementClass(percent)}
-          src={icon}
+          src={icon as string}
           alt={displayName}
           title={title}
+          onError={handleError}
         />
       ) : (
         <AchievementFallbackIcon

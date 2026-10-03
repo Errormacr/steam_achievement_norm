@@ -1,6 +1,7 @@
 import React from 'react';
 import { AchievmentsFromView } from '../types';
 import AchievementFallbackIcon from './AchievementFallbackIcon';
+import { useImageFallback } from '../hooks/useImageFallback';
 
 interface AchievementRowProps {
     achievement: AchievmentsFromView;
@@ -24,7 +25,9 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
     : '';
 
   const icon = achievement.unlocked ? achievement.icon : achievement.grayIcon;
-  const hasIcon = Boolean(icon);
+  // Falls back not only when the URL is missing, but also when Steam's CDN
+  // answers 404 for it.
+  const { handleError, canRender } = useImageFallback(icon);
 
   return (
         <tr
@@ -32,11 +35,12 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
             ref={isLast ? lastElementRef : undefined}
         >
             <td>
-              {hasIcon ? (
+              {canRender ? (
                 <img
                   className={imgClass}
-                  src={icon}
+                  src={icon as string}
                   alt={achievement.displayName}
+                  onError={handleError}
                 />
               ) : (
                 <AchievementFallbackIcon
