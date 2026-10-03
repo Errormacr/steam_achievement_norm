@@ -16,7 +16,8 @@
         position: relative;
         z-index: 1;
 
-        img {
+        img,
+        svg {
             width: 64px;
             height: 64px;
             transition: all 0.2s ease-in-out;

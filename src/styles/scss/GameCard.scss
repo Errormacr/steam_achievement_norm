@@ -115,7 +115,8 @@
   align-content: flex-start;
 }
 
-.game-card__avatar.MuiAvatar-root {
+.game-card__avatar.MuiAvatar-root,
+.game-card__avatar:not(.MuiAvatar-root) {
   width: 32px;
   height: 32px;
   border: 1px solid rgba(93, 122, 158, 0.25);

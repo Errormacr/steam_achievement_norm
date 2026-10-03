@@ -30,7 +30,6 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
         <tr
             className={rowClass}
             ref={isLast ? lastElementRef : undefined}
-            key={achievement.displayName}
         >
             <td>
               {hasIcon ? (
