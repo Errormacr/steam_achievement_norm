@@ -164,6 +164,17 @@
     }
 }
 
+// The placeholder medal is drawn in bright colours; the dark overlay declared
+// above would wash it out. Hidden by default and restored on hover so the
+// rarity glows keep working.
+.last_ach_container svg[data-fallback-icon='true']::after {
+    opacity: 0;
+}
+
+.last_ach_container svg[data-fallback-icon='true']:hover::after {
+    opacity: 1;
+}
+
 // Легендарные достижения - пульсация с вращением и сильным свечением
 @keyframes legendaryPulse {
     0% { transform: scale(1.25) rotate(0deg); }
