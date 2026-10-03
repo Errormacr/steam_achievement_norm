@@ -1,21 +1,32 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export function useInfiniteScroll (callback: () => void, hasMore: boolean, isLoading: boolean) {
   const observer = useRef<IntersectionObserver | null>(null);
 
+  const disconnect = useCallback(() => {
+    observer.current?.disconnect();
+    observer.current = null;
+  }, []);
+
+  // Always tear the observer down, including while loading, otherwise a stale
+  // observer keeps firing and triggers duplicate page loads.
+  useEffect(() => disconnect, [disconnect]);
+
   return useCallback(
     (node: Element) => {
-      if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
+      disconnect();
 
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
+      if (!node || isLoading || !hasMore) return;
+
+      const currentObserver = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting) {
           callback();
         }
       });
 
-      if (node) observer.current.observe(node);
+      observer.current = currentObserver;
+      currentObserver.observe(node);
     },
-    [isLoading, hasMore, callback]
+    [callback, disconnect, hasMore, isLoading]
   );
 }

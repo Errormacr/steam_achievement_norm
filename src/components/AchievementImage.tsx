@@ -1,12 +1,14 @@
 import React from 'react';
+import AchievementFallbackIcon from './AchievementFallbackIcon';
 
 interface AchievementImageProps {
-  icon: string;
+  icon: string | null;
   displayName: string;
   description: string;
   percent: number;
   unlockedDate: Date | null;
   gameName?: string;
+  gray?: boolean;
 }
 const getAchievementClass = (percent: number): string => {
   if (percent <= 5) return 'rare1';
@@ -27,7 +29,8 @@ const AchievementImage: React.FC<AchievementImageProps> = ({
   description,
   percent,
   unlockedDate,
-  gameName
+  gameName,
+  gray = false,
 }) => {
   const title = [
     gameName,
@@ -39,14 +42,23 @@ const AchievementImage: React.FC<AchievementImageProps> = ({
     .filter(Boolean)
     .join('\n');
 
+  const hasIcon = Boolean(icon);
+
   return (
     <div className="Cont">
+      {hasIcon ? (
         <img
           className={getAchievementClass(percent)}
           src={icon}
           alt={displayName}
           title={title}
         />
+      ) : (
+        <AchievementFallbackIcon
+          className={getAchievementClass(percent)}
+          gray={gray}
+        />
+      )}
     </div>
   );
 };

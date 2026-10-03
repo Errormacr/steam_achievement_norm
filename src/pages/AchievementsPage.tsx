@@ -120,6 +120,16 @@ const AchPage: React.FC = () => {
     };
   }, [loaded, shouldRestoreScroll]);
 
+  const numericGameAppid = Number(gameAppid);
+  const resolvedGameAppid =
+    gameAppid && !Number.isNaN(numericGameAppid) && numericGameAppid > 0
+      ? numericGameAppid
+      : undefined;
+  // Route params are optional; unary '+' on undefined yields NaN, which would
+  // be forwarded to the API as a filter value.
+  const resolvedMinPercent = Number(minPercent);
+  const resolvedMaxPercent = Number(maxPercent);
+
   return (
     <I18nextProvider i18n={i18n}>
       <Container maxWidth={false} className="page-shell">
@@ -140,12 +150,12 @@ const AchPage: React.FC = () => {
           {loaded && (
             <AchievementsDisplay
               tableOrBox={tableOrBox}
-              minPercent={+minPercent}
-              maxPercent={+maxPercent}
+              minPercent={Number.isFinite(resolvedMinPercent) ? resolvedMinPercent : 0}
+              maxPercent={Number.isFinite(resolvedMaxPercent) ? resolvedMaxPercent : 100}
               date={date === 'undefined' ? undefined : date}
-              appid={Number(gameAppid) || undefined}
+              appid={resolvedGameAppid}
               unlocked={1}
-              all={!+gameAppid}
+              all={!resolvedGameAppid}
             />
           )}
         </Box>

@@ -2,8 +2,8 @@ export interface Achievements {
     appid : number;
     name : string;
     hidden : number;
-    icon : string;
-    grayIcon : string;
+    icon : string | null;
+    grayIcon : string | null;
     percent : number;
     steamID : string;
     unlocked : boolean;
@@ -16,8 +16,8 @@ export interface AchievmentsFromView {
     appid : number;
     name : string;
     hidden : number;
-    icon : string;
-    grayIcon : string;
+    icon : string | null;
+    grayIcon : string | null;
     percent : number;
     steamID : string;
     unlocked : boolean;

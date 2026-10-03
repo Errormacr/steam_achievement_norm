@@ -22,6 +22,10 @@ const darkTheme = createTheme({
 
 const rootElement = document.getElementById('root');
 
+if (!rootElement) {
+  throw new Error('Root element #root was not found in index.html');
+}
+
 ReactDOM.createRoot(rootElement).render(
   <ThemeProvider theme={darkTheme}>
     <CssBaseline />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { AchievmentsFromView } from '../types';
+import AchievementFallbackIcon from './AchievementFallbackIcon';
 
 interface AchievementRowProps {
     achievement: AchievmentsFromView;
@@ -22,6 +23,9 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
     ? new Date(achievement.unlockedDate).toLocaleString()
     : '';
 
+  const icon = achievement.unlocked ? achievement.icon : achievement.grayIcon;
+  const hasIcon = Boolean(icon);
+
   return (
         <tr
             className={rowClass}
@@ -29,11 +33,19 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
             key={achievement.displayName}
         >
             <td>
+              {hasIcon ? (
                 <img
-                    className={imgClass}
-                    src={achievement.unlocked ? achievement.icon : achievement.grayIcon}
-                    alt={achievement.displayName}
+                  className={imgClass}
+                  src={icon}
+                  alt={achievement.displayName}
                 />
+              ) : (
+                <AchievementFallbackIcon
+                  className={imgClass}
+                  gray={!achievement.unlocked}
+                  size={40}
+                />
+              )}
             </td>
             <td>{achievement.displayName}</td>
             <td>{achievement.description}</td>

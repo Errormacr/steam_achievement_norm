@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom/client';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,26 +22,30 @@ export default function App () {
   const [percent, setPercent] = useState(0);
   const [lastAvgPercentChange, setLastAvgPercentChange] = useState(0);
   const [recentGames, setRecentGames] = useState([]);
+  const [showLastAchievements, setShowLastAchievements] = useState(false);
 
   const updateUserData = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const achContainer = ReactDOM.createRoot(document.getElementById('container'));
 
-    if (dataSteamId) {
-      try {
-        const userData = await ApiService.get<UserData>(`user/${dataSteamId}/data`);
-        setPersonalName(userData.user.nickname);
-        setAvaUrl(userData.user.avatarLarge);
-        setPercent(userData.user.percent);
-        setLastAvgPercentChange(userData.user.lastAvgPercentChange);
-        setGamesCount(userData.gameCount);
-        setAchCount(userData.achCount);
-        setRecentGames(userData.user.gameDatas);
-        achContainer.render(<LastAchContainer />);
-      } catch (e) {
-        logger.error('Error updating user data', e);
-        toast.error('Failed to update user data. Please try again.');
-      }
+    if (!dataSteamId) {
+      return;
+    }
+
+    try {
+      const userData = await ApiService.get<UserData>(`user/${dataSteamId}/data`);
+      setPersonalName(userData.user.nickname);
+      setAvaUrl(userData.user.avatarLarge);
+      setPercent(userData.user.percent);
+      setLastAvgPercentChange(userData.user.lastAvgPercentChange);
+      setGamesCount(userData.gameCount);
+      setAchCount(userData.achCount);
+      setRecentGames(userData.user.gameDatas);
+      // LastAchContainer renders declaratively below. Calling createRoot on the
+      // same container again on each refresh would warn and drop its state.
+      setShowLastAchievements(true);
+    } catch (e) {
+      logger.error('Error updating user data', e);
+      toast.error('Failed to update user data. Please try again.');
     }
   }, []);
 
@@ -108,7 +111,7 @@ export default function App () {
         </div>
         <div className="last-achievements">
           <h3>{t('LastAchievements')}</h3>
-          <div id="container"></div>
+          {showLastAchievements && <LastAchContainer />}
         </div>
       </div>
     </div>

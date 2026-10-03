@@ -34,18 +34,22 @@ export function useGameData () {
 
   const renderComponent = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
+    if (!dataSteamId) return;
+
     const gameData = await ApiService.get<GameDataWithAch>(
       `user/${dataSteamId}/game/${appidParam}/data?language=${i18n.language}&achievements=false`
     );
-    const userData = gameData.userData[0];
+
+    // The game may exist in the library without a userData row yet.
+    const userData = gameData?.userData?.[0];
     const newGameData = {
       appid: +appidParam,
-      last_launch_time: userData.lastLaunchTime,
-      playtime: userData.playtime,
+      last_launch_time: userData?.lastLaunchTime ?? '',
+      playtime: userData?.playtime ?? 0,
       gameName: gameData.gamename,
-      all: gameData.achievementCount,
-      gained: userData.gainedAch,
-      percent: userData.percent,
+      all: gameData.achievementCount ?? 0,
+      gained: userData?.gainedAch ?? 0,
+      percent: userData?.percent ?? 0,
       headerUrl: gameData.headerUrl
     };
     setGame(newGameData);

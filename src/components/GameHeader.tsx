@@ -15,8 +15,26 @@ interface GameHeaderProps {
   };
 }
 
+const DEFAULT_HEADER_URL = 'https://steamcdn-a.akamaihd.net/steam/apps';
+
+/**
+ * `headerUrl` is a path relative to the store assets host. String concatenation
+ * binds tighter than `||`, so the fallback must be chosen before building the
+ * URL — otherwise a missing value yields a truthy ".../undefined" source.
+ */
+const buildHeaderImageUrl = (appid: number, headerUrl?: string | null): string => {
+  const fallback = `${DEFAULT_HEADER_URL}/${appid}/header.jpg`;
+  if (!headerUrl) return fallback;
+  return headerUrl.startsWith('http')
+    ? headerUrl
+    : `https://shared.akamai.steamstatic.com/store_item_assets/${headerUrl}`;
+};
+
 const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
   const { t } = useTranslation();
+  const headerImageUrl = buildHeaderImageUrl(game.appid, game.headerUrl);
+  const fallbackUrl = `${DEFAULT_HEADER_URL}/${game.appid}/header.jpg`;
+
   return (
     <>
       <Typography variant="h4" component="h1" gutterBottom align="center" className="game-header__title">
@@ -29,13 +47,14 @@ const GameHeader: React.FC<GameHeaderProps> = ({ game }) => {
               <CardMedia
                 className="game-header__image"
                 component="img"
-                image={'https://shared.akamai.steamstatic.com/store_item_assets/' + game.headerUrl || `https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`}
+                image={headerImageUrl}
                 alt={game.gameName}
                 onError={(e) => {
-                  // Fallback to default Steam CDN if the API URL fails
+                  // Fall back to the public CDN exactly once; re-assigning the
+                  // same broken URL would loop forever.
                   const target = e.currentTarget as HTMLImageElement;
-                  if (target.src !== `https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`) {
-                    target.src = `https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg`;
+                  if (target.src !== fallbackUrl) {
+                    target.src = fallbackUrl;
                   }
                 }}
               />

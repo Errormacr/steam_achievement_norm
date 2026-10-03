@@ -17,7 +17,7 @@ export const AchievementList: React.FC<AchievementListProps> = ({ achievements, 
       <div className="AchCont">
         {achievements.map((achievement, index, arr) => (
           <div
-            key={`${achievement.displayName}-${achievement.game.gamename}${index}`}
+            key={`${achievement.displayName}-${achievement.game?.gamename ?? ''}-${index}`}
             ref={index === arr.length - 1 ? lastAchievementRef : undefined}
             className={`achievement-item ${newAchievements.includes(index) ? 'new-achievement' : ''}`}
           >
@@ -28,6 +28,7 @@ export const AchievementList: React.FC<AchievementListProps> = ({ achievements, 
               percent={achievement.percent}
               unlockedDate={achievement.unlockedDate ? new Date(achievement.unlockedDate) : null}
               gameName={achievement.game?.gamename}
+              gray={!achievement.unlocked}
             />
           </div>
         ))}

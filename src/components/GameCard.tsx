@@ -13,11 +13,29 @@ import {
   Tooltip,
   Avatar,
   Grid,
-  Chip
+  Chip,
 } from '@mui/material';
 import { Achievements, AchievmentsFromView, Game, GameDataWithAch, GamePageProps } from '../types';
 import { ApiService } from '../services/api.services';
+import { logger } from '../utils/logger';
+import AchievementFallbackIcon from './AchievementFallbackIcon';
 import '../styles/scss/GameCard.scss';
+
+const DEFAULT_CDN = 'https://steamcdn-a.akamaihd.net/steam/apps';
+const STORE_ASSETS_CDN = 'https://shared.akamai.steamstatic.com/store_item_assets/';
+
+/**
+ * `capsuleUrl` is a path relative to the store assets host. Concatenation binds
+ * tighter than `||`, so a missing value would produce a truthy ".../undefined"
+ * source and the fallback would never apply.
+ */
+const buildCapsuleImageUrl = (appid: number, capsuleUrl?: string | null): string => {
+  const fallback = `${DEFAULT_CDN}/${appid}/capsule_sm_120.jpg`;
+  if (!capsuleUrl) return fallback;
+  return capsuleUrl.startsWith('http')
+    ? capsuleUrl
+    : `${STORE_ASSETS_CDN}${capsuleUrl}`;
+};
 
 const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
   const navigate = useNavigate();
@@ -40,32 +58,42 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
 
   const updateGame = useCallback(async () => {
     const dataSteamId = localStorage.getItem('steamId');
-    const gameData = await ApiService.get<GameDataWithAch>(
-      `user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`
-    );
+    if (!dataSteamId) return;
 
-    setPercent(gameData.userData[0].percent);
-    setAll(gameData.achievementsFromView?.length ?? 0);
-    setGained(gameData.userData[0].gainedAch);
-    setPlaytime(+gameData.userData[0].playtime.toFixed(2));
-    setGameName(gameData.gamename);
-    setGame({
-      appid: gameData.appid,
-      gamename: gameData.gamename,
-      lowerGamename: gameData.lowerGamename,
-      capsuleUrl: gameData.capsuleUrl,
-      headerUrl: gameData.headerUrl,
-      libraryCapsule2xUrl: gameData.libraryCapsule2xUrl,
-      imageUrlUpdatedAt: gameData.imageUrlUpdatedAt,
-    });
-    setLastLaunchTime(`${gameData.userData[0].lastLaunchTime}`);
-    setAches(
-      (gameData.achievementsFromView ?? [])
-        .toSorted((a: Achievements, b: Achievements) =>
-          new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()
-        )
-        .slice(0, 7)
-    );
+    try {
+      const gameData = await ApiService.get<GameDataWithAch>(
+        `user/${dataSteamId}/game/${appid}/data?language=${i18n.language}`
+      );
+
+      // A freshly added game has no userData row yet; treat it as zeroed
+      // instead of throwing on userData[0].
+      const userData = gameData?.userData?.[0];
+
+      setPercent(userData?.percent ?? 0);
+      setAll(gameData.achievementCount ?? gameData.achievementsFromView?.length ?? 0);
+      setGained(userData?.gainedAch ?? 0);
+      setPlaytime(Number(userData?.playtime?.toFixed(2) ?? 0));
+      setGameName(gameData.gamename);
+      setGame({
+        appid: gameData.appid,
+        gamename: gameData.gamename,
+        lowerGamename: gameData.lowerGamename,
+        capsuleUrl: gameData.capsuleUrl,
+        headerUrl: gameData.headerUrl,
+        libraryCapsule2xUrl: gameData.libraryCapsule2xUrl,
+        imageUrlUpdatedAt: gameData.imageUrlUpdatedAt,
+      });
+      setLastLaunchTime(`${userData?.lastLaunchTime ?? ''}`);
+      setAches(
+        (gameData.achievementsFromView ?? [])
+          .toSorted((a: Achievements, b: Achievements) =>
+            new Date(b.unlockedDate).getTime() - new Date(a.unlockedDate).getTime()
+          )
+          .slice(0, 7)
+      );
+    } catch (error) {
+      logger.error(`Failed to load game data for appid ${appid}`, error);
+    }
   }, [appid]);
 
   useEffect(() => {
@@ -94,6 +122,9 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
     };
   }, [updateGame]);
 
+  const fallbackImageUrl = `${DEFAULT_CDN}/${appid}/capsule_sm_120.jpg`;
+  const capsuleImageUrl = buildCapsuleImageUrl(appid, game?.capsuleUrl);
+
   return (
     <Card ref={cardRef} className={`game-card${percent === 100 ? ' game-card--complete' : ''}`}>
       <CardActionArea onClick={() => logging(appid, backWindow)} className="game-card__action">
@@ -102,11 +133,15 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
             <CardMedia
               component="img"
               className="game-card__image"
-              image={'https://shared.akamai.steamstatic.com/store_item_assets/' + game?.capsuleUrl || `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
+              image={capsuleImageUrl}
               alt={gameName}
               onError={(e) => {
-                // Fallback to default Steam CDN if the API URL fails
-                e.currentTarget.src = `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`;
+                // Fall back to the public CDN exactly once; re-assigning the
+                // same broken URL would loop forever.
+                const target = e.currentTarget as HTMLImageElement;
+                if (target.src !== fallbackImageUrl) {
+                  target.src = fallbackImageUrl;
+                }
               }}
             />
             <Chip className="game-card__chip" label={`${playtime} ${t('Hours')}`} size="small" />
@@ -135,28 +170,40 @@ const GameCard: React.FC<GamePageProps> = ({ appid, backWindow }) => {
           </Box>
 
           <Grid container spacing={1} className="game-card__achievements">
-            {aches.map((achievement) => (
-              <Grid key={achievement.name}>
-                <Tooltip title={
-                  <React.Fragment>
-                    <Typography color="inherit" variant="subtitle2">{achievement.displayName}</Typography>
-                    <Typography variant="body2">{achievement.description}</Typography>
-                    <Typography variant="caption" color="text.secondary">{`Rarity: ${achievement.percent.toFixed(2)}%`}</Typography>
-                    {achievement.unlocked && (
-                      <Typography variant="caption" display="block" color="text.secondary">
-                        {t('Unlocked')}: {new Date(achievement.unlockedDate).toLocaleString()}
-                      </Typography>
+            {aches.map((achievement) => {
+              const icon = achievement.unlocked ? achievement.icon : achievement.grayIcon;
+              const hasIcon = Boolean(icon);
+              return (
+                <Grid key={achievement.name}>
+                  <Tooltip title={
+                    <React.Fragment>
+                      <Typography color="inherit" variant="subtitle2">{achievement.displayName}</Typography>
+                      <Typography variant="body2">{achievement.description}</Typography>
+                      <Typography variant="caption" color="text.secondary">{`Rarity: ${achievement.percent.toFixed(2)}%`}</Typography>
+                      {achievement.unlocked && (
+                        <Typography variant="caption" display="block" color="text.secondary">
+                          {t('Unlocked')}: {new Date(achievement.unlockedDate).toLocaleString()}
+                        </Typography>
+                      )}
+                    </React.Fragment>
+                  }>
+                    {hasIcon ? (
+                      <Avatar
+                        className="game-card__avatar"
+                        src={icon}
+                        alt={achievement.displayName}
+                      />
+                    ) : (
+                      <AchievementFallbackIcon
+                        className="game-card__avatar"
+                        gray={!achievement.unlocked}
+                        size={40}
+                      />
                     )}
-                  </React.Fragment>
-                }>
-                  <Avatar
-                    className="game-card__avatar"
-                    src={achievement.unlocked ? achievement.icon : achievement.grayIcon}
-                    alt={achievement.displayName}
-                  />
-                </Tooltip>
-              </Grid>
-            ))}
+                  </Tooltip>
+                </Grid>
+              );
+            })}
           </Grid>
         </CardContent>
       </CardActionArea>
