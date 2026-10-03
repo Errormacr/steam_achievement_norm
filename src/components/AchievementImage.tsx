@@ -61,6 +61,7 @@ const AchievementImage: React.FC<AchievementImageProps> = ({
         <AchievementFallbackIcon
           className={getAchievementClass(percent)}
           gray={gray}
+          title={title}
         />
       )}
     </div>

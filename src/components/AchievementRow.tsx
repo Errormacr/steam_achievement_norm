@@ -29,6 +29,17 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
   // answers 404 for it.
   const { handleError, canRender } = useImageFallback(icon);
 
+  // Mirrors the tooltip built in AchievementImage so both views expose the
+  // same details on hover, for real and for placeholder icons alike.
+  const title = [
+    achievement.displayName,
+    achievement.description,
+    `${achievement.percent.toFixed(2)}%`,
+    formattedDate,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
   return (
         <tr
             className={rowClass}
@@ -40,6 +51,7 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
                   className={imgClass}
                   src={icon as string}
                   alt={achievement.displayName}
+                  title={title}
                   onError={handleError}
                 />
               ) : (
@@ -47,6 +59,7 @@ export const AchievementRow: React.FC<AchievementRowProps> = ({ achievement, isL
                   className={imgClass}
                   gray={!achievement.unlocked}
                   size={40}
+                  title={title}
                 />
               )}
             </td>

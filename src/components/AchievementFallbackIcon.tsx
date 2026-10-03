@@ -4,12 +4,15 @@ interface AchievementFallbackIconProps {
   className?: string;
   size?: number;
   gray?: boolean;
+  /** Tooltip text; shown via a native SVG <title> element. */
+  title?: string;
 }
 
 const AchievementFallbackIcon: React.FC<AchievementFallbackIconProps> = ({
   className = '',
   size = 64,
   gray = false,
+  title,
 }) => {
   const fill = gray ? '#4a4a4a' : '#8a8a8a';
   const stroke = gray ? '#2a2a2a' : '#3a3a3a';
@@ -22,9 +25,11 @@ const AchievementFallbackIcon: React.FC<AchievementFallbackIconProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       data-fallback-icon="true"
-      aria-hidden="true"
       style={{ display: 'inline-block', flexShrink: 0 }}
     >
+      {/* Native SVG tooltip: an svg has no title attribute like an img does,
+          so the text must live in a <title> child to be announced on hover. */}
+      {title && <title>{title}</title>}
       <rect
         x="4"
         y="4"
