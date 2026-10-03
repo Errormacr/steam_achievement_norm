@@ -140,6 +140,8 @@ export function GameFilterBar ({ filters, onFilterChange }: Readonly<GameFilterB
             onClick={() => setCompletedFilterDropdownOpen(!completedFilterDropdownOpen)}
             aria-expanded={completedFilterDropdownOpen}
           >
+            // Use the filter value itself as the translation key, matching the option
+            // list rendered just below.
             {selectedCompletionFilterOption ? t(selectedCompletionFilterOption) : t('CompletedFilter')}
           </button>
           {completedFilterDropdownOpen && (

@@ -14,7 +14,7 @@ export function GameList ({ games, isLoading, lastElementRef }: Readonly<GameLis
       {games.map((game, index) => (
         <div
           key={game.appid}
-          ref={index === games.length - 1 ? lastElementRef : null}
+          ref={index === games.length - 1 ? lastElementRef : undefined}
           style={{ width: 'fit-content', justifySelf: 'center', maxWidth: '100%' }}
         >
           <GameCard appid={game.appid} backWindow={'Games'} />

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { logger } from '../utils/logger';
 
 /**
@@ -33,3 +33,36 @@ export function useImageFallback(src: string | null | undefined) {
     canRender: Boolean(src) && !isBroken,
   };
 }
+
+interface AvatarFallbackProps {
+  className?: string;
+  /** Square size in pixels; defaults to the caller's CSS-driven box. */
+  size?: number;
+}
+
+/**
+ * Neutral stand-in for a Steam avatar. Users with a private profile have no
+ * avatar image, so the URL is valid but resolves to nothing.
+ */
+export const AvatarFallback: React.FC<AvatarFallbackProps> = ({
+  className = '',
+  size = 64,
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 64 64"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    data-fallback-icon="true"
+    aria-label="no avatar"
+    style={{ display: 'inline-block', flexShrink: 0 }}
+  >
+    <rect x="2" y="2" width="60" height="60" rx="30" ry="30" fill="#3a4048" />
+    <circle cx="32" cy="25" r="11" fill="#79838f" />
+    <path
+      d="M12 58c0-11.046 8.954-20 20-20s20 8.954 20 20z"
+      fill="#79838f"
+    />
+  </svg>
+);

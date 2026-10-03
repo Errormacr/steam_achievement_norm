@@ -13,6 +13,7 @@ import {
   getSteamIdValidationErrorKey,
   isSteamIdLookupValue
 } from './changeAccount.helpers';
+import UserAvatar from '../components/UserAvatar';
 
 export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: () => void }>): React.JSX.Element {
   const { t } = useTranslation();
@@ -165,7 +166,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
                       closeModal();
                     }}
                   >
-                    <img alt="avatar" src={account.avatarMedium} />
+                    <UserAvatar alt={account.nickname} src={account.avatarMedium} />
                     <p style={{ marginBlock: '0' }}>{account.nickname}</p>
                     <FaTrash
                       className="deleteIcon"
@@ -204,7 +205,7 @@ export default function ChangeAccount ({ updatePage }: Readonly<{ updatePage: ()
                     closeModal();
                   }}
                 >
-                  <img alt="found user avatar" src={newAccAva} />
+                  <UserAvatar alt={newAccName} src={newAccAva} />
                   <p>{newAccName}</p>
                 </button>
               </div>

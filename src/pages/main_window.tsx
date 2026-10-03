@@ -11,6 +11,7 @@ import { UserData } from '../types';
 
 import i18n from '../utils/translate';
 import { logger } from '../utils/logger';
+import UserAvatar from '../components/UserAvatar';
 import '../styles/scss/MainWindow.scss';
 
 export default function App () {
@@ -68,7 +69,7 @@ export default function App () {
       {personalName && (
         <div className="user-profile">
           <div className="user-info">
-            <img alt="avatar" className="avatar" src={avaUrl} />
+            <UserAvatar alt={personalName} className="avatar" src={avaUrl} />
             <div className="user-details">
               <h2 className="nickname">{personalName}</h2>
               <div className="stats">

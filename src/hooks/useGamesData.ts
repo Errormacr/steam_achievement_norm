@@ -3,6 +3,8 @@ import i18n from 'i18next';
 import { ApiService } from '../services/api.services';
 import { GameDataRow, Pagination } from '../types';
 
+const PAGE_SIZE = 30;
+
 interface GamesDataFilters {
   orderBy: string | null;
   desc: boolean;
@@ -33,7 +35,7 @@ export function useGamesData (filters: GamesDataFilters, options?: UseGamesDataO
       desc: desc ? '1' : '0',
       language: i18n.language,
       page: pageToLoad.toString(),
-      pageSize: '30'
+      pageSize: PAGE_SIZE.toString()
     });
 
     if (selectedCompletionFilterValue) {
@@ -71,7 +73,7 @@ export function useGamesData (filters: GamesDataFilters, options?: UseGamesDataO
       const rows = loadedPages.flatMap((loadedPage) => loadedPage.rows);
       const lastPage = loadedPages.at(-1);
 
-      setHasMore((lastPage?.rows.length ?? 0) > 0);
+      setHasMore((lastPage?.rows.length ?? 0) === PAGE_SIZE);
       setGames(rows);
       setIsLoading(false);
       return;
@@ -79,7 +81,8 @@ export function useGamesData (filters: GamesDataFilters, options?: UseGamesDataO
 
     const achData = await fetchGamesPage(targetPage);
 
-    setHasMore(achData.rows.length > 0);
+    // A short page means the end of the list; a full one may have more.
+    setHasMore(achData.rows.length === PAGE_SIZE);
     setGames((prev) => [...prev, ...achData.rows]);
     setIsLoading(false);
   }, [fetchGamesPage, page]);

@@ -15,7 +15,7 @@ const AchTimeHistogram: React.FC<AchTimeHistogramProps> = ({ gameAppid }) => {
 
   const handleClick = (el: { activeLabel: string }) => {
     const gameUrl = gameAppid ? `/${gameAppid}` : '/undefined';
-    navigate(`/achievements/0/100/${el.activeLabel}/Stats${gameUrl}`);
+    navigate(`/Achievements/0/100/${el.activeLabel}/Stats${gameUrl}`);
   };
 
   return (

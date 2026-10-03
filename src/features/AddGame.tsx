@@ -9,6 +9,7 @@ import { Percent } from '../types';
 import { toast } from 'react-toastify';
 import { useModal } from '../hooks/useModal';
 import { useGameSearch } from '../hooks/useGameSearch';
+import { GameCapsuleImage } from '../components/GameCapsuleImage';
 
 export default function AddGame (): React.JSX.Element {
   const { isOpen, openModal, closeModal } = useModal();
@@ -54,14 +55,7 @@ export default function AddGame (): React.JSX.Element {
             <IdKeyInput onChange={OnUpdateKeyField} placeholder={'appid'} />
             {gamename && (
               <button onClick={addGame} className="find-game-card">
-                <img
-                  alt={gamename}
-                  src={`https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`}
-                  onError={(e) => {
-                    // Fallback to default Steam CDN if the image fails to load
-                    e.currentTarget.src = `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/capsule_sm_120.jpg`;
-                  }}
-                ></img>
+                <GameCapsuleImage appid={appid} alt={gamename} />
                 <p>{gamename}</p>
               </button>
             )}

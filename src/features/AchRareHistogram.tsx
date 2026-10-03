@@ -32,7 +32,7 @@ const AchRareHistogram: React.FC<AchRareHistogramProps> = ({ gameAppid }) => {
                   const min = parts[0] ?? cleaned;
                   const max = parts[1] ?? parts[0] ?? cleaned;
                   if (!min) return;
-                  navigate(`/achievements/${min}/${max}/undefined/Stats${addUrl}`);
+                  navigate(`/Achievements/${min}/${max}/undefined/Stats${addUrl}`);
                 }}
                 data={data}
                 yLabel={t('count')}
